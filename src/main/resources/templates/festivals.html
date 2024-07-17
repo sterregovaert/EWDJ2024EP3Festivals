@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Festivals</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{nav :: navbar}"></div>
+<!--<div>-->
+<!--    <h2>Festivals</h2>-->
+<!--    <ul>-->
+<!--        <li th:each="festival : ${festivals}" th:text="${festival.name}">Festival Name</li>-->
+<!--    </ul>-->
+<!--</div>-->
+<div>
+    <h2 th:text="${genreName}">Music Genre</h2>
+    <ul>
+        <li th:each="festival : ${festivals}"
+            th:with="isAdmin=${session.isAdmin}, hasTickets=${#lists.contains(session.userTickets, festival.id)}">
+            <h3 th:text="${festival.name}">Festival Name</h3>
+            <p>Date and Start Time: <span th:text="${festival.startDate} + ' ' + ${festival.startTime}">Date and Time</span>
+            </p>
+            <p>Region: <span th:text="${festival.region}">Region</span></p>
+            <p>Performances:
+            <ul>
+                <li th:each="performance : ${festival.performances}"
+                    th:text="${performance.artistName} + ' at ' + ${performance.startTime}">Performance
+                </li>
+            </ul>
+            </p>
+            <p>Available Seats: <span th:text="${festival.availableSeats}">Available Seats</span></p>
+            <p th:if="${festival.availableSeats > 0 || isAdmin}">Ticket Price: <span
+                    th:text="${#numbers.formatDecimal(festival.ticketPrice, 2, 'COMMA', 2, 'POINT')}">Price</span></p>
+            <p th:if="${hasTickets}">Tickets Bought: <span th:text="${session.userTickets[festival.id]}">Number</span>
+            </p>
+            <a th:if="${isAdmin}" th:href="@{/admin/festival/{id}/performances(id=${festival.id})}">Manage
+                Performances</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

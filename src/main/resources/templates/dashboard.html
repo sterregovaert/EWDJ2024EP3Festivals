@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{nav :: navbar}"></div>
+
+<a th:if="${ticketCount > 0} and ${userRole == 'user'}" th:href="|/ticket|">
+    <button>View Tickets</button>
+</a>
+
+<h2>Music Genres</h2>
+<ul>
+    <li th:each="genre : ${genres}">
+        <a th:href="@{/festivals(genre=${genre.name})}" th:text="${genre.name}">Genre</a>
+    </li>
+</ul>
+
+<h2>Regions</h2>
+<ul>
+    <li th:each="region : ${regions}">
+        <a th:href="@{/festivals(region=${region.name})}" th:text="${region.name}">Region</a>
+    </li>
+</ul>
+</body>
+</html>

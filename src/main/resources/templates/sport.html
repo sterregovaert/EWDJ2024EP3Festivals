@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Sports</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div th:replace="~{nav :: navbar}"></div>
+
+<div class="flex flex-col min-h-full justify-center px-6 py-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h1 class="text-4xl">Sports</h1>
+    </div>
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm flex flex-col gap-2">
+
+        <a th:if="${ticketCount > 0} and ${userRole == 'user'}" th:href="|/ticket|">
+            <button>View Tickets</button>
+        </a>
+
+        <div th:each="sport : ${sports}">
+            <div class="flex flex-col border-2 border-black rounded-md p-4">
+                <!--        <img th:src="${sport.image}" th:alt="${sport.name}" th:title="${sport.name}"/>-->
+                <!--        <img th:src="'data:image/png;base64,'+${sport.base64Image}" th:alt="${sport.name}" th:title="${sport.name}"/>-->
+                <img class="sportImage" th:src="'data:image/svg+xml;base64,'+${sport.getBase64Image()}"
+                     th:alt="${sport.name}"
+                     th:title="${sport.name}"/>
+                <span th:text="${sport.name}"></span>
+                <a th:href="|/competition/${sport.sport_id}|">
+                    <button class="competition-button">Competitions</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

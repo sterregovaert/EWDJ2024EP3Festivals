@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Tickets</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div th:replace="~{nav :: navbar}"></div>
+<div class="flex flex-col">
+<!--    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">-->
+<!--        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">-->
+<!--            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">-->
+                <table class="divide-y divide-gray-200">
+                    <thead class="bg-gray-700">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Ticket ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Sport</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Competition ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Start time</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Stadium</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Amount of tickets</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" th:each="ticket : ${tickets}">
+                    <tr>
+                        <td th:text="${ticket.ticket_id}"></td>
+                        <td th:text="${ticket.competition.sport.name}"></td>
+                        <td th:text="${ticket.competition.competition_id}"></td>
+<!--                        <td th:text="${ticket.competition.startDate}"></td>-->
+<!--                        <td th:text="${ticket.competition.startTime}"></td>-->
+
+                        <td th:text="${dateFormatter.print(ticket.competition.startDate, #locale)}"></td>
+                        <td th:text="${timeFormatter.print(ticket.competition.startTime, #locale)}"></td>
+
+                        <td th:text="${ticket.competition.stadium.name}"></td>
+                        <td th:text="${ticket.quantity}"></td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="6" class="text-right font-bold">Total:</td>
+                        <td class="font-bold" th:text="${#aggregates.sum(tickets.![quantity])}"></td>
+                    </tr>
+                    </tfoot>
+                </table>
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+</div>
+
+</body>
+</html>
