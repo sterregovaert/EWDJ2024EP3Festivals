@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import repository.FestivalRepository;
 import repository.TicketRepository;
 import repository.UserRepository;
 import validator.TicketValidator;
@@ -36,33 +37,33 @@ public class TicketController {
         List<Ticket> tickets = ticketRepository.findByUserSortedBySportAndDate(user);
         model.addAttribute("tickets", tickets);
 
-        return "ticket";
+        return "tickets";
     }
 
-    @GetMapping("/buy/{festival_id}")
-    public String buyTicket(@PathVariable Long festival_id, Model model, Principal principal) {
+    @GetMapping("/buy/{id}")
+    public String buyTicket(@PathVariable Long id, Model model, Principal principal) {
         Ticket ticket = new Ticket();
 
         MyUser user = userRepository.findByUsername(principal.getName());
-        Festival festival = festivalRepository.findById(festival_id).orElse(null);
+        Festival festival = festivalRepository.findById(id).orElse(null);
         if (festival == null) {
             return "redirect:/error";
         }
         ticket.setFestival(festival);
 
-        List<Ticket> tickets = ticketRepository.findByUserAndFestival(user, festival);
-        model.addAttribute("tickets", tickets);
-        model.addAttribute("ticketCount", tickets.size());
+//        List<Ticket> tickets = ticketRepository.findByUserAndFestival(user, festival);
+//        model.addAttribute("tickets", tickets);
+//        model.addAttribute("ticketCount", tickets.size());
 
         ticket.setQuantity(1);
         model.addAttribute("ticket", ticket);
         return "ticket-buy";
     }
 
-    @PostMapping("/buy/{festival_id}")
-    public String buyTickets(@PathVariable Long festival_id, @Valid Ticket ticket, BindingResult result, Model model, Principal principal, @RequestParam int quantity) {
+    @PostMapping("/buy/{id}")
+    public String buyTickets(@PathVariable Long id, @Valid Ticket ticket, BindingResult result, Model model, Principal principal, @RequestParam int quantity) {
         MyUser user = userRepository.findByUsername(principal.getName());
-        Festival festival = festivalRepository.findById(festival_id).orElse(null);
+        Festival festival = festivalRepository.findById(id).orElse(null);
 
         ticket.setFestival(festival);
         ticket.setUser(user);
@@ -81,6 +82,6 @@ public class TicketController {
 
         ticketRepository.save(ticket);
 
-        return "redirect:/festival/" + String.valueOf(ticket.getFestival().getSport().getSport_id());
+        return "redirect:/festival/" + String.valueOf(ticket.getFestival());
     }
 }

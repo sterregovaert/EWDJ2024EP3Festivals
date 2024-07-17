@@ -27,26 +27,26 @@ public class TicketValidator implements Validator {
             return;
         }
 
-        Integer totalTicketsForThisCompetition = ticketRepository.getTotalTicketQuantityForUserAndCompetition(ticket.getUser(), ticket.getFestival());
-        if (totalTicketsForThisCompetition == null) {
-            totalTicketsForThisCompetition = 0;
-        }
-        if (totalTicketsForThisCompetition + ticket.getQuantity() > 20) {
-            errors.rejectValue("quantity", "Quantity.exceeded", "You cannot buy more than 20 tickets for one competition.");
-        }
-
-        Integer totalTicketsBought = ticketRepository.getTotalTicketQuantityForUser(ticket.getUser());
-        if (totalTicketsBought == null) {
-            totalTicketsBought = 0;
-        }
-        if (totalTicketsBought + ticket.getQuantity() > 100) {
-            errors.rejectValue("quantity", "Quantity.exceeded", "You cannot buy more than 100 tickets in total.");
-        }
-
-        if (ticket.getQuantity() > ticket.getFestival().getAvailableSeats()) {
-            System.out.println("seats: " + ticket.getFestival().getAvailableSeats());
-            errors.rejectValue("quantity", "Quantity.exceeded", "You cannot buy more tickets than available seats.");
-        }
+//        Integer totalTicketsForThisCompetition = ticketRepository.getTotalTicketQuantityForUserAndCompetition(ticket.getUser(), ticket.getFestival());
+//        if (totalTicketsForThisCompetition == null) {
+//            totalTicketsForThisCompetition = 0;
+//        }
+//        if (totalTicketsForThisCompetition + ticket.getQuantity() > 20) {
+//            errors.rejectValue("quantity", "Quantity.exceeded", "You cannot buy more than 20 tickets for one competition.");
+//        }
+//
+//        Integer totalTicketsBought = ticketRepository.getTotalTicketQuantityForUser(ticket.getUser());
+//        if (totalTicketsBought == null) {
+//            totalTicketsBought = 0;
+//        }
+//        if (totalTicketsBought + ticket.getQuantity() > 100) {
+//            errors.rejectValue("quantity", "Quantity.exceeded", "You cannot buy more than 100 tickets in total.");
+//        }
+//
+//        if (ticket.getQuantity() > ticket.getFestival().getAvailableSeats()) {
+//            System.out.println("seats: " + ticket.getFestival().getAvailableSeats());
+//            errors.rejectValue("quantity", "Quantity.exceeded", "You cannot buy more tickets than available seats.");
+//        }
     }
 
     @Override
