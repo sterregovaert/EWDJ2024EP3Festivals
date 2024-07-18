@@ -38,62 +38,56 @@ class Ewdj2024EP3FestivalsApplicationTests {
     @MockBean
     private UserRepository userRepository;
     @MockBean
-    private SportRepository sportRepository;
-    @MockBean
     private TicketRepository ticketRepository;
-    @MockBean
-    private DisciplineRepository disciplineRepository;
-    @MockBean
-    private CompetitionRepository competitionRepository;
 
-    @BeforeEach
-    public void setup() {
-        MyUser normalUser = new MyUser();
-        normalUser.setUsername("user");
-        normalUser.setPassword("password");
-        normalUser.setRole(Role.USER);
-        normalUser.setId(1L);
-        userRepository.save(normalUser);
-
-        Sport sport = new Sport();
-        sport.setSport_id(1L);
-        sport.setName("Netsport");
-        sportRepository.save(sport);
-
-        Stadium stadium = new Stadium();
-        stadium.setStadium_id(1L);
-        stadium.setName("Stade Magnifique");
-        stadium.setCapacity(50000);
-
-        List<Competition> competitions = new ArrayList<>();
-        Discipline netsportDiscipline1 = new Discipline(1L, "Tennis", sport, competitions);
-        Discipline netsportDiscipline2 = new Discipline(2L, "Volleybal", sport, competitions);
-        disciplineRepository.saveAll(List.of(netsportDiscipline1, netsportDiscipline2));
-        List<Discipline> disciplines = new ArrayList<>();
-        disciplines.add(netsportDiscipline1);
-        disciplines.add(netsportDiscipline2);
-
-        Competition competition = new Competition();
-        competition.setCompetition_id(1L);
-        competition.setStartDate(LocalDate.of(2024, 7, 30));
-        competition.setStartTime(LocalTime.of(16, 45));
-        competition.setDisciplines(disciplines);
-        competition.setStadium(stadium);
-        competition.setFreeSeats(30);
-        competition.setSport(sport);
-        competitionRepository.save(competition);
-
-        Ticket ticket = new Ticket();
-        ticket.setTicket_id(5L);
-        ticket.setUser(normalUser);
-        ticket.setCompetition(competition);
-        ticketRepository.save(ticket);
-
-        org.springframework.security.core.userdetails.User user = new org.springframework.security.core.userdetails.User(normalUser.getUsername(), normalUser.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-
-        when(userRepository.findByUsername("user")).thenReturn(normalUser);
-        when(userDetailsService.loadUserByUsername("user")).thenReturn(user);
-    }
+//    @BeforeEach
+//    public void setup() {
+//        MyUser normalUser = new MyUser();
+//        normalUser.setUsername("user");
+//        normalUser.setPassword("password");
+//        normalUser.setRole(Role.USER);
+//        normalUser.setId(1L);
+//        userRepository.save(normalUser);
+//
+//        Sport sport = new Sport();
+//        sport.setSport_id(1L);
+//        sport.setName("Netsport");
+//        sportRepository.save(sport);
+//
+//        Stadium stadium = new Stadium();
+//        stadium.setStadium_id(1L);
+//        stadium.setName("Stade Magnifique");
+//        stadium.setCapacity(50000);
+//
+//        List<Competition> competitions = new ArrayList<>();
+//        Discipline netsportDiscipline1 = new Discipline(1L, "Tennis", sport, competitions);
+//        Discipline netsportDiscipline2 = new Discipline(2L, "Volleybal", sport, competitions);
+//        disciplineRepository.saveAll(List.of(netsportDiscipline1, netsportDiscipline2));
+//        List<Discipline> disciplines = new ArrayList<>();
+//        disciplines.add(netsportDiscipline1);
+//        disciplines.add(netsportDiscipline2);
+//
+//        Competition competition = new Competition();
+//        competition.setCompetition_id(1L);
+//        competition.setStartDate(LocalDate.of(2024, 7, 30));
+//        competition.setStartTime(LocalTime.of(16, 45));
+//        competition.setDisciplines(disciplines);
+//        competition.setStadium(stadium);
+//        competition.setFreeSeats(30);
+//        competition.setSport(sport);
+//        competitionRepository.save(competition);
+//
+//        Ticket ticket = new Ticket();
+//        ticket.setTicket_id(5L);
+//        ticket.setUser(normalUser);
+//        ticket.setCompetition(competition);
+//        ticketRepository.save(ticket);
+//
+//        org.springframework.security.core.userdetails.User user = new org.springframework.security.core.userdetails.User(normalUser.getUsername(), normalUser.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+//
+//        when(userRepository.findByUsername("user")).thenReturn(normalUser);
+//        when(userDetailsService.loadUserByUsername("user")).thenReturn(user);
+//    }
 
     @Test
     public void loginGet() throws Exception {

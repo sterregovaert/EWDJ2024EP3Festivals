@@ -33,26 +33,24 @@ public class TicketControllerTest {
     @MockBean
     private TicketRepository ticketRepository;
 
-    @MockBean
-    private CompetitionRepository competitionRepository;
 
-    @BeforeEach
-    public void setup() {
-        MyUser user = new MyUser();
-        user.setUsername("testUser");
-
-        Competition competition = new Competition();
-        competition.setCompetition_id(1L);
-
-        Ticket ticket = new Ticket();
-        ticket.setCompetition(competition);
-        ticket.setUser(user);
-
-        when(userRepository.findByUsername("testUser")).thenReturn(user);
-        when(ticketRepository.findByUserSortedBySportAndDate(user)).thenReturn(Collections.singletonList(ticket));
-        when(competitionRepository.findById(1L)).thenReturn(java.util.Optional.of(competition));
-        when(ticketRepository.findByUserAndCompetition(user, competition)).thenReturn(Collections.singletonList(ticket));
-    }
+//    @BeforeEach
+//    public void setup() {
+//        MyUser user = new MyUser();
+//        user.setUsername("testUser");
+//
+//        Competition competition = new Competition();
+//        competition.setCompetition_id(1L);
+//
+//        Ticket ticket = new Ticket();
+//        ticket.setCompetition(competition);
+//        ticket.setUser(user);
+//
+//        when(userRepository.findByUsername("testUser")).thenReturn(user);
+//        when(ticketRepository.findByUserSortedBySportAndDate(user)).thenReturn(Collections.singletonList(ticket));
+//        when(competitionRepository.findById(1L)).thenReturn(java.util.Optional.of(competition));
+//        when(ticketRepository.findByUserAndCompetition(user, competition)).thenReturn(Collections.singletonList(ticket));
+//    }
 
     @Test
     @WithMockUser(username = "testUser")
