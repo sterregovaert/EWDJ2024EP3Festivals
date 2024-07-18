@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor//(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @EqualsAndHashCode(exclude = "festivalId")
 @Getter
 @Setter
@@ -21,13 +21,23 @@ public class Festival {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long festivalId;
 
+    private String name;
     private LocalDateTime startDateTime;
-    private String region;
-    private String genre;
     private int availableSeats;
     private double ticketPrice;
-//    private List<Performance> performances;
+
+    @OneToMany(mappedBy = "festival", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Performance> performances;
+
+    @ManyToOne
+    @JoinColumn(name = "regionId")
+    private Region region;
+
+    @ManyToOne
+    @JoinColumn(name = "genreId")
+    private Genre genre;
 
     @OneToMany(mappedBy = "festival", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets;
+
 }

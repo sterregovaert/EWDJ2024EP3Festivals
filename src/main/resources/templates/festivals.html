@@ -11,7 +11,7 @@
     <h2 th:text="${genreName}">Music Genre</h2>
     <ul>
         <li th:each="festival : ${festivals}"
-            th:with="isAdmin=${session.isAdmin}, hasTickets=${#lists.contains(session.userTickets, festival.id)}">
+            th:with="isAdmin=${session.isAdmin}, hasTickets=${#lists.contains(session.userTickets, festival.festivalId)}">
             <h3 th:text="${festival.name}">Festival Name</h3>
             <p>Date and Start Time: <span th:text="${festival.startDate} + ' ' + ${festival.startTime}">Date and Time</span>
             </p>

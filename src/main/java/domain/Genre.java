@@ -3,6 +3,9 @@ package domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Data
 @Builder
@@ -17,5 +20,9 @@ public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long genreId;
+
     private String name;
+
+    @OneToMany(mappedBy = "genre")
+    private Set<Festival> festivals;
 }

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -27,6 +28,8 @@ public class InitDataConfig implements CommandLineRunner {
     private GenreRepository genreRepository;
     @Autowired
     private RegionRepository regionRepository;
+    @Autowired
+    private FestivalRepository festivalRepository;
 
     private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -49,13 +52,53 @@ public class InitDataConfig implements CommandLineRunner {
         // -------- -------- --------
         // -------- Genres --------
         // -------- -------- --------
-        List<Genre> genres = Arrays.asList(new Genre(null, "Rock"), new Genre(null, "Pop"), new Genre(null, "Jazz"), new Genre(null, "Electronic"));
+        List<Genre> genres = Arrays.asList(
+                Genre.builder().name("Rock").build(),
+                Genre.builder().name("Pop").build(),
+                Genre.builder().name("Jazz").build(),
+                Genre.builder().name("Electronic").build()
+        );
         genreRepository.saveAll(genres);
+
         // -------- -------- --------
         // -------- Regions --------
         // -------- -------- --------
-        List<Region> regions = Arrays.asList(new Region(null, "North America"), new Region(null, "South America"), new Region(null, "Europe"), new Region(null, "Asia"), new Region(null, "Africa"), new Region(null, "Australia"));
+        List<Region> regions = Arrays.asList(
+                Region.builder().name("North America").build(),
+                Region.builder().name("South America").build(),
+                Region.builder().name("Europe").build(),
+                Region.builder().name("Asia").build(),
+                Region.builder().name("Africa").build(),
+                Region.builder().name("Australia").build()
+        );
         regionRepository.saveAll(regions);
+        // -------- -------- --------
+        // -------- Festivals --------
+        // -------- -------- --------
+        Region europe = regionRepository.findByName("Europe")
+                .orElseThrow(() -> new RuntimeException("Region not found"));
+        Genre rock = genreRepository.findByName("Rock")
+                .orElseThrow(() -> new RuntimeException("Genre not found"));
+
+        List<Festival> festivals = Arrays.asList(
+                Festival.builder()
+                        .startDateTime(LocalDateTime.of(2024, 3, 15, 14, 0))
+                        .region(europe)
+                        .genre(rock)
+                        .availableSeats(5000)
+                        .ticketPrice(49.99)
+                        .build(),
+                Festival.builder()
+                        .startDateTime(LocalDateTime.of(2024, 7, 20, 16, 0))
+                        .region(europe)
+                        .genre(rock)
+                        .availableSeats(8000)
+                        .ticketPrice(99.99)
+                        .build()
+        );
+
+        festivalRepository.saveAll(festivals);
+
         // -------- -------- --------
         // -------- TICKETS --------
         // -------- -------- --------

@@ -3,6 +3,8 @@ package domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Builder
@@ -17,4 +19,13 @@ public class Performance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long performanceId;
+
+    private String artistName;
+    private LocalDateTime startDateTime;
+    private int endDateTime;
+
+    @ManyToOne
+    @JoinColumn(name = "festivalId", nullable = false)
+    private Festival festival;
+
 }
