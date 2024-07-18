@@ -15,8 +15,6 @@ import java.util.List;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByUser(MyUser user);
 
-    List<Ticket> findByUserSortedBySportAndDate(MyUser user);
-
 //    List<Ticket> findByUserAndCompetition(MyUser user, Competition competition);
 //
 //    @Query("SELECT SUM(t.quantity) FROM Ticket t WHERE t.user = ?1")

@@ -7,8 +7,8 @@ import lombok.*;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor//(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(exclude = "id")
+@NoArgsConstructor
+@EqualsAndHashCode(exclude = "performanceId")
 @Getter
 @Setter
 @Table(name = "performance")
@@ -16,5 +16,5 @@ public class Performance {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long performanceId;
 }

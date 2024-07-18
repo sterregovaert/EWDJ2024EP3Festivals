@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor//(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(exclude = "id")
+@EqualsAndHashCode(exclude = "genreId")
 @Getter
 @Setter
 @Table(name = "genre")
@@ -16,6 +16,6 @@ public class Genre {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long genreId;
     private String name;
 }

@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor//(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(exclude = "id")
+@EqualsAndHashCode(exclude = "regionId")
 @Getter
 @Setter
 @Table(name = "region")
@@ -16,6 +16,6 @@ public class Region {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long regionId;
     private String name;
 }

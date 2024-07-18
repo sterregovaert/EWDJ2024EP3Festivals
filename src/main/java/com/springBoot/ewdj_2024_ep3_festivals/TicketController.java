@@ -34,8 +34,8 @@ public class TicketController {
         String username = principal.getName();
         MyUser user = userRepository.findByUsername(username);
 
-        List<Ticket> tickets = ticketRepository.findByUserSortedBySportAndDate(user);
-        model.addAttribute("tickets", tickets);
+//        List<Ticket> tickets = ticketRepository.findByUserSortedBySportAndDate(user);
+//        model.addAttribute("tickets", tickets);
 
         return "tickets";
     }
