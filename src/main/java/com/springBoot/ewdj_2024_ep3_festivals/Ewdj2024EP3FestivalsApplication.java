@@ -13,10 +13,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import perform.PerformRestFestival;
-import service.DashboardService;
-import service.FestivalService;
-import service.FormatterService;
-import service.MyUserDetailsService;
+import service.*;
 import validator.*;
 
 
@@ -71,15 +68,21 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     UserDetailsService myUserDetailsService() {
         return new MyUserDetailsService();
     }
+
     @Bean
     DashboardService dashboardService() {
         return new DashboardService();
     }
+
     @Bean
-    FestivalService festivalService() {
-        return new FestivalService();
+    FestivalsService festivalService() {
+        return new FestivalsService();
     }
 
+    @Bean
+    TicketsService ticketsService() {
+        return new TicketsService();
+    }
 
     /*VALIDATOR*/
     @Bean

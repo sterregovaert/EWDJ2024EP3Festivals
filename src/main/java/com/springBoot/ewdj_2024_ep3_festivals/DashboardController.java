@@ -17,6 +17,11 @@ public class DashboardController {
     public String showDashboard(Model model) {
         model.addAttribute("genres", dashboardService.findAllGenres());
         model.addAttribute("regions", dashboardService.findAllRegions());
+
+        int ticketCount = dashboardService.findTicketCountForCurrentUser();
+
+        model.addAttribute("ticketCount", ticketCount);
+
         return "dashboard";
     }
 }

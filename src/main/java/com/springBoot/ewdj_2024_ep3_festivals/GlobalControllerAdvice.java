@@ -1,5 +1,6 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
+import domain.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,7 +38,7 @@ public class GlobalControllerAdvice {
             String userRole = authentication.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .findFirst()
-                    .orElse("USER"); // default to "USER" if no role is found
+                    .orElse(String.valueOf(Role.USER)); // default to "USER" if no role is found
             String simpleUserRole = userRole.substring(5).toLowerCase();
             model.addAttribute("userRole", simpleUserRole);
         }

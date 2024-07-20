@@ -30,6 +30,10 @@ public class InitDataConfig implements CommandLineRunner {
     private RegionRepository regionRepository;
     @Autowired
     private FestivalRepository festivalRepository;
+    @Autowired
+    private PerformanceRepository performanceRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
 
     private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -50,71 +54,82 @@ public class InitDataConfig implements CommandLineRunner {
         userRepository.saveAll(userList);
 
         // -------- -------- --------
-        // -------- Genres --------
+        // -------- GENRES --------
         // -------- -------- --------
-        List<Genre> genres = Arrays.asList(
-                Genre.builder().name("Rock").build(),
-                Genre.builder().name("Pop").build(),
-                Genre.builder().name("Jazz").build(),
-                Genre.builder().name("Electronic").build()
-        );
+        List<Genre> genres = Arrays.asList(Genre.builder().name("Rock").build(), Genre.builder().name("Pop").build(), Genre.builder().name("Jazz").build(), Genre.builder().name("Electronic").build());
         genreRepository.saveAll(genres);
 
         // -------- -------- --------
-        // -------- Regions --------
+        // -------- REGIONS --------
         // -------- -------- --------
-        List<Region> regions = Arrays.asList(
-                Region.builder().name("North America").build(),
-                Region.builder().name("South America").build(),
-                Region.builder().name("Europe").build(),
-                Region.builder().name("Asia").build(),
-                Region.builder().name("Africa").build(),
-                Region.builder().name("Australia").build()
-        );
+        List<Region> regions = Arrays.asList(Region.builder().name("North America").build(), Region.builder().name("South America").build(), Region.builder().name("Europe").build(), Region.builder().name("Asia").build(), Region.builder().name("Africa").build(), Region.builder().name("Australia").build());
         regionRepository.saveAll(regions);
-        // -------- -------- --------
-        // -------- Festivals --------
-        // -------- -------- --------
-        Region europe = regionRepository.findByName("Europe")
-                .orElseThrow(() -> new RuntimeException("Region not found"));
-        Genre rock = genreRepository.findByName("Rock")
-                .orElseThrow(() -> new RuntimeException("Genre not found"));
 
-        List<Festival> festivals = Arrays.asList(
-                Festival.builder()
-                        .startDateTime(LocalDateTime.of(2024, 3, 15, 14, 0))
-                        .region(europe)
-                        .genre(rock)
-                        .availableSeats(5000)
-                        .ticketPrice(49.99)
-                        .build(),
-                Festival.builder()
-                        .startDateTime(LocalDateTime.of(2024, 7, 20, 16, 0))
-                        .region(europe)
-                        .genre(rock)
-                        .availableSeats(8000)
-                        .ticketPrice(99.99)
-                        .build()
-        );
+        // -------- -------- --------
+        // -------- FESTIVALS --------
+        // -------- -------- --------
+        List<Region> allRegions = regionRepository.findAll();
+        List<Genre> allGenres = genreRepository.findAll();
 
+        List<String> adjectives = Arrays.asList("Epic", "Mega", "Ultra", "Magic", "Super", "Fantastic", "Awesome", "Great", "Cool", "Amazing", "Incredible", "Unbelievable", "Spectacular", "Wonderful", "Fabulous", "Terrific", "Marvelous", "Phenomenal", "Astounding", "Mind-blowing", "Mind-boggling", "Mind-bending");
+        List<String> types = Arrays.asList("Fest", "Festival", "Gala", "Concert", "Celebration", "Jamboree");
+        List<String> whimsicalWords = Arrays.asList("Twilight", "Odyssey", "Voyage", "Quest", "Safari", "Expedition", "Journey", "Escape");
+
+        Map<String, List<String>> genreToArtistsMap = Map.of("Rock", Arrays.asList("The Eternal Rockers", "Granite Sound", "Quartz Vibes"), "Pop", Arrays.asList("Bubblegum Beats", "Candy Melodies", "Poppy Harmonics"), "Jazz", Arrays.asList("Smooth Saxophones", "Jazzy Jive", "Brass Echoes"), "Electronic", Arrays.asList("Digital Dreams", "Circuit Symphony", "Electric Essence"));
+
+        List<Festival> festivals = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            String adjective = adjectives.get(ThreadLocalRandom.current().nextInt(adjectives.size()));
+            String type = types.get(ThreadLocalRandom.current().nextInt(types.size()));
+            String whimsicalWord = whimsicalWords.get(ThreadLocalRandom.current().nextInt(whimsicalWords.size()));
+            String festivalName = String.format("%s %s %s", adjective, whimsicalWord, type);
+
+
+            festivals.add(Festival.builder().startDateTime(LocalDateTime.of(2024, ThreadLocalRandom.current().nextInt(7, 13), ThreadLocalRandom.current().nextInt(1, 29), ThreadLocalRandom.current().nextInt(0, 24), 0)).region(allRegions.get(ThreadLocalRandom.current().nextInt(allRegions.size()))).genre(allGenres.get(ThreadLocalRandom.current().nextInt(allGenres.size()))).availableSeats(ThreadLocalRandom.current().nextInt(0, 31)).ticketPrice(ThreadLocalRandom.current().nextDouble(1, 150.1)).name(festivalName).build());
+
+        }
         festivalRepository.saveAll(festivals);
+
+
+        // -------- -------- --------
+        // -------- PERFORMANCES --------
+        // -------- -------- --------
+        for (Festival festival : festivals) {
+            List<Performance> performances = new ArrayList<>();
+            LocalDateTime performanceStartTime = festival.getStartDateTime().plusHours(1); // Start 1 hour after festival starts
+
+            for (int i = 0; i < 2; i++) {
+                Performance performance = new Performance();
+                List<String> artistNames = genreToArtistsMap.get(festival.getGenre().getName());
+                String artistName = artistNames.get(new Random().nextInt(artistNames.size()));
+
+                performance.setArtistName(artistName);
+                performance.setStartDateTime(performanceStartTime);
+                performance.setEndDateTime(performanceStartTime.plusHours(2)); // Each performance lasts 2 hours
+                performance.setFestival(festival);
+
+                performances.add(performance);
+
+                performanceStartTime = performance.getEndDateTime().plusHours(1); // Next performance starts 1 hour after the previous ends
+            }
+
+            performanceRepository.saveAll(performances);
+        }
 
         // -------- -------- --------
         // -------- TICKETS --------
         // -------- -------- --------
-        /*MyUser nameUser = userRepository.findByUsername("nameUser");
+        MyUser nameUser = userRepository.findByUsername("nameUser");
 
         List<Ticket> tickets = new ArrayList<>();
-
-        for (Competition competition : competitions) {
+        for (Festival festival : festivals) {
             Ticket ticket = new Ticket();
             ticket.setUser(nameUser);
-            ticket.setQuantity(3);
-            ticket.setCompetition(competition);
+            ticket.setQuantity(2);
+            ticket.setFestival(festival);
             tickets.add(ticket);
         }
-
-        ticketRepository.saveAll(tickets);*/
+        ticketRepository.saveAll(tickets);
 
     }
 

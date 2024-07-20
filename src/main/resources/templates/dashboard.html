@@ -7,8 +7,8 @@
 </head>
 <body>
 <div th:replace="~{nav :: navbar}"></div>
-
-<a th:if="${ticketCount > 0} and ${userRole == 'user'}" th:href="|/ticket|">
+<!--and ${userRole} == 'USER'-->
+<a th:if="${ticketCount > 0} " th:href="|/tickets|">
     <button>View Tickets</button>
 </a>
 

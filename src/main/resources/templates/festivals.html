@@ -8,24 +8,27 @@
 <body>
 <div th:replace="~{nav :: navbar}"></div>
 <div>
-    <h2 th:text="${genreName}">Music Genre</h2>
+    <h2 th:text="${(genre != null) ? (region != null) ? (genre + ' &amp; ' + region) : genre : (region != null) ? region : ''}">
+        Music Genre and Region</h2>
     <ul>
         <li th:each="festival : ${festivals}"
             th:with="isAdmin=${session.isAdmin}, hasTickets=${#lists.contains(session.userTickets, festival.festivalId)}">
             <h3 th:text="${festival.name}">Festival Name</h3>
-            <p>Date and Start Time: <span th:text="${festival.startDate} + ' ' + ${festival.startTime}">Date and Time</span>
+            <p>Date and Start Time: <span th:text="${festival.startDateTime}">Date and Time</span>
             </p>
-            <p>Region: <span th:text="${festival.region}">Region</span></p>
+            <p th:if="${region} == null">Region: <span th:text="${festival.region.name}">Region</span></p>
+            <p th:if="${genre} == null">Genre: <span th:text="${festival.genre.name}">Genre</span></p>
             <p>Performances:
             <ul>
                 <li th:each="performance : ${festival.performances}"
-                    th:text="${performance.artistName} + ' at ' + ${performance.startTime}">Performance
+                    th:text="${performance.artistName} + ' at ' + ${performance.startDateTime}">Performance
                 </li>
             </ul>
             </p>
             <p>Available Seats: <span th:text="${festival.availableSeats}">Available Seats</span></p>
-            <p th:if="${festival.availableSeats > 0 || isAdmin}">Ticket Price: <span
-                    th:text="${#numbers.formatDecimal(festival.ticketPrice, 2, 'COMMA', 2, 'POINT')}">Price</span></p>
+            <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || (isAdmin != null ? isAdmin : false)}">
+                Ticket Price: <span
+                    th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span></p>
             <p th:if="${hasTickets}">Tickets Bought: <span th:text="${session.userTickets[festival.id]}">Number</span>
             </p>
             <a th:if="${isAdmin}" th:href="@{/admin/festival/{id}/performances(id=${festival.id})}">Manage

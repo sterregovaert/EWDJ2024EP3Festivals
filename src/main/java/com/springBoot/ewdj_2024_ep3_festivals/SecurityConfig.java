@@ -1,5 +1,6 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
+import domain.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,22 +34,28 @@ public class SecurityConfig {
                                 requests
                                         // pages that need to be secured
                                         .requestMatchers("/login**").permitAll()
-                                        .requestMatchers("/dashboard").hasAnyRole("USER", "ADMIN")
+                                        .requestMatchers("/login/*").permitAll()
+                                        .requestMatchers("/dashboard").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
+                                        .requestMatchers("/festivals").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
+                                        .requestMatchers("/tickets").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
+                                        .requestMatchers("/tickets/**").hasRole("USER")
+                                        .requestMatchers("/tickets/*").hasRole("USER")
                                         // general stuff
                                         .requestMatchers("/css/**").permitAll()
                                         .requestMatchers("/i18n/**").permitAll()
                                         .requestMatchers("/403**").permitAll()
                                         .requestMatchers("/static/favicon.ico").permitAll()
                                         .requestMatchers("/icons/**").permitAll()
-                                        .requestMatchers("/*").permitAll()
+//                                        .requestMatchers("/*").permitAll()
                 )
                 .formLogin(form ->
                         form.defaultSuccessUrl("/dashboard", true)
                                 .loginPage("/login")
                                 .usernameParameter("username").passwordParameter("password")
                 )
-                .exceptionHandling(handling -> handling.accessDeniedPage("/403"))
-        ;
+                .exceptionHandling(handling -> handling
+                        .accessDeniedPage("/403")
+                );
 
         return http.build();
     }

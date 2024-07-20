@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface FestivalRepository  extends JpaRepository<Festival, Long> {
-    List<Festival> findByGenreOrderByRegionAscStartDateTimeAsc(Genre genre);
+    List<Festival> findByGenreOrderByRegionDescStartDateTimeAsc(Genre genre);
     List<Festival> findByRegionOrderByGenreAscStartDateTimeAsc(Region region);
     List<Festival> findAllByOrderByGenreAscRegionAscStartDateTimeAsc();
+    List<Festival> findByGenreAndRegionOrderByStartDateTimeAsc(Genre genre, Region region);
 }

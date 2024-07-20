@@ -22,7 +22,7 @@ public class Performance {
 
     private String artistName;
     private LocalDateTime startDateTime;
-    private int endDateTime;
+    private LocalDateTime endDateTime;
 
     @ManyToOne
     @JoinColumn(name = "festivalId", nullable = false)
