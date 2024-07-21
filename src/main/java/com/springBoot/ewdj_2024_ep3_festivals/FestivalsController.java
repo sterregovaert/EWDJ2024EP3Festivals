@@ -4,22 +4,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import service.FestivalsService;
 
 import java.util.ArrayList;
 
 @Controller
+@RequestMapping("/festivals")
 public class FestivalsController {
 
     @Autowired
     FestivalsService festivalsService;
 
-    @GetMapping("/festivals")
-    public String getFestivals(@RequestParam(name = "genre", required = false) String genre,
-                               @RequestParam(name = "region", required = false) String region,
-                               Model model, WebRequest request) {
+    @GetMapping
+    public String getFestivals(@RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "region", required = false) String region, Model model, WebRequest request) {
 
         // Initialize userTickets in session if not present
         if (request.getAttribute("userTickets", WebRequest.SCOPE_SESSION) == null) {
@@ -40,6 +41,19 @@ public class FestivalsController {
         model.addAttribute("region", region);
 
         return "festivals";
+    }
+
+    @GetMapping("/buy")
+    public String buyFestivalTicket(@RequestParam("festivalId") Long festivalId, WebRequest request, RedirectAttributes redirectAttributes) {
+        int purchasedTickets = 0; //= festivalsService.buyTicketForFestival(festivalId, quantity, request);
+
+        if (purchasedTickets > 0) {
+            redirectAttributes.addFlashAttribute("successMessage", purchasedTickets + " tickets were successfully purchased!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to purchase tickets.");
+        }
+
+        return "dashboard";
     }
 
 

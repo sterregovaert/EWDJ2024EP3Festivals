@@ -33,6 +33,11 @@
             </p>
             <a th:if="${isAdmin}" th:href="@{/admin/festival/{id}/performances(id=${festival.id})}">Manage
                 Performances</a>
+
+            <!--Buy ticket-->
+            <a th:href="@{/festivals/buy(festivalId=${festival.festivalId})}" class="button-link">
+                Buy Ticket(s)
+            </a>
         </li>
     </ul>
 </div>

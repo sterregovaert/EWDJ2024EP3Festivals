@@ -19,11 +19,11 @@ public class DashboardService {
     TicketRepository ticketRepository;
 
     public Object findAllGenres() {
-        return genreRepository.findAll();
+        return genreRepository.findAllByOrderByNameAsc();
     }
 
     public Object findAllRegions() {
-        return regionRepository.findAll();
+        return regionRepository.findAllByOrderByNameAsc();
     }
 
     public int findTicketCountForCurrentUser() {

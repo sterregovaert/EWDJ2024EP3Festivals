@@ -75,7 +75,11 @@ public class InitDataConfig implements CommandLineRunner {
         List<String> types = Arrays.asList("Fest", "Festival", "Gala", "Concert", "Celebration", "Jamboree");
         List<String> whimsicalWords = Arrays.asList("Twilight", "Odyssey", "Voyage", "Quest", "Safari", "Expedition", "Journey", "Escape");
 
-        Map<String, List<String>> genreToArtistsMap = Map.of("Rock", Arrays.asList("The Eternal Rockers", "Granite Sound", "Quartz Vibes"), "Pop", Arrays.asList("Bubblegum Beats", "Candy Melodies", "Poppy Harmonics"), "Jazz", Arrays.asList("Smooth Saxophones", "Jazzy Jive", "Brass Echoes"), "Electronic", Arrays.asList("Digital Dreams", "Circuit Symphony", "Electric Essence"));
+        Map<String, List<String>> genreToArtistsMap = new HashMap<>();
+        genreToArtistsMap.put("Rock", Arrays.asList("The Eternal Rockers", "Granite Sound", "Quartz Vibes"));
+        genreToArtistsMap.put("Pop", Arrays.asList("Bubblegum Beats", "Candy Melodies", "Poppy Harmonics"));
+        genreToArtistsMap.put("Jazz", Arrays.asList("Smooth Saxophones", "Jazzy Jive", "Brass Echoes"));
+        genreToArtistsMap.put("Electronic", Arrays.asList("Digital Dreams", "Circuit Symphony", "Electric Essence"));
 
         List<Festival> festivals = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
@@ -123,11 +127,13 @@ public class InitDataConfig implements CommandLineRunner {
 
         List<Ticket> tickets = new ArrayList<>();
         for (Festival festival : festivals) {
-            Ticket ticket = new Ticket();
-            ticket.setUser(nameUser);
-            ticket.setQuantity(2);
-            ticket.setFestival(festival);
-            tickets.add(ticket);
+            if ("Europe".equals(festival.getRegion().getName())) {
+                Ticket ticket = new Ticket();
+                ticket.setUser(nameUser);
+                ticket.setQuantity(2);
+                ticket.setFestival(festival);
+                tickets.add(ticket);
+            }
         }
         ticketRepository.saveAll(tickets);
 
