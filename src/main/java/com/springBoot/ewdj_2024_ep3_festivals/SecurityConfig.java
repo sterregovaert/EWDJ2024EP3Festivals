@@ -33,14 +33,12 @@ public class SecurityConfig {
                         authorizeHttpRequests(requests ->
                                 requests
                                         // pages that need to be secured
-                                        .requestMatchers("/login**").permitAll()
-                                        .requestMatchers("/login/*").permitAll()
+                                        .requestMatchers("/login").permitAll()
                                         .requestMatchers("/dashboard").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
+                                        .requestMatchers("/tickets").hasAnyRole(String.valueOf(Role.USER))
                                         .requestMatchers("/festivals").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
-                                        .requestMatchers("/tickets").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
-//                                        .requestMatchers("/tickets/**").hasRole(String.valueOf(Role.USER))
-                                        .requestMatchers("/tickets/*").hasRole(String.valueOf(Role.USER))
-                                        .requestMatchers("/festivals/buy*").hasRole(String.valueOf(Role.USER))
+                                        .requestMatchers("/festivals/buy").hasRole(String.valueOf(Role.USER))
+                                        .requestMatchers("/festivals/addPerformance").hasRole(String.valueOf(Role.ADMIN))
 
                                         // general stuff
                                         .requestMatchers("/css/**").permitAll()
@@ -48,7 +46,7 @@ public class SecurityConfig {
                                         .requestMatchers("/403**").permitAll()
                                         .requestMatchers("/static/favicon.ico").permitAll()
                                         .requestMatchers("/icons/**").permitAll()
-//                                        .requestMatchers("/*").permitAll()
+//                                      .requestMatchers("/*").permitAll()
                 )
                 .formLogin(form ->
                         form.defaultSuccessUrl("/dashboard", true)

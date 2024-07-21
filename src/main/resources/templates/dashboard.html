@@ -7,10 +7,11 @@
 </head>
 <body>
 <div th:replace="~{nav :: navbar}"></div>
-<!--and ${userRole} == 'USER'-->
-<a th:if="${ticketCount > 0} " th:href="|/tickets|">
-    <button>View Tickets</button>
-</a>
+<th:block th:if="${userRole == 'user'}">
+    <a th:if="${ticketCount > 0}" th:href="|/tickets|">
+        <button>View Tickets</button>
+    </a>
+</th:block>
 
 <h2>Music Genres</h2>
 <ul>

@@ -16,5 +16,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Integer sumTicketQuantitiesByUsername(@Param("username") String username);
 
     List<Ticket> findByUserOrderByFestivalStartDateTimeAscFestivalRegionAscFestivalGenreAsc(MyUser user);
+
+    @Query("SELECT SUM(t.quantity) FROM Ticket t WHERE t.user.id = :userId AND t.festival.id = :festivalId")
+    Integer findTicketQuantitiesSumByUserIdAndFestivalId(Long userId, Long festivalId);
 }
 

@@ -2,12 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="ISO-8859-1">
-    <title>Festivals</title>
+    <title>Buy ticket for festival</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
 <body>
 <div th:replace="~{nav :: navbar}"></div>
-<p>You're on the buying the ticket page
-    </p>
+<p>You're buying tickets for: <span th:text="${festivalName}"></span></p>
+<p>Tickets already bought: <span th:text="${ticketsBought}"></span></p>
+
+<form th:action="@{/festivals/buy}" method="post">
+    <input type="hidden" name="festivalId" th:value="${festivalId}"/>
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" name="quantity" min="1" required/>
+    <button type="submit">Buy Ticket(s)</button>
+</form>
 </body>
 </html>
