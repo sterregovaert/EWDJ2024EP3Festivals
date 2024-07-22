@@ -8,5 +8,32 @@
 <body>
 <div th:replace="~{nav :: navbar}"></div>
 
+<!-- TODO figure out what has to come below here-->
+<form th:action="@{/festivals/addPerformance}" method="post" th:object="${performance}">
+    <div>
+        <label for="artistName">Name of artist or group:</label>
+        <input type="text" id="artistName" name="artistName" pattern="[A-Za-z\s]+" required/>
+    </div>
+    <div>
+        <label for="startTime">Start time:</label>
+        <input type="time" id="startTime" name="startTime" min="10:00" max="23:00" required/>
+    </div>
+    <div>
+        <label for="subGenre1">Subgenre 1:</label>
+        <input type="text" id="subGenre1" name="subGenre1"/>
+        <label for="subGenre2">Subgenre 2:</label>
+        <input type="text" id="subGenre2" name="subGenre2"/>
+    </div>
+    <div>
+        <label for="festivalNumber1">Festival-number1:</label>
+        <input type="number" id="festivalNumber1" name="festivalNumber1" min="1000" max="9999" step="3" required/>
+    </div>
+    <div>
+        <label for="festivalNumber2">Festival-number 2:</label>
+        <input type="number" id="festivalNumber2" name="festivalNumber2" required/>
+    </div>
+    <button type="submit">Add performance</button>
+</form>
+
 </body>
 </html>

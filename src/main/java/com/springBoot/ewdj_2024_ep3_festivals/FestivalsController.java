@@ -18,6 +18,7 @@ import service.FestivalsService;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -30,21 +31,14 @@ public class FestivalsController {
     UserRepository userRepository;
 
     @GetMapping
-    public String getFestivals(@RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "region", required = false) String region, Model model, WebRequest request) {
+    public String getFestivals(@RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "region", required = false) String region, Model model, WebRequest request, Principal principal) {
 
-        // Initialize userTickets in session if not present
-        if (request.getAttribute("userTickets", WebRequest.SCOPE_SESSION) == null) {
-            request.setAttribute("userTickets", new ArrayList<>(), WebRequest.SCOPE_SESSION);
-        }
+        model.addAttribute("festivals", festivalsService.fetchFestivals(genre, region));
 
-        if (genre != null && region != null) {
-            model.addAttribute("festivals", festivalsService.fetchFestivalsByGenreAndRegion(genre, region));
-        } else if (genre != null) {
-            model.addAttribute("festivals", festivalsService.fetchFestivalsByGenre(genre));
-        } else if (region != null) {
-            model.addAttribute("festivals", festivalsService.fetchFestivalsByRegion(region));
-        } else {
-            model.addAttribute("festivals", festivalsService.fetchAllFestivals());
+        if (principal != null) {
+            MyUser user = userRepository.findByUsername(principal.getName());
+            Map<Long, Integer> ticketsBoughtPerFestival = festivalsService.getTicketsBoughtPerFestivalForUser(genre, region, user.getUserId());
+            model.addAttribute("ticketsBoughtPerFestival", ticketsBoughtPerFestival);
         }
 
         model.addAttribute("genre", genre);
@@ -95,7 +89,6 @@ public class FestivalsController {
 
         return "dashboard";
     }
-
 
 
     @GetMapping("/addPerformance")

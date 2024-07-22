@@ -88,4 +88,47 @@ public class FestivalsService {
         Integer ticketsCount = ticketRepository.findTicketQuantitiesSumByUserIdAndFestivalId(userId, festivalId);
         return ticketsCount != null ? ticketsCount : 0;
     }
+
+//    public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Long userId) {
+//        List<Object[]> ticketsData = ticketRepository.findTicketCountsByUserAndOptionalGenreAndRegion(userId, genre, region);
+//        Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
+//        for (Object[] data : ticketsData) {
+//            Long festivalId = (Long) data[0];
+//            Integer ticketCount = ((Long) data[1]).intValue(); // Assuming COUNT returns Long
+//            ticketsBoughtPerFestival.put(festivalId, ticketCount);
+//        }
+//        return ticketsBoughtPerFestival;
+//    }
+    public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Long userId) {
+        List<Festival> festivals;
+        if (genre != null && region != null) {
+            festivals = fetchFestivalsByGenreAndRegion(genre, region);
+        } else if (genre != null) {
+            festivals = fetchFestivalsByGenre(genre);
+        } else if (region != null) {
+            festivals = fetchFestivalsByRegion(region);
+        } else {
+            festivals = fetchAllFestivals();
+        }
+
+        Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
+        for (Festival festival : festivals) {
+            int ticketsBought = getTicketsForFestivalByUser(festival.getFestivalId(), userId);
+            ticketsBoughtPerFestival.put(festival.getFestivalId(), ticketsBought);
+        }
+
+        return ticketsBoughtPerFestival;
+    }
+
+    public List<Festival> fetchFestivals(String genre, String region) {
+        if (genre != null && region != null) {
+            return fetchFestivalsByGenreAndRegion(genre, region);
+        } else if (genre != null) {
+            return fetchFestivalsByGenre(genre);
+        } else if (region != null) {
+            return fetchFestivalsByRegion(region);
+        } else {
+            return fetchAllFestivals();
+        }
+    }
 }

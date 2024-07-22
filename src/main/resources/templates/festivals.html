@@ -11,8 +11,7 @@
     <h2 th:text="${(genre != null) ? (region != null) ? (genre + ' &amp; ' + region) : genre : (region != null) ? region : ''}">
         Music Genre and Region</h2>
     <ul>
-        <li th:each="festival : ${festivals}"
-            th:with="isAdmin=${session.isAdmin}, hasTickets=${#lists.contains(session.userTickets, festival.festivalId)}">
+        <li th:each="festival : ${festivals}">
             <h3 th:text="${festival.name}">Festival Name</h3>
             <p>Date and Start Time: <span th:text="${festival.startDateTime}">Date and Time</span>
             </p>
@@ -27,12 +26,16 @@
             </p>
             <p>Available Seats: <span th:text="${festival.availableSeats}">Available Seats</span></p>
             <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || (isAdmin != null ? isAdmin : false)}">
-                Ticket Price: <span
-                    th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span></p>
-            <p th:if="${hasTickets}">Tickets Bought: <span th:text="${session.userTickets[festival.id]}">Number</span>
+                Ticket Price:
+                <span th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span>
             </p>
-            <a th:if="${isAdmin}" th:href="@{/admin/festival/{id}/performances(id=${festival.id})}">Manage
-                Performances</a>
+
+            <!--Tickets bought-->
+            <th:block th:if="${userRole == 'user'}">
+                <p th:if="${ticketsBoughtPerFestival[festival.festivalId] > 0}">Tickets Bought:
+                    <span th:text="${ticketsBoughtPerFestival[festival.festivalId]}">Number</span>
+                </p>
+            </th:block>
 
             <!--Buy ticket-->
             <th:block th:if="${userRole == 'user'}">
@@ -40,6 +43,7 @@
                     Buy Ticket(s)
                 </a>
             </th:block>
+
             <!--Add performance-->
             <th:block th:if="${userRole == 'admin'}">
                 <a th:href="@{/festivals/addPerformance}" class="button-link">Add Performance</a>
