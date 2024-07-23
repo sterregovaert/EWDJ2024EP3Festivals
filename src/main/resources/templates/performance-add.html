@@ -8,7 +8,6 @@
 <body>
 <div th:replace="~{nav :: navbar}"></div>
 
-<!-- TODO figure out what has to come below here-->
 <form th:action="@{/festivals/addPerformance}" method="post" th:object="${performance}">
     <div>
         <label for="artistName">Name of artist or group:</label>

@@ -25,4 +25,7 @@ public class Genre {
 
     @OneToMany(mappedBy = "genre")
     private Set<Festival> festivals;
+
+    @OneToMany(mappedBy = "genre")
+    private Set<SubGenre> subGenres;
 }

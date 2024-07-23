@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -98,9 +99,12 @@ public class InitDataConfig implements CommandLineRunner {
         // -------- -------- --------
         // -------- PERFORMANCES --------
         // -------- -------- --------
+        int performanceDurationHours = 2;
+        List<Performance> scheduledPerformances = new ArrayList<>();
+
         for (Festival festival : festivals) {
             List<Performance> performances = new ArrayList<>();
-            LocalDateTime performanceStartTime = festival.getStartDateTime().plusHours(1); // Start 1 hour after festival starts
+            LocalDateTime performanceStartTime = generateNonOverlappingStartTime(2024, ThreadLocalRandom.current().nextInt(7, 13), scheduledPerformances, Duration.ofHours(performanceDurationHours));
 
             for (int i = 0; i < 2; i++) {
                 Performance performance = new Performance();
@@ -109,12 +113,15 @@ public class InitDataConfig implements CommandLineRunner {
 
                 performance.setArtistName(artistName);
                 performance.setStartDateTime(performanceStartTime);
-                performance.setEndDateTime(performanceStartTime.plusHours(2)); // Each performance lasts 2 hours
+                performance.setDuration(Duration.ofHours(performanceDurationHours));
                 performance.setFestival(festival);
+                performance.setFestivalNumber1(1000);
+                performance.setFestivalNumber2(1001);
+
 
                 performances.add(performance);
 
-                performanceStartTime = performance.getEndDateTime().plusHours(1); // Next performance starts 1 hour after the previous ends
+                performanceStartTime = performanceStartTime.plusHours(performanceDurationHours).plusHours(1); // Next performance starts 1 hour after the previous ends
             }
 
             performanceRepository.saveAll(performances);
@@ -139,8 +146,30 @@ public class InitDataConfig implements CommandLineRunner {
 
     }
 
-    private static byte[] loadImage(String imageName) throws IOException {
-        return Files.readAllBytes(Paths.get("src/main/resources/static/images/sport", imageName));
+    // Assuming a method to check for overlapping performances exists
+    boolean isOverlapping(LocalDateTime proposedStartTime, Duration duration, List<Performance> scheduledPerformances) {
+        LocalDateTime proposedEndTime = proposedStartTime.plus(duration);
+        for (Performance existingPerformance : scheduledPerformances) {
+            LocalDateTime existingStartTime = existingPerformance.getStartDateTime();
+            LocalDateTime existingEndTime = existingStartTime.plus(existingPerformance.getDuration());
+            if (proposedStartTime.isBefore(existingEndTime) && proposedEndTime.isAfter(existingStartTime)) {
+                return true;
+            }
+        }
+        return false;
     }
+
+    // Method to generate a non-overlapping start time for a performance
+    LocalDateTime generateNonOverlappingStartTime(int year, int month, List<Performance> scheduledPerformances, Duration performanceDuration) {
+        LocalTime startTime = LocalTime.of(10, 0); // Start of time range
+        LocalTime endTime = LocalTime.of(23, 0); // End of time range
+        LocalDateTime proposedStartTime;
+        do {
+            int randomHour = ThreadLocalRandom.current().nextInt(startTime.getHour(), endTime.getHour());
+            proposedStartTime = LocalDateTime.of(year, month, ThreadLocalRandom.current().nextInt(1, 29), randomHour, 0);
+        } while (isOverlapping(proposedStartTime, performanceDuration, scheduledPerformances));
+        return proposedStartTime;
+    }
+
 
 }

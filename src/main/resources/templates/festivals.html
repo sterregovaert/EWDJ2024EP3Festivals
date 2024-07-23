@@ -13,18 +13,22 @@
     <ul>
         <li th:each="festival : ${festivals}">
             <h3 th:text="${festival.name}">Festival Name</h3>
+
             <p>Date and Start Time: <span th:text="${festival.startDateTime}">Date and Time</span>
             </p>
+
             <p th:if="${region} == null">Region: <span th:text="${festival.region.name}">Region</span></p>
             <p th:if="${genre} == null">Genre: <span th:text="${festival.genre.name}">Genre</span></p>
+
             <p>Performances:
             <ul>
                 <li th:each="performance : ${festival.performances}"
                     th:text="${performance.artistName} + ' at ' + ${performance.startDateTime}">Performance
                 </li>
             </ul>
-            </p>
+
             <p>Available Seats: <span th:text="${festival.availableSeats}">Available Seats</span></p>
+
             <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || (isAdmin != null ? isAdmin : false)}">
                 Ticket Price:
                 <span th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span>
@@ -36,7 +40,6 @@
                     <span th:text="${ticketsBoughtPerFestival[festival.festivalId]}">Number</span>
                 </p>
             </th:block>
-
             <!--Buy ticket-->
             <th:block th:if="${userRole == 'user'}">
                 <a th:href="@{/festivals/buy(festivalId=${festival.festivalId})}" class="button-link">
@@ -46,7 +49,12 @@
 
             <!--Add performance-->
             <th:block th:if="${userRole == 'admin'}">
-                <a th:href="@{/festivals/addPerformance}" class="button-link">Add Performance</a>
+                <a th:href="@{/festivals/addPerformance(festivalId=${festival.festivalId})}" class="button-link">Add Performance</a>
+            </th:block>
+
+            <!--Remove performance-->
+            <th:block th:if="${userRole == 'admin'}">
+                <a th:href="@{/festivals/removePerformance}" class="button-link">Remove Performance(s)</a>
             </th:block>
 
         </li>
