@@ -24,6 +24,7 @@ import java.util.Set;
 @Setter
 @Table(name = "performance")
 @ValidFestivalNumbersConstraint
+@ValidPerformanceTime(message = "Start time must be between 10:00 and 23:00 with minutes as 00, and not overlap with other performances")
 public class Performance {
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,7 +38,6 @@ public class Performance {
 
 
     @NotNull(message = "Start time cannot be empty")
-    @ValidPerformanceTime(message = "Start time must be between 10:00 and 23:00 with minutes as 00, and not overlap with other performances")
     private LocalDateTime startDateTime;
 
     @NotNull(message = "Duration cannot be empty")

@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = PerformanceTimeValidator.class)
-@Target({ElementType.FIELD})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPerformanceTime {
     String message() default "Invalid performance time";
