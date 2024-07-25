@@ -83,6 +83,10 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     TicketsService ticketsService() {
         return new TicketsService();
     }
+    @Bean
+    PerformanceService performanceService(){
+        return new PerformanceService();
+    }
 
     /*VALIDATOR*/
     @Bean

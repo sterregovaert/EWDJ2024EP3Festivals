@@ -2,18 +2,18 @@ package com.springBoot.ewdj_2024_ep3_festivals;
 
 import domain.Festival;
 import domain.MyUser;
+import domain.Performance;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import repository.UserRepository;
 import service.FestivalsService;
+import service.PerformanceService;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -27,6 +27,8 @@ public class FestivalsController {
 
     @Autowired
     FestivalsService festivalsService;
+    @Autowired
+    PerformanceService performanceService;
     @Autowired
     UserRepository userRepository;
 
@@ -90,20 +92,26 @@ public class FestivalsController {
         return "dashboard";
     }
 
-
     @GetMapping("/addPerformance")
-    public String showAddPerformanceForm(Model model) {
+    public String showAddPerformanceForm(@RequestParam("festivalId") Long festivalId, Model model) {
+        Festival festival = festivalsService.findFestivalById(festivalId);
+        model.addAttribute("festival", festival);
+        model.addAttribute("performance", new Performance());
         return "performance-add";
     }
-//
-//    @PostMapping("/addPerformance")
-//    public String addPerformance(@ModelAttribute Performance performance, BindingResult result, Model model) {
-//        if (result.hasErrors()) {
-//            return "addPerformanceForm";
-//        }
-//
-//
-//        return "redirect:/festivals";
-//    }
+
+    @PostMapping("/addPerformance")
+    public String addPerformance(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
+        Festival festival = festivalsService.findFestivalById(festivalId);
+
+        if (result.hasErrors()) {
+            model.addAttribute("festival", festival);
+            return "performance-add";
+        }
+
+        performanceService.savePerformance(performance);
+
+        return "redirect:/festivals?genre=" + festival.getGenre().getName() + "&region=" + festival.getRegion().getName();
+    }
 
 }

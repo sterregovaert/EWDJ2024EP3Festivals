@@ -2,6 +2,7 @@ package service;
 
 import domain.Festival;
 import domain.Genre;
+import domain.Performance;
 import domain.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,7 +90,7 @@ public class FestivalsService {
         return ticketsCount != null ? ticketsCount : 0;
     }
 
-//    public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Long userId) {
+    //    public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Long userId) {
 //        List<Object[]> ticketsData = ticketRepository.findTicketCountsByUserAndOptionalGenreAndRegion(userId, genre, region);
 //        Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
 //        for (Object[] data : ticketsData) {
@@ -130,5 +131,13 @@ public class FestivalsService {
         } else {
             return fetchAllFestivals();
         }
+    }
+
+    public void addPerformanceToFestival(Long festivalId, Performance performance) {
+        Festival festival = festivalRepository.findById(festivalId).orElseThrow(() -> new IllegalArgumentException("Invalid festival ID: " + festivalId));
+
+        festival.getPerformances().add(performance);
+
+        festivalRepository.save(festival);
     }
 }
