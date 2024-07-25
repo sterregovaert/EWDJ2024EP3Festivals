@@ -106,6 +106,7 @@ public class FestivalsController {
 
         if (result.hasErrors()) {
             model.addAttribute("festival", festival);
+            model.addAttribute("performance", performance);
             return "performance-add";
         }
 

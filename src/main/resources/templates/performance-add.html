@@ -4,6 +4,7 @@
     <meta charset="ISO-8859-1">
     <title>Add performance</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 <div th:replace="~{nav :: navbar}"></div>
@@ -12,7 +13,7 @@
 <p>Festival ID: <span th:text="${festival.festivalId}"></span></p>
 <p>Festival Start Date and Time: <span th:text="${festival.startDateTime}"></span></p>
 
-<form th:action="@{/festivals/addPerformance(festivalId=${festival.festivalId})}" method="post"
+<form class="flex flex-col mt-16 gap-4" th:action="@{/festivals/addPerformance(festivalId=${festival.festivalId})}" method="post"
       th:object="${performance}">
 
     <!--Errors-->
@@ -34,6 +35,13 @@
         <!--min="10" max="23" required-->
         <input type="number" id="startDateTime" name="startDateTime"/>
         <span th:if="${#fields.hasErrors('startDateTime')}" th:errorclass="error" th:errors="*{startDateTime}"></span>
+    </div>
+    <div>
+        <div>
+            <label for="duration">Duration (hours):</label>
+            <input type="number" id="duration" name="duration" min="1" max="24" required/>
+            <span th:if="${#fields.hasErrors('duration')}" th:errorclass="error" th:errors="*{duration}"></span>
+        </div>
     </div>
     <div>
         <label for="subGenre1">Subgenre 1:</label>
