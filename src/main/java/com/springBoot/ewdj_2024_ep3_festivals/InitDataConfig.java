@@ -117,12 +117,14 @@ public class InitDataConfig implements CommandLineRunner {
 
                 int performanceDurationHours = 1;
 
-                LocalDateTime startOfPerformance = generateNonOverlappingStartTime(
-                        festival.getStartDateTime(),
-                        festival.getStartDateTime().plusDays(3),
-                        scheduledPerformances,
-                        Duration.ofHours(performanceDurationHours)
-                );
+                LocalDateTime startOfPerformance = festival.getStartDateTime().plusHours(j + 1);
+
+//                LocalDateTime startOfPerformance = generateNonOverlappingStartTime(
+//                        festival.getStartDateTime(),
+//                        festival.getStartDateTime().plusDays(3),
+//                        scheduledPerformances,
+//                        Duration.ofHours(performanceDurationHours)
+//                );
 
                 performance.setArtistName(artistName);
                 performance.setStartDateTime(startOfPerformance);
@@ -159,31 +161,31 @@ public class InitDataConfig implements CommandLineRunner {
 
     }
 
-    // Check for overlapping performances exists
-    boolean isOverlapping(LocalDateTime proposedStartTime, Duration duration, List<Performance> scheduledPerformances) {
-        LocalDateTime proposedEndTime = proposedStartTime.plus(duration);
-        for (Performance existingPerformance : scheduledPerformances) {
-            LocalDateTime existingStartTime = existingPerformance.getStartDateTime();
-            LocalDateTime existingEndTime = existingStartTime.plus(existingPerformance.getDuration());
-            if (proposedStartTime.isBefore(existingEndTime) && proposedEndTime.isAfter(existingStartTime)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Generate a non-overlapping start time for a performance
-    LocalDateTime generateNonOverlappingStartTime(LocalDateTime startDate, LocalDateTime endDate, List<Performance> scheduledPerformances, Duration performanceDuration) {
-        LocalTime startTime = LocalTime.of(10, 0); // Start of time range
-        LocalTime endTime = LocalTime.of(23, 0); // End of time range
-        LocalDateTime proposedStartTime;
-        do {
-            int randomDay = ThreadLocalRandom.current().nextInt(startDate.getDayOfMonth(), endDate.getDayOfMonth() + 1);
-            int randomHour = ThreadLocalRandom.current().nextInt(startTime.getHour(), endTime.getHour());
-            proposedStartTime = LocalDateTime.of(startDate.getYear(), startDate.getMonth(), randomDay, randomHour, 0);
-        } while (isOverlapping(proposedStartTime, performanceDuration, scheduledPerformances));
-        return proposedStartTime;
-    }
+//    // Check for overlapping performances exists
+//    boolean isOverlapping(LocalDateTime proposedStartTime, Duration duration, List<Performance> scheduledPerformances) {
+//        LocalDateTime proposedEndTime = proposedStartTime.plus(duration);
+//        for (Performance existingPerformance : scheduledPerformances) {
+//            LocalDateTime existingStartTime = existingPerformance.getStartDateTime();
+//            LocalDateTime existingEndTime = existingStartTime.plus(existingPerformance.getDuration());
+//            if (proposedStartTime.isBefore(existingEndTime) && proposedEndTime.isAfter(existingStartTime)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    // Generate a non-overlapping start time for a performance
+//    LocalDateTime generateNonOverlappingStartTime(LocalDateTime startDate, LocalDateTime endDate, List<Performance> scheduledPerformances, Duration performanceDuration) {
+//        LocalTime startTime = LocalTime.of(10, 0); // Start of time range
+//        LocalTime endTime = LocalTime.of(23, 0); // End of time range
+//        LocalDateTime proposedStartTime;
+//        do {
+//            int randomDay = ThreadLocalRandom.current().nextInt(startDate.getDayOfMonth(), endDate.getDayOfMonth() + 1);
+//            int randomHour = ThreadLocalRandom.current().nextInt(startTime.getHour(), endTime.getHour());
+//            proposedStartTime = LocalDateTime.of(startDate.getYear(), startDate.getMonth(), randomDay, randomHour, 0);
+//        } while (isOverlapping(proposedStartTime, performanceDuration, scheduledPerformances));
+//        return proposedStartTime;
+//    }
 
 
 }
