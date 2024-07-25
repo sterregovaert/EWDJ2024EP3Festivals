@@ -10,11 +10,12 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = "subGenreId")
+@EqualsAndHashCode(exclude = "subGenreId")
 @Getter
 @Setter
 @Table(name = "sub_genre")
 public class SubGenre {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long subGenreId;
