@@ -32,14 +32,14 @@
 
     <!--Start date time-->
     <div>
-        <label for="startDateTime">Start time:</label>
+        <label for="startDateTime">Start Date/Time:</label>
         <input type="datetime-local" id="startDateTime" name="startDateTime" th:field="*{startDateTime}"
                th:value="${performance.startDateTime}"/>
         <span th:if="${#fields.hasErrors('startDateTime')}" th:errorclass="error" th:errors="*{startDateTime}"></span>
     </div>
     <!--End date time-->
     <div>
-        <label for="endDateTime">End time:</label>
+        <label for="endDateTime">End Date/Time:</label>
         <input type="datetime-local" id="endDateTime" name="endDateTime" th:field="*{endDateTime}"
                th:value="${performance.endDateTime}"/>
         <span th:if="${#fields.hasErrors('endDateTime')}" th:errorclass="error" th:errors="*{endDateTime}"></span>
