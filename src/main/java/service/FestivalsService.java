@@ -1,9 +1,6 @@
 package service;
 
-import domain.Festival;
-import domain.Genre;
-import domain.Performance;
-import domain.Region;
+import domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
@@ -16,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class FestivalsService {
@@ -139,5 +137,14 @@ public class FestivalsService {
         festival.getPerformances().add(performance);
 
         festivalRepository.save(festival);
+    }
+
+    public List<String> getSubGenresByGenre(Genre genre) {
+        if (genre != null) {
+            return genre.getSubGenres().stream()
+                    .map(SubGenre::getName)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }

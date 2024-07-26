@@ -29,7 +29,7 @@
 
             <p>Available Seats: <span th:text="${festival.availableSeats}">Available Seats</span></p>
 
-            <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || (isAdmin != null ? isAdmin : false)}">
+            <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || userRole == 'admin'}">
                 Ticket Price:
                 <span th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span>
             </p>
@@ -41,7 +41,7 @@
                 </p>
             </th:block>
             <!--Buy ticket-->
-            <th:block th:if="${userRole == 'user'}">
+            <th:block th:if="${festival.availableSeats != null && festival.availableSeats > 0 && userRole == 'user'}">
                 <a th:href="@{/festivals/buy(festivalId=${festival.festivalId})}" class="button-link">
                     Buy Ticket(s)
                 </a>

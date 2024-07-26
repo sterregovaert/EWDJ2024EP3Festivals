@@ -16,6 +16,7 @@ import service.FestivalsService;
 import service.PerformanceService;
 
 import java.security.Principal;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,13 +97,29 @@ public class FestivalsController {
     public String showAddPerformanceForm(@RequestParam("festivalId") Long festivalId, Model model) {
         Festival festival = festivalsService.findFestivalById(festivalId);
         model.addAttribute("festival", festival);
+
+        List<String> subGenres = festivalsService.getSubGenresByGenre(festival.getGenre());
+        model.addAttribute("subGenres", subGenres);
+
         model.addAttribute("performance", new Performance());
+
         return "performance-add";
     }
 
     @PostMapping("/addPerformance")
-    public String addPerformance(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
+    public String addPerformance(@RequestParam("festivalId") Long festivalId, @RequestParam("durationHours") Integer durationHours, @RequestParam("durationMinutes") Integer durationMinutes, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
         Festival festival = festivalsService.findFestivalById(festivalId);
+
+        if (durationHours == null || durationMinutes == null) {
+            result.rejectValue("duration", "error.duration", "Duration hours and minutes must be provided.");
+        } else {
+            try {
+                Duration totalDuration = Duration.ofHours(durationHours).plusMinutes(durationMinutes);
+                performance.setDuration(totalDuration);
+            } catch (Exception e) {
+                result.rejectValue("duration", "error.duration", "Invalid duration values.");
+            }
+        }
 
         if (result.hasErrors()) {
             model.addAttribute("festival", festival);

@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class InitDataConfig implements CommandLineRunner {
     private GenreRepository genreRepository;
     @Autowired
     private RegionRepository regionRepository;
+    @Autowired
+    private SubGenreRepository subGenreRepository;
     @Autowired
     private FestivalRepository festivalRepository;
     @Autowired
@@ -60,6 +63,39 @@ public class InitDataConfig implements CommandLineRunner {
         // -------- -------- --------
         List<Genre> genres = Arrays.asList(Genre.builder().name("Rock").build(), Genre.builder().name("Pop").build(), Genre.builder().name("Jazz").build(), Genre.builder().name("Electronic").build());
         genreRepository.saveAll(genres);
+
+        // -------- -------- --------
+        // -------- SUBGENRES --------
+        // -------- -------- --------
+//        List<Genre> genres = genreRepository.findAll();
+
+        List<SubGenre> subGenres = genres.stream().flatMap(genre -> {
+            return switch (genre.getName()) {
+                case "Rock" -> Stream.of(
+                        SubGenre.builder().name("Alternative Rock").genre(genre).build(),
+                        SubGenre.builder().name("Classic Rock").genre(genre).build(),
+                        SubGenre.builder().name("Hard Rock").genre(genre).build()
+                );
+                case "Pop" -> Stream.of(
+                        SubGenre.builder().name("Synth Pop").genre(genre).build(),
+                        SubGenre.builder().name("Electro Pop").genre(genre).build(),
+                        SubGenre.builder().name("Indie Pop").genre(genre).build()
+                );
+                case "Jazz" -> Stream.of(
+                        SubGenre.builder().name("Smooth Jazz").genre(genre).build(),
+                        SubGenre.builder().name("Bebop").genre(genre).build(),
+                        SubGenre.builder().name("Swing").genre(genre).build()
+                );
+                case "Electronic" -> Stream.of(
+                        SubGenre.builder().name("House").genre(genre).build(),
+                        SubGenre.builder().name("Techno").genre(genre).build(),
+                        SubGenre.builder().name("Trance").genre(genre).build()
+                );
+                default -> Stream.empty();
+            };
+        }).toList();
+
+        subGenreRepository.saveAll(subGenres);
 
         // -------- -------- --------
         // -------- REGIONS --------
@@ -159,33 +195,8 @@ public class InitDataConfig implements CommandLineRunner {
         }
         ticketRepository.saveAll(tickets);
 
-    }
 
-//    // Check for overlapping performances exists
-//    boolean isOverlapping(LocalDateTime proposedStartTime, Duration duration, List<Performance> scheduledPerformances) {
-//        LocalDateTime proposedEndTime = proposedStartTime.plus(duration);
-//        for (Performance existingPerformance : scheduledPerformances) {
-//            LocalDateTime existingStartTime = existingPerformance.getStartDateTime();
-//            LocalDateTime existingEndTime = existingStartTime.plus(existingPerformance.getDuration());
-//            if (proposedStartTime.isBefore(existingEndTime) && proposedEndTime.isAfter(existingStartTime)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    // Generate a non-overlapping start time for a performance
-//    LocalDateTime generateNonOverlappingStartTime(LocalDateTime startDate, LocalDateTime endDate, List<Performance> scheduledPerformances, Duration performanceDuration) {
-//        LocalTime startTime = LocalTime.of(10, 0); // Start of time range
-//        LocalTime endTime = LocalTime.of(23, 0); // End of time range
-//        LocalDateTime proposedStartTime;
-//        do {
-//            int randomDay = ThreadLocalRandom.current().nextInt(startDate.getDayOfMonth(), endDate.getDayOfMonth() + 1);
-//            int randomHour = ThreadLocalRandom.current().nextInt(startTime.getHour(), endTime.getHour());
-//            proposedStartTime = LocalDateTime.of(startDate.getYear(), startDate.getMonth(), randomDay, randomHour, 0);
-//        } while (isOverlapping(proposedStartTime, performanceDuration, scheduledPerformances));
-//        return proposedStartTime;
-//    }
+    }
 
 
 }
