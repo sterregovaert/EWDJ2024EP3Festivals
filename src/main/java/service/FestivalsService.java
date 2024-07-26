@@ -137,12 +137,9 @@ public class FestivalsService {
         festivalRepository.save(festival);
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(FestivalsService.class);
-
     public List<SubGenre> getSubGenresByGenre(Genre genre) {
         if (genre != null) {
             List<SubGenre> subGenres = subGenreRepository.findByGenre(genre);
-            subGenres.forEach(subGenre -> logger.info("SubGenre: {}", subGenre.getName()));
             return subGenres;
         }
         return Collections.emptyList();

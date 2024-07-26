@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import repository.UserRepository;
 import service.FestivalsService;
 import service.PerformanceService;
+import validator.PerformanceValidation;
 
 import java.security.Principal;
 import java.time.Duration;
@@ -35,6 +36,8 @@ public class FestivalsController {
     PerformanceService performanceService;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PerformanceValidation performanceValidation;
 
     @GetMapping
     public String getFestivals(@RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "region", required = false) String region, Model model, WebRequest request, Principal principal) {
@@ -97,8 +100,6 @@ public class FestivalsController {
     }
 
 
-    private static final Logger logger = LoggerFactory.getLogger(FestivalsController.class);
-
     @GetMapping("/addPerformance")
     public String showAddPerformanceForm(@RequestParam("festivalId") Long festivalId, Model model) {
         setupAddPerformanceFormModel(festivalId, model, new Performance());
@@ -107,6 +108,8 @@ public class FestivalsController {
 
     @PostMapping("/addPerformance")
     public String addPerformance(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
+        performanceValidation.validate(performance, result);
+
         Festival festival = festivalsService.findFestivalById(festivalId);
 
         if (result.hasErrors()) {
@@ -122,6 +125,15 @@ public class FestivalsController {
     private void setupAddPerformanceFormModel(Long festivalId, Model model, Performance performance) {
         Festival festival = festivalsService.findFestivalById(festivalId);
         model.addAttribute("festival", festival);
+
+        // Set default start and end times
+        if (performance.getStartDateTime() == null) {
+            performance.setStartDateTime(festival.getStartDateTime());
+        }
+        if (performance.getEndDateTime() == null) {
+            performance.setEndDateTime(festival.getStartDateTime().plusHours(1));
+        }
+
         model.addAttribute("performance", performance);
 
         List<SubGenre> subGenres = festivalsService.getSubGenresByGenre(festival.getGenre());

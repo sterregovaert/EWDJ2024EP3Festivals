@@ -83,8 +83,9 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     TicketsService ticketsService() {
         return new TicketsService();
     }
+
     @Bean
-    PerformanceService performanceService(){
+    PerformanceService performanceService() {
         return new PerformanceService();
     }
 
@@ -92,6 +93,11 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     @Bean
     TicketValidator ticketValidator() {
         return new TicketValidator();
+    }
+
+    @Bean
+    PerformanceValidation performanceValidation() {
+        return new PerformanceValidation();
     }
 
 }

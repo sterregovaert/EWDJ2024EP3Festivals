@@ -29,17 +29,19 @@
         <input type="text" id="artistName" name="artistName" th:field="*{artistName}"/>
         <span th:if="${#fields.hasErrors('artistName')}" th:errorclass="error" th:errors="*{artistName}"></span>
     </div>
+
     <!--Start date time-->
     <div>
         <label for="startDateTime">Start time:</label>
-        <input type="datetime-local" id="startDateTime" name="startDateTime" th:field="*{startDateTime}"/>
+        <input type="datetime-local" id="startDateTime" name="startDateTime" th:field="*{startDateTime}"
+               th:value="${performance.startDateTime}"/>
         <span th:if="${#fields.hasErrors('startDateTime')}" th:errorclass="error" th:errors="*{startDateTime}"></span>
     </div>
-
     <!--End date time-->
     <div>
-        <label for="endDateTime">Start time:</label>
-        <input type="datetime-local" id="endDateTime" name="endDateTime" th:field="*{endDateTime}"/>
+        <label for="endDateTime">End time:</label>
+        <input type="datetime-local" id="endDateTime" name="endDateTime" th:field="*{endDateTime}"
+               th:value="${performance.endDateTime}"/>
         <span th:if="${#fields.hasErrors('endDateTime')}" th:errorclass="error" th:errors="*{endDateTime}"></span>
     </div>
 
@@ -48,7 +50,7 @@
         <div>
             <label for="subGenre1">Subgenre 1:</label>
             <select id="subGenre1" name="subGenres" th:field="*{subGenres}">
-                <option value="" disabled selected>Select a subgenre</option>
+                <option value="" selected>Select a subgenre</option>
                 <option th:each="subGenre : ${subGenres}" th:value="${subGenre.subGenreId}"
                         th:text="${subGenre.name}"></option>
             </select>
@@ -56,7 +58,7 @@
         <div>
             <label for="subGenre2">Subgenre 2:</label>
             <select id="subGenre2" name="subGenres" th:field="*{subGenres}">
-                <option value="" disabled selected>Select a subgenre</option>
+                <option value="" selected>Select a subgenre</option>
                 <option th:each="subGenre : ${subGenres}" th:value="${subGenre.subGenreId}"
                         th:text="${subGenre.name}"></option>
             </select>
