@@ -21,6 +21,7 @@ import validator.PerformanceValidation;
 
 import java.security.Principal;
 import java.time.Duration;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +128,6 @@ public class FestivalsController {
 
         if (festival != null) {
             model.addAttribute("festival", festival);
-
             if (performance.getStartDateTime() == null) {
                 performance.setStartDateTime(festival.getStartDateTime());
             }
@@ -135,7 +135,6 @@ public class FestivalsController {
                 performance.setEndDateTime(festival.getStartDateTime().plusHours(1));
             }
         } else {
-            System.out.println("festival not found");
             model.addAttribute("error", "Festival not found");
         }
 

@@ -34,14 +34,19 @@
     <!-- Start date time -->
     <div>
         <label for="startDateTime">Start Date/Time:</label>
-        <input type="datetime-local" id="startDateTime" name="startDateTime" th:field="*{startDateTime}"/>
+<!--        <input type="datetime-local" id="startDateTime" name="startDateTime" th:field="*{startDateTime}"-->
+<!--               th:value="${performance.startDateTime}"/>-->
+        <input type="datetime-local" id="startDateTime" name="startDateTime" th:value="${performance.startDateTime}">
+
         <span th:if="${#fields.hasErrors('startDateTime')}" th:errorclass="error" th:errors="*{startDateTime}"></span>
     </div>
 
     <!-- End date time -->
     <div>
         <label for="endDateTime">End Date/Time:</label>
-        <input type="datetime-local" id="endDateTime" name="endDateTime" th:field="*{endDateTime}"/>
+<!--        <input type="datetime-local" id="endDateTime" name="endDateTime" th:field="*{endDateTime}"-->
+<!--               th:value="${performance.endDateTime}"/>-->
+        <input type="datetime-local" id="endDateTime" name="endDateTime" th:value="${performance.endDateTime}">
         <span th:if="${#fields.hasErrors('endDateTime')}" th:errorclass="error" th:errors="*{endDateTime}"></span>
     </div>
 
@@ -51,19 +56,19 @@
         <div>
             <label for="subGenre1">Subgenre 1:</label>
             <select id="subGenre1" name="subGenres" th:field="*{subGenres}">
-                <option value="" th:selected="${subGenres[0] == null}">Select a subgenre</option>
+                <option value="" th:selected="${#lists.isEmpty(subGenres)}">Select a subgenre</option>
                 <option th:each="subGenre : ${subGenres}" th:value="${subGenre.subGenreId}"
                         th:text="${subGenre.name}"
-                        th:selected="${subGenres[0] != null and subGenres[0].subGenreId == subGenre.subGenreId}"></option>
+                        th:selected="${#lists.contains(subGenres, subGenre)}"></option>
             </select>
         </div>
         <div>
             <label for="subGenre2">Subgenre 2:</label>
             <select id="subGenre2" name="subGenres" th:field="*{subGenres}">
-                <option value="" th:selected="${subGenres[1] == null}">Select a subgenre</option>
+                <option value="" th:selected="${#lists.isEmpty(subGenres)}">Select a subgenre</option>
                 <option th:each="subGenre : ${subGenres}" th:value="${subGenre.subGenreId}"
                         th:text="${subGenre.name}"
-                        th:selected="${subGenres[1] != null and subGenres[1].subGenreId == subGenre.subGenreId}"></option>
+                        th:selected="${#lists.contains(subGenres, subGenre)}"></option>
             </select>
         </div>
         <span th:if="${#fields.hasErrors('subGenres')}" th:errorclass="error" th:errors="*{subGenres}"></span>
