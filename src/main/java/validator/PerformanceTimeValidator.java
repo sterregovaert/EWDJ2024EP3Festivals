@@ -26,22 +26,22 @@ public class PerformanceTimeValidator implements ConstraintValidator<ValidPerfor
         // Check if time is between 10:00 and 23:00 and minutes are 00
         boolean isTimeValid = value.toLocalTime().equals(LocalTime.of(value.getHour(), 0)) && value.getHour() >= 10 && value.getHour() < 23;
 
-//        // Check if the time slot is not already taken by another performance
-//        List<Performance> performances = performanceRepository.findByFestivalFestivalId(performance.getFestival().getFestivalId());
-//
-//        boolean isTimeSlotAvailable = true;
-//        for (Performance otherPerformance : performances) {
-//            LocalDateTime otherStart = otherPerformance.getStartDateTime();
-//            LocalDateTime otherEnd = otherStart.plus(otherPerformance.getDuration());
-//
-//            // Check if the performance overlaps with any existing performance
-//            if ((value.isBefore(otherEnd) && value.plus(performance.getDuration()).isAfter(otherStart))) {
-//                isTimeSlotAvailable = false;
-//                break;
-//            }
-//        }
+        // Check if the time slot is not already taken by another performance
+        List<Performance> performances = performanceRepository.findByFestivalFestivalId(performance.getFestival().getFestivalId());
 
-        return isTimeValid ; //&& isTimeSlotAvailable
+        boolean isTimeSlotAvailable = true;
+        for (Performance otherPerformance : performances) {
+            LocalDateTime otherStart = otherPerformance.getStartDateTime();
+            LocalDateTime otherEnd = otherPerformance.getEndDateTime();
+
+            // Check if the performance overlaps with any existing performance
+            if ((value.isAfter(otherStart) || value.isEqual(otherStart)) && value.isBefore(otherEnd)) {
+                isTimeSlotAvailable = false;
+                break;
+            }
+        }
+
+        return isTimeValid && isTimeSlotAvailable;
     }
 
     @Override

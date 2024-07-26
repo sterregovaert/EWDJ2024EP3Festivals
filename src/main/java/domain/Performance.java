@@ -12,6 +12,7 @@ import validator.ValidPerformanceTime;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +25,7 @@ import java.util.Set;
 @Setter
 @Table(name = "performance")
 @ValidFestivalNumbersConstraint
-@ValidPerformanceTime(message = "Start time must be between 10:00 and 23:00 with minutes as 00, and not overlap with other performances")
+//@ValidPerformanceTime(message = "Start time must be between 10:00 and 23:00 with minutes as 00, and not overlap with other performances")
 public class Performance {
     private static final long serialVersionUID = 1L;
     @Id
@@ -36,7 +37,6 @@ public class Performance {
     @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Name should only exist out of letters or spaces, for example “The Rolling Stones”")
     private String artistName;
 
-
     @NotNull(message = "Start date/time cannot be empty")
     private LocalDateTime startDateTime;
 
@@ -44,11 +44,7 @@ public class Performance {
     private LocalDateTime endDateTime;
 
     @ManyToMany
-    @JoinTable(
-            name = "performance_sub_genre",
-            joinColumns = @JoinColumn(name = "performanceId"),
-            inverseJoinColumns = @JoinColumn(name = "subGenreId")
-    )
+    @JoinTable(name = "performance_sub_genre", joinColumns = @JoinColumn(name = "performanceId"), inverseJoinColumns = @JoinColumn(name = "subGenreId"))
     @Size(max = 2, message = "Maximum 2 sub-genres are allowed")
     private Set<SubGenre> subGenres;
 

@@ -124,14 +124,19 @@ public class FestivalsController {
 
     private void setupAddPerformanceFormModel(Long festivalId, Model model, Performance performance) {
         Festival festival = festivalsService.findFestivalById(festivalId);
-        model.addAttribute("festival", festival);
 
-        // Set default start and end times
-        if (performance.getStartDateTime() == null) {
-            performance.setStartDateTime(festival.getStartDateTime());
-        }
-        if (performance.getEndDateTime() == null) {
-            performance.setEndDateTime(festival.getStartDateTime().plusHours(1));
+        if (festival != null) {
+            model.addAttribute("festival", festival);
+
+            if (performance.getStartDateTime() == null) {
+                performance.setStartDateTime(festival.getStartDateTime());
+            }
+            if (performance.getEndDateTime() == null) {
+                performance.setEndDateTime(festival.getStartDateTime().plusHours(1));
+            }
+        } else {
+            System.out.println("festival not found");
+            model.addAttribute("error", "Festival not found");
         }
 
         model.addAttribute("performance", performance);
