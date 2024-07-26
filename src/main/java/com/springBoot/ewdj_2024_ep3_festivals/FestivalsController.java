@@ -3,7 +3,10 @@ package com.springBoot.ewdj_2024_ep3_festivals;
 import domain.Festival;
 import domain.MyUser;
 import domain.Performance;
+import domain.SubGenre;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -93,43 +96,36 @@ public class FestivalsController {
         return "dashboard";
     }
 
+
+    private static final Logger logger = LoggerFactory.getLogger(FestivalsController.class);
+
     @GetMapping("/addPerformance")
     public String showAddPerformanceForm(@RequestParam("festivalId") Long festivalId, Model model) {
-        Festival festival = festivalsService.findFestivalById(festivalId);
-        model.addAttribute("festival", festival);
-
-        List<String> subGenres = festivalsService.getSubGenresByGenre(festival.getGenre());
-        model.addAttribute("subGenres", subGenres);
-
-        model.addAttribute("performance", new Performance());
-
+        setupAddPerformanceFormModel(festivalId, model, new Performance());
         return "performance-add";
     }
 
     @PostMapping("/addPerformance")
-    public String addPerformance(@RequestParam("festivalId") Long festivalId, @RequestParam("durationHours") Integer durationHours, @RequestParam("durationMinutes") Integer durationMinutes, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
+    public String addPerformance(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
         Festival festival = festivalsService.findFestivalById(festivalId);
 
-        if (durationHours == null || durationMinutes == null) {
-            result.rejectValue("duration", "error.duration", "Duration hours and minutes must be provided.");
-        } else {
-            try {
-                Duration totalDuration = Duration.ofHours(durationHours).plusMinutes(durationMinutes);
-                performance.setDuration(totalDuration);
-            } catch (Exception e) {
-                result.rejectValue("duration", "error.duration", "Invalid duration values.");
-            }
-        }
-
         if (result.hasErrors()) {
-            model.addAttribute("festival", festival);
-            model.addAttribute("performance", performance);
+            setupAddPerformanceFormModel(festivalId, model, performance);
             return "performance-add";
         }
 
         performanceService.savePerformance(performance);
 
         return "redirect:/festivals?genre=" + festival.getGenre().getName() + "&region=" + festival.getRegion().getName();
+    }
+
+    private void setupAddPerformanceFormModel(Long festivalId, Model model, Performance performance) {
+        Festival festival = festivalsService.findFestivalById(festivalId);
+        model.addAttribute("festival", festival);
+        model.addAttribute("performance", performance);
+
+        List<SubGenre> subGenres = festivalsService.getSubGenresByGenre(festival.getGenre());
+        model.addAttribute("subGenres", subGenres);
     }
 
 }

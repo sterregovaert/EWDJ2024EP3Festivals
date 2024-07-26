@@ -37,11 +37,11 @@ public class Performance {
     private String artistName;
 
 
-    @NotNull(message = "Start time cannot be empty")
+    @NotNull(message = "Start date/time cannot be empty")
     private LocalDateTime startDateTime;
 
-    @NotNull(message = "Duration cannot be empty")
-    private Duration duration;
+    @NotNull(message = "End date/time cannot be empty")
+    private LocalDateTime endDateTime;
 
     @ManyToMany
     @JoinTable(

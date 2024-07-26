@@ -93,7 +93,7 @@ public class InitDataConfig implements CommandLineRunner {
                 );
                 default -> Stream.empty();
             };
-        }).toList();
+        }).collect(Collectors.toList());
 
         subGenreRepository.saveAll(subGenres);
 
@@ -155,16 +155,9 @@ public class InitDataConfig implements CommandLineRunner {
 
                 LocalDateTime startOfPerformance = festival.getStartDateTime().plusHours(j + 1);
 
-//                LocalDateTime startOfPerformance = generateNonOverlappingStartTime(
-//                        festival.getStartDateTime(),
-//                        festival.getStartDateTime().plusDays(3),
-//                        scheduledPerformances,
-//                        Duration.ofHours(performanceDurationHours)
-//                );
-
                 performance.setArtistName(artistName);
                 performance.setStartDateTime(startOfPerformance);
-                performance.setDuration(Duration.ofHours(performanceDurationHours));
+                performance.setEndDateTime(startOfPerformance.plusHours(1));
                 performance.setFestival(festival);
                 performance.setFestivalNumber1(1000);
                 performance.setFestivalNumber2(1001);

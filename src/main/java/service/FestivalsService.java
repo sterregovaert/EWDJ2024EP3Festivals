@@ -1,18 +1,14 @@
 package service;
 
 import domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
-import repository.FestivalRepository;
-import repository.GenreRepository;
-import repository.RegionRepository;
-import repository.TicketRepository;
+import repository.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +21,8 @@ public class FestivalsService {
     private RegionRepository regionRepository;
     @Autowired
     private TicketRepository ticketRepository;
+    @Autowired
+    private SubGenreRepository subGenreRepository;
 
     public List<Festival> fetchFestivalsByGenre(String genreName) {
         return genreRepository.findByName(genreName).map(genre -> festivalRepository.findByGenreOrderByRegionDescStartDateTimeAsc(genre)).orElse(Collections.emptyList());
@@ -139,11 +137,13 @@ public class FestivalsService {
         festivalRepository.save(festival);
     }
 
-    public List<String> getSubGenresByGenre(Genre genre) {
+    private static final Logger logger = LoggerFactory.getLogger(FestivalsService.class);
+
+    public List<SubGenre> getSubGenresByGenre(Genre genre) {
         if (genre != null) {
-            return genre.getSubGenres().stream()
-                    .map(SubGenre::getName)
-                    .collect(Collectors.toList());
+            List<SubGenre> subGenres = subGenreRepository.findByGenre(genre);
+            subGenres.forEach(subGenre -> logger.info("SubGenre: {}", subGenre.getName()));
+            return subGenres;
         }
         return Collections.emptyList();
     }
