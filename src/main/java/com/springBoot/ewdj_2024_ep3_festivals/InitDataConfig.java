@@ -1,32 +1,24 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.LocalDate;
+import domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import repository.*;
+
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import domain.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.cglib.core.Local;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import repository.*;
-
 @Component
 public class InitDataConfig implements CommandLineRunner {
+    private static final String BCRYPTED_PASWOORD = "$2a$12$pEsi.Zg3VSZ7WJcyfpObE.zW6bsgIZV965XSE3kFcqR9nRr0XKC8G";
     @Autowired
-    private UserRepository userRepository;
+    private MyUserRepository myUserRepository;
     @Autowired
     private GenreRepository genreRepository;
     @Autowired
@@ -39,12 +31,8 @@ public class InitDataConfig implements CommandLineRunner {
     private PerformanceRepository performanceRepository;
     @Autowired
     private TicketRepository ticketRepository;
-
-    private PasswordEncoder encoder = new BCryptPasswordEncoder();
-
-    private static final String BCRYPTED_PASWOORD = "$2a$12$pEsi.Zg3VSZ7WJcyfpObE.zW6bsgIZV965XSE3kFcqR9nRr0XKC8G";
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
     // string 'paswoord': https://bcrypt-generator.com
-
 
     @Override
     public void run(String... args) {
@@ -56,7 +44,7 @@ public class InitDataConfig implements CommandLineRunner {
         var admin = MyUser.builder().username("nameAdmin").role(Role.ADMIN).password(encoder.encode("123456789")).build();
 
         List<MyUser> userList = Arrays.asList(admin, user, user2);
-        userRepository.saveAll(userList);
+        myUserRepository.saveAll(userList);
 
         // -------- -------- --------
         // -------- GENRES --------
@@ -174,7 +162,7 @@ public class InitDataConfig implements CommandLineRunner {
         // -------- -------- --------
         // -------- TICKETS --------
         // -------- -------- --------
-        MyUser nameUser = userRepository.findByUsername("nameUser");
+        MyUser nameUser = myUserRepository.findByUsername("nameUser");
 
         List<Ticket> tickets = new ArrayList<>();
         for (Festival festival : festivals) {

@@ -11,13 +11,22 @@
 <p>Available seats: <span th:text="${festival.availableSeats}"></span></p>
 <p>Tickets already bought: <span th:text="${ticketsBought}"></span></p>
 
-<form class="flex flex-col mt-16 gap-4" method="post"
-      th:action="@{/festivals/buy(festivalId=${festival.festivalId})}" th:object="${ticket}">
+<form class="flex flex-col mt-16 gap-4" method="post" th:action="@{/festivals/buy(festivalId=${festival.festivalId})}"
+      th:object="${ticket}">
+
+    <!--All errors-->
+    <div th:if="${#fields.hasErrors('*')}">
+        <ul>
+            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
     <div>
         <label for="quantity">Quantity:</label>
-        <input id="quantity" min="1" name="quantity" required type="number"/>
+        <input id="quantity" min="1" name="quantity" required th:field="*{quantity}" type="number"/>
         <p th:errorclass="error" th:errors="*{quantity}" th:if="${#fields.hasErrors('quantity')}"></p>
     </div>
+    
     <button type="submit">Buy Ticket(s)</button>
 </form>
 </body>

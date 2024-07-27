@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import repository.FestivalRepository;
-import repository.UserRepository;
+import repository.MyUserRepository;
 import service.TicketService;
 import validator.TicketValidator;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class TicketsController {
 
     @Autowired
-    private UserRepository userRepository;
+    private MyUserRepository myUserRepository;
     @Autowired
     private TicketService ticketService;
     @Autowired
@@ -32,7 +32,7 @@ public class TicketsController {
     @GetMapping
     public String showTickets(Model model, Principal principal) {
         String username = principal.getName();
-        MyUser user = userRepository.findByUsername(username);
+        MyUser user = myUserRepository.findByUsername(username);
 
         List<Ticket> tickets = ticketService.findByUserOrderByFestivalDateRegionMusicGenre(user);
         model.addAttribute("tickets", tickets);

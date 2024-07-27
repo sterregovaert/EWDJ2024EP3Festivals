@@ -1,26 +1,17 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
-import domain.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import repository.*;
+import repository.MyUserRepository;
+import repository.TicketRepository;
 import service.MyUserDetailsService;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -36,7 +27,7 @@ class Ewdj2024EP3FestivalsApplicationTests {
     @MockBean
     private MyUserDetailsService userDetailsService;
     @MockBean
-    private UserRepository userRepository;
+    private MyUserRepository myUserRepository;
     @MockBean
     private TicketRepository ticketRepository;
 
@@ -130,8 +121,8 @@ class Ewdj2024EP3FestivalsApplicationTests {
     @Test
     void testWrongPassword() throws Exception {
         mockMvc.perform(formLogin("/login")
-                .user("username", "nameUser")
-                .password("password", "wrongpassword"))
+                        .user("username", "nameUser")
+                        .password("password", "wrongpassword"))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/login?error"));
     }
@@ -139,8 +130,8 @@ class Ewdj2024EP3FestivalsApplicationTests {
     @Test
     void testCorrectPassword() throws Exception {
         mockMvc.perform(formLogin("/login")
-                .user("username", "nameUser")
-                .password("password", "123456789"))
+                        .user("username", "nameUser")
+                        .password("password", "123456789"))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/sport"));
     }

@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import repository.UserRepository;
+import repository.MyUserRepository;
 import service.FestivalsService;
 import service.PerformanceService;
 import service.TicketService;
@@ -31,7 +31,7 @@ public class FestivalsController {
     @Autowired
     PerformanceService performanceService;
     @Autowired
-    UserRepository userRepository;
+    MyUserRepository myUserRepository;
     @Autowired
     PerformanceValidation performanceValidation;
     @Autowired
@@ -47,7 +47,7 @@ public class FestivalsController {
         model.addAttribute("festivals", festivalsService.fetchFestivals(genre, region));
 
         if (principal != null) {
-            MyUser user = userRepository.findByUsername(principal.getName());
+            MyUser user = myUserRepository.findByUsername(principal.getName());
             Map<Long, Integer> ticketsBoughtPerFestival = festivalsService.getTicketsBoughtPerFestivalForUser(genre, region, user.getUserId());
             model.addAttribute("ticketsBoughtPerFestival", ticketsBoughtPerFestival);
         }
@@ -61,30 +61,36 @@ public class FestivalsController {
 // Buying tickets for a festival
 
     @GetMapping("/buy")
-    public String buyFestivalTicketGet(@RequestParam("festivalId") Long festivalId, WebRequest request, RedirectAttributes redirectAttributes, Model model, Principal principal) {
-        setupBuyTicketModel(festivalId, model, new Ticket());
+    public String buyFestivalTicketGet(@RequestParam("festivalId") Long festivalId, Model model, Principal principal) {
+        setupBuyTicketModel(festivalId, model, new Ticket(), principal);
 
         return "festival-buy";
     }
 
     @PostMapping("/buy")
-    public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, WebRequest request, RedirectAttributes redirectAttributes, BindingResult result, Model model) {
+    public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, RedirectAttributes redirectAttributes, BindingResult result, Model model, Principal principal) {
         ticketValidation.validate(ticket, result);
 
         if (result.hasErrors()) {
-            setupBuyTicketModel(festivalId, model, ticket);
+            setupBuyTicketModel(festivalId, model, ticket, principal);
             return "festival-buy";
         }
 
         ticketService.saveTicket(ticket);
         redirectAttributes.addFlashAttribute("message", ticket.getQuantity() + " tickets were purchased");
 
-        return "dashboard";
+        return "redirect:/dashboard";
     }
 
 
-    private void setupBuyTicketModel(Long festivalId, Model model, Ticket ticket) {
-        MyUser user = userRepository.findByUsername(ticket.getUser().getUsername());
+    private void setupBuyTicketModel(Long festivalId, Model model, Ticket ticket, Principal principal) {
+
+        System.out.println("Festival ID:");
+        System.out.println(festivalId);
+        System.out.println("Principal:");
+        System.out.println(principal.getName());
+
+        MyUser user = myUserRepository.findByUsername(principal.getName());
         ticket.setUser(user);
 
         Festival festival = festivalsService.findFestivalById(festivalId);
@@ -95,6 +101,11 @@ public class FestivalsController {
         model.addAttribute("ticketsBought", ticketsForThisFestival);
 
         model.addAttribute("ticket", ticket);
+
+        System.out.println("user of ticket");
+        System.out.println(ticket.getUser().getUsername());
+        System.out.println("festival of ticket");
+        System.out.println(ticket.getFestival().getName());
     }
 
 // Adding a performance to a festival
@@ -138,10 +149,10 @@ public class FestivalsController {
             model.addAttribute("error", "Festival not found");
         }
 
-        model.addAttribute("performance", performance);
-
         List<SubGenre> subGenres = festivalsService.getSubGenresByGenre(festival.getGenre());
         model.addAttribute("subGenres", subGenres);
+
+        model.addAttribute("performance", performance);
     }
 
 }

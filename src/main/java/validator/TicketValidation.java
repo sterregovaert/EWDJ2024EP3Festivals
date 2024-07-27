@@ -25,6 +25,15 @@ public class TicketValidation implements Validator {
     public void validate(Object target, Errors errors) {
         Ticket ticket = (Ticket) target;
 
+        if (ticket.getUser() == null) {
+            errors.rejectValue("user", "user.null", "User must not be null");
+            return;
+        }
+        if (ticket.getFestival() == null) {
+            errors.rejectValue("festival", "festival.null", "Festival must not be null");
+            return;
+        }
+
         // Check if the quantity of tickets being bought is more than 15
         if (ticket.getQuantity() > 15) {
             errors.rejectValue("quantity", "quantity.exceedsLimit", "You can buy no more than 15 tickets for one festival.");
