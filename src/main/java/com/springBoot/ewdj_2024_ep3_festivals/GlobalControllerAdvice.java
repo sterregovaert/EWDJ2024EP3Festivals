@@ -1,7 +1,6 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
 import domain.Role;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.ui.Model;
@@ -13,21 +12,21 @@ import java.security.Principal;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    @Autowired
-    private DateFormatter dateFormatter;
-
-    @Autowired
-    private TimeFormatter timeFormatter;
-
-    @ModelAttribute("dateFormatter")
-    public DateFormatter dateFormatter() {
-        return dateFormatter;
-    }
-
-    @ModelAttribute("timeFormatter")
-    public TimeFormatter timeFormatter() {
-        return timeFormatter;
-    }
+//    @Autowired
+//    private DateFormatter dateFormatter;
+//
+//    @Autowired
+//    private TimeFormatter timeFormatter;
+//
+//    @ModelAttribute("dateFormatter")
+//    public DateFormatter dateFormatter() {
+//        return dateFormatter;
+//    }
+//
+//    @ModelAttribute("timeFormatter")
+//    public TimeFormatter timeFormatter() {
+//        return timeFormatter;
+//    }
 
     @ModelAttribute
     public void addAttributes(Model model, Principal principal, Authentication authentication) {

@@ -5,6 +5,7 @@ import domain.MyUser;
 import domain.Performance;
 import domain.SubGenre;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/festivals")
 public class FestivalsController {
@@ -58,10 +60,10 @@ public class FestivalsController {
         //        int availableSeats = festivalsService.getAvailableSeatsForFestival(festivalId);
         //
         //        if (quantity > 15) {
-        //            redirectAttributes.addFlashAttribute("errorMessage", "You cannot buy more than 15 tickets for a single festival.");
+        //            redirectAttributes.addFlashAttribute("errorMessage", "You can not buy more than 15 tickets for a single festival.");
         //            return "redirect:/festivals";
         //        } else if (totalTickets + quantity > 50) {
-        //            redirectAttributes.addFlashAttribute("errorMessage", "You cannot buy more than 50 tickets in total.");
+        //            redirectAttributes.addFlashAttribute("errorMessage", "You can not buy more than 50 tickets in total.");
         //            return "redirect:/festivals";
         //        } else if (ticketsForThisFestival + quantity > availableSeats) {
         //            redirectAttributes.addFlashAttribute("errorMessage", "Not enough available seats.");

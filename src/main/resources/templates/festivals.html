@@ -14,7 +14,7 @@
         <li th:each="festival : ${festivals}">
             <h3 th:text="${festival.name}">Festival Name</h3>
 
-            <p>Date and Start Time: <span th:text="${festival.startDateTime}">Date and Time</span>
+            <p>Date and Start Time: <span th:text="${{festival.startDateTime}}">Date and Time</span>
             </p>
 
             <p th:if="${region} == null">Region: <span th:text="${festival.region.name}">Region</span></p>
@@ -23,7 +23,8 @@
             <p>Performances:
             <ul>
                 <li th:each="performance : ${festival.performances}"
-                    th:text="${performance.artistName} + ' at ' + ${performance.startDateTime}">Performance
+                    th:text="${performance.artistName} + ' at ' + ${{performance.startDateTime}} + ' to ' + ${{performance.endDateTime}}">
+                    Performance
                 </li>
             </ul>
 
@@ -42,19 +43,20 @@
             </th:block>
             <!--Buy ticket-->
             <th:block th:if="${festival.availableSeats != null && festival.availableSeats > 0 && userRole == 'user'}">
-                <a th:href="@{/festivals/buy(festivalId=${festival.festivalId})}" class="button-link">
+                <a class="button-link" th:href="@{/festivals/buy(festivalId=${festival.festivalId})}">
                     Buy Ticket(s)
                 </a>
             </th:block>
 
             <!--Add performance-->
             <th:block th:if="${userRole == 'admin'}">
-                <a th:href="@{/festivals/addPerformance(festivalId=${festival.festivalId})}" class="button-link">Add Performance</a>
+                <a class="button-link" th:href="@{/festivals/addPerformance(festivalId=${festival.festivalId})}">Add
+                    Performance</a>
             </th:block>
 
             <!--Remove performance-->
             <th:block th:if="${userRole == 'admin'}">
-                <a th:href="@{/festivals/removePerformance}" class="button-link">Remove Performance(s)</a>
+                <a class="button-link" th:href="@{/festivals/removePerformance}">Remove Performance(s)</a>
             </th:block>
 
         </li>

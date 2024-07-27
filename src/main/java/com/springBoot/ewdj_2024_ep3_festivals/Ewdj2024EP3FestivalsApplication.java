@@ -1,7 +1,5 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
-import java.util.Locale;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -14,7 +12,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import perform.PerformRestFestival;
 import service.*;
-import validator.*;
+import validator.PerformanceValidation;
+import validator.TicketValidator;
+
+import java.util.Locale;
 
 
 @SpringBootApplication
@@ -48,20 +49,9 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     }
 
     @Bean
-    public FormatterService formatterService() {
-        return new FormatterService();
-    }
-
-    @Bean
     DateFormatter dateFormatter() {
         return new DateFormatter();
     }
-
-    @Bean
-    TimeFormatter timeformatter() {
-        return new TimeFormatter();
-    }
-
 
     /*SERVICE*/
     @Bean

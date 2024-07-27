@@ -11,7 +11,7 @@
 
 <p>Festival Name: <span th:text="${festival.name}"></span></p>
 <p>Festival ID: <span th:text="${festival.festivalId}"></span></p>
-<p>Festival Start Date and Time: <span th:text="${festival.startDateTime}"></span></p>
+<p>Festival Start Date and Time: <span th:text="${{festival.startDateTime}}"></span></p>
 <p>Festival Genre: <span th:text="${festival.genre.getName()}"></span></p>
 
 <form class="flex flex-col mt-16 gap-4" method="post"

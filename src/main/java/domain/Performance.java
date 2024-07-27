@@ -8,11 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
 import validator.ValidFestivalNumbersConstraint;
-import validator.ValidPerformanceTime;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -37,16 +34,19 @@ public class Performance {
     @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Name should only exist out of letters or spaces, for example “The Rolling Stones”")
     private String artistName;
 
-    @NotNull(message = "Start date/time cannot be empty")
+    @NotNull(message = "Start date/time can not be empty")
     private LocalDateTime startDateTime;
 
-    @NotNull(message = "End date/time cannot be empty")
+    @NotNull(message = "End date/time can not be empty")
     private LocalDateTime endDateTime;
 
     @ManyToMany
     @JoinTable(name = "performance_sub_genre", joinColumns = @JoinColumn(name = "performanceId"), inverseJoinColumns = @JoinColumn(name = "subGenreId"))
     @Size(max = 2, message = "Maximum 2 sub-genres are allowed")
     private Set<SubGenre> subGenres;
+
+//    private SubGenre subGenre1;
+//    private SubGenre subGenre2;
 
     @Range(min = 1000, max = 9999, message = "Festival number must be between 1000 and 9999")
     private int festivalNumber1;
