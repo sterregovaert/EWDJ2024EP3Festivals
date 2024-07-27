@@ -5,8 +5,6 @@ import domain.MyUser;
 import domain.Performance;
 import domain.SubGenre;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,10 +18,6 @@ import service.PerformanceService;
 import validator.PerformanceValidation;
 
 import java.security.Principal;
-import java.time.Duration;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,7 +90,6 @@ public class FestivalsController {
     @PostMapping("/buy")
     public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, WebRequest request, RedirectAttributes redirectAttributes, Model model) {
 
-
         return "dashboard";
     }
 
@@ -109,9 +102,10 @@ public class FestivalsController {
 
     @PostMapping("/addPerformance")
     public String addPerformance(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
-        performanceValidation.validate(performance, result);
-
         Festival festival = festivalsService.findFestivalById(festivalId);
+        performance.setFestival(festival);
+
+        performanceValidation.validate(performance, result);
 
         if (result.hasErrors()) {
             setupAddPerformanceFormModel(festivalId, model, performance);
@@ -127,6 +121,7 @@ public class FestivalsController {
         Festival festival = festivalsService.findFestivalById(festivalId);
 
         if (festival != null) {
+            performance.setFestival(festival);
             model.addAttribute("festival", festival);
             if (performance.getStartDateTime() == null) {
                 performance.setStartDateTime(festival.getStartDateTime());

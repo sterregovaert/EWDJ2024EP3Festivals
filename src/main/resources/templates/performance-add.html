@@ -14,8 +14,8 @@
 <p>Festival Start Date and Time: <span th:text="${festival.startDateTime}"></span></p>
 <p>Festival Genre: <span th:text="${festival.genre.getName()}"></span></p>
 
-<form class="flex flex-col mt-16 gap-4" th:action="@{/festivals/addPerformance(festivalId=${festival.festivalId})}"
-      method="post" th:object="${performance}">
+<form class="flex flex-col mt-16 gap-4" method="post"
+      th:action="@{/festivals/addPerformance(festivalId=${festival.festivalId})}" th:object="${performance}">
 
     <!--All errors-->
     <div th:if="${#fields.hasErrors('*')}">
@@ -27,23 +27,28 @@
     <!--Artist name-->
     <div>
         <label for="artistName">Name of artist or group:</label>
-        <input type="text" id="artistName" name="artistName" th:field="*{artistName}"/>
-        <span th:if="${#fields.hasErrors('artistName')}" th:errorclass="error" th:errors="*{artistName}"></span>
+        <input id="artistName" name="artistName" th:field="*{artistName}" type="text"/>
+        <p th:errorclass="error" th:errors="*{artistName}" th:if="${#fields.hasErrors('artistName')}"></p>
     </div>
 
-    <!-- Start date time -->
     <div>
-        <label for="startDateTime">Start Date/Time:</label>
-        <input type="datetime-local" id="startDateTime" name="startDateTime" th:value="${performance.startDateTime}">
+        <!-- Start date time -->
+        <div>
+            <label for="startDateTime">Start Date/Time:</label>
+            <input id="startDateTime" name="startDateTime" th:value="${performance.startDateTime}"
+                   type="datetime-local">
 
-        <span th:if="${#fields.hasErrors('startDateTime')}" th:errorclass="error" th:errors="*{startDateTime}"></span>
-    </div>
+            <p th:errorclass="error" th:errors="*{startDateTime}"
+               th:if="${#fields.hasErrors('startDateTime')}"></p>
+        </div>
 
-    <!-- End date time -->
-    <div>
-        <label for="endDateTime">End Date/Time:</label>
-        <input type="datetime-local" id="endDateTime" name="endDateTime" th:value="${performance.endDateTime}">
-        <span th:if="${#fields.hasErrors('endDateTime')}" th:errorclass="error" th:errors="*{endDateTime}"></span>
+        <!-- End date time -->
+        <div>
+            <label for="endDateTime">End Date/Time:</label>
+            <input id="endDateTime" name="endDateTime" th:value="${performance.endDateTime}" type="datetime-local">
+            <p th:errorclass="error" th:errors="*{endDateTime}" th:if="${#fields.hasErrors('endDateTime')}"></p>
+        </div>
+
     </div>
 
 
@@ -51,29 +56,31 @@
     <div>
         <div th:each="index : ${#numbers.sequence(1, 2)}">
             <label th:for="${'subGenre' + index}">Subgenre [[${index}]]:</label>
-            <select th:id="${'subGenre' + index}" name="subGenres" th:field="*{subGenres}">
-                <option value="" th:selected="${#lists.isEmpty(subGenres)}">Select a subgenre</option>
-                <option th:each="subGenre : ${subGenres}" th:value="${subGenre.subGenreId}"
+            <select name="subGenres" th:field="*{subGenres}" th:id="${'subGenre' + index}">
+                <option th:selected="${#lists.isEmpty(subGenres)}" value="">Select a subgenre</option>
+                <option th:each="subGenre : ${subGenres}" th:selected="${#lists.contains(subGenres, subGenre)}"
                         th:text="${subGenre.name}"
-                        th:selected="${#lists.contains(subGenres, subGenre)}"></option>
+                        th:value="${subGenre.subGenreId}"></option>
             </select>
         </div>
-        <span th:if="${#fields.hasErrors('subGenres')}" th:errorclass="error" th:errors="*{subGenres}"></span>
+        <p th:errorclass="error" th:errors="*{subGenres}" th:if="${#fields.hasErrors('subGenres')}"></p>
     </div>
 
 
     <!--Festival numbers-->
     <div>
-        <label for="festivalNumber1">Festival-number1:</label>
-        <input type="number" id="festivalNumber1" name="festivalNumber1" th:field="*{festivalNumber1}"/>
-        <span th:if="${#fields.hasErrors('festivalNumber1')}" th:errorclass="error"
-              th:errors="*{festivalNumber1}"></span>
-    </div>
-    <div>
-        <label for="festivalNumber2">Festival-number 2:</label>
-        <input type="number" id="festivalNumber2" name="festivalNumber2" th:field="*{festivalNumber2}"/>
-        <span th:if="${#fields.hasErrors('festivalNumber2')}" th:errorclass="error"
-              th:errors="*{festivalNumber2}"></span>
+        <div>
+            <label for="festivalNumber1">Festival-number1:</label>
+            <input id="festivalNumber1" name="festivalNumber1" th:field="*{festivalNumber1}" type="number"/>
+            <p th:errorclass="error" th:errors="*{festivalNumber1}"
+               th:if="${#fields.hasErrors('festivalNumber1')}"></p>
+        </div>
+        <div>
+            <label for="festivalNumber2">Festival-number 2:</label>
+            <input id="festivalNumber2" name="festivalNumber2" th:field="*{festivalNumber2}" type="number"/>
+            <p th:errorclass="error" th:errors="*{festivalNumber2}"
+               th:if="${#fields.hasErrors('festivalNumber2')}"></p>
+        </div>
     </div>
 
     <!--submit button-->
