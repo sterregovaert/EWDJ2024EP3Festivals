@@ -7,12 +7,16 @@ import repository.TicketRepository;
 
 import java.util.List;
 
-public class TicketsService {
+public class TicketService {
 
     @Autowired
     private TicketRepository ticketRepository;
 
     public List<Ticket> findByUserOrderByFestivalDateRegionMusicGenre(MyUser user) {
         return ticketRepository.findByUserOrderByFestivalStartDateTimeAscFestivalRegionAscFestivalGenreAsc(user);
+    }
+
+    public void saveTicket(Ticket ticket) {
+        ticketRepository.save(ticket);
     }
 }

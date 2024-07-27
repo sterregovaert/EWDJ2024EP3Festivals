@@ -1,15 +1,15 @@
 package service;
 
 import domain.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 import repository.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class FestivalsService {
@@ -82,20 +82,21 @@ public class FestivalsService {
     }
 
     public int getTicketsForFestivalByUser(Long festivalId, Long userId) {
-        Integer ticketsCount = ticketRepository.findTicketQuantitiesSumByUserIdAndFestivalId(userId, festivalId);
+        Integer ticketsCount = ticketRepository.sumTicketQuantitiesByUserIdAndFestivalId(userId, festivalId);
         return ticketsCount != null ? ticketsCount : 0;
     }
 
     //    public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Long userId) {
-//        List<Object[]> ticketsData = ticketRepository.findTicketCountsByUserAndOptionalGenreAndRegion(userId, genre, region);
-//        Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
-//        for (Object[] data : ticketsData) {
-//            Long festivalId = (Long) data[0];
-//            Integer ticketCount = ((Long) data[1]).intValue(); // Assuming COUNT returns Long
-//            ticketsBoughtPerFestival.put(festivalId, ticketCount);
-//        }
-//        return ticketsBoughtPerFestival;
-//    }
+    //        List<Object[]> ticketsData = ticketRepository.findTicketCountsByUserAndOptionalGenreAndRegion(userId, genre, region);
+    //        Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
+    //        for (Object[] data : ticketsData) {
+    //            Long festivalId = (Long) data[0];
+    //            Integer ticketCount = ((Long) data[1]).intValue(); // Assuming COUNT returns Long
+    //            ticketsBoughtPerFestival.put(festivalId, ticketCount);
+    //        }
+    //        return ticketsBoughtPerFestival;
+    //    }
+
     public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Long userId) {
         List<Festival> festivals;
         if (genre != null && region != null) {

@@ -17,7 +17,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
 
-    @Range(min = 1, max = 20, message = "{quantity.range}")
+    @Range(min = 1, max = 15, message = "{quantity.range}")
     private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)

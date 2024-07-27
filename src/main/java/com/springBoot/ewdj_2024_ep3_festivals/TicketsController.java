@@ -1,16 +1,15 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
-import domain.*;
-import jakarta.validation.Valid;
+import domain.MyUser;
+import domain.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import repository.FestivalRepository;
-import repository.TicketRepository;
 import repository.UserRepository;
-import service.TicketsService;
+import service.TicketService;
 import validator.TicketValidator;
 
 import java.security.Principal;
@@ -23,7 +22,7 @@ public class TicketsController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private TicketsService ticketService;
+    private TicketService ticketService;
     @Autowired
     private FestivalRepository festivalRepository;
 

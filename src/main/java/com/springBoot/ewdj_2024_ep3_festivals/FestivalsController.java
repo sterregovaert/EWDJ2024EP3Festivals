@@ -1,9 +1,6 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
-import domain.Festival;
-import domain.MyUser;
-import domain.Performance;
-import domain.SubGenre;
+import domain.*;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +13,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import repository.UserRepository;
 import service.FestivalsService;
 import service.PerformanceService;
+import service.TicketService;
 import validator.PerformanceValidation;
+import validator.TicketValidation;
 
 import java.security.Principal;
 import java.util.List;
@@ -35,6 +34,12 @@ public class FestivalsController {
     UserRepository userRepository;
     @Autowired
     PerformanceValidation performanceValidation;
+    @Autowired
+    TicketValidation ticketValidation;
+    @Autowired
+    TicketService ticketService;
+
+// Fetching festivals
 
     @GetMapping
     public String getFestivals(@RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "region", required = false) String region, Model model, WebRequest request, Principal principal) {
@@ -53,48 +58,46 @@ public class FestivalsController {
         return "festivals";
     }
 
+// Buying tickets for a festival
 
     @GetMapping("/buy")
     public String buyFestivalTicketGet(@RequestParam("festivalId") Long festivalId, WebRequest request, RedirectAttributes redirectAttributes, Model model, Principal principal) {
-        //        int totalTickets = userTickets.values().stream().mapToInt(Integer::intValue).sum();
-        //        int availableSeats = festivalsService.getAvailableSeatsForFestival(festivalId);
-        //
-        //        if (quantity > 15) {
-        //            redirectAttributes.addFlashAttribute("errorMessage", "You can not buy more than 15 tickets for a single festival.");
-        //            return "redirect:/festivals";
-        //        } else if (totalTickets + quantity > 50) {
-        //            redirectAttributes.addFlashAttribute("errorMessage", "You can not buy more than 50 tickets in total.");
-        //            return "redirect:/festivals";
-        //        } else if (ticketsForThisFestival + quantity > availableSeats) {
-        //            redirectAttributes.addFlashAttribute("errorMessage", "Not enough available seats.");
-        //            return "redirect:/festivals";
-        //        } else {
-        //            int purchasedTickets = festivalsService.buyTicketForFestival(festivalId, quantity, request);
-        //            if (purchasedTickets > 0) {
-        //                userTickets.put(festivalId, ticketsForThisFestival + purchasedTickets);
-        //                request.setAttribute("userTickets", userTickets, WebRequest.SCOPE_SESSION);
-        //                redirectAttributes.addFlashAttribute("successMessage", purchasedTickets + " tickets were successfully purchased!");
-        //            } else {
-        //                redirectAttributes.addFlashAttribute("errorMessage", "Failed to purchase tickets.");
-        //            }
-        //        }
-        MyUser user = userRepository.findByUsername(principal.getName());
-        Festival festival = festivalsService.findFestivalById(festivalId);
-        int ticketsForThisFestival = festivalsService.getTicketsForFestivalByUser(festivalId, user.getUserId());
-
-        model.addAttribute("festivalId", festivalId);
-        model.addAttribute("festivalName", festival.getName());
-        model.addAttribute("ticketsBought", ticketsForThisFestival);
+        setupBuyTicketModel(festivalId, model, new Ticket());
 
         return "festival-buy";
     }
 
     @PostMapping("/buy")
-    public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, WebRequest request, RedirectAttributes redirectAttributes, Model model) {
+    public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, WebRequest request, RedirectAttributes redirectAttributes, BindingResult result, Model model) {
+        ticketValidation.validate(ticket, result);
+
+        if (result.hasErrors()) {
+            setupBuyTicketModel(festivalId, model, ticket);
+            return "festival-buy";
+        }
+
+        ticketService.saveTicket(ticket);
+        redirectAttributes.addFlashAttribute("message", ticket.getQuantity() + " tickets were purchased");
 
         return "dashboard";
     }
 
+
+    private void setupBuyTicketModel(Long festivalId, Model model, Ticket ticket) {
+        MyUser user = userRepository.findByUsername(ticket.getUser().getUsername());
+        ticket.setUser(user);
+
+        Festival festival = festivalsService.findFestivalById(festivalId);
+        ticket.setFestival(festival);
+        model.addAttribute("festival", festival);
+
+        int ticketsForThisFestival = festivalsService.getTicketsForFestivalByUser(festivalId, user.getUserId());
+        model.addAttribute("ticketsBought", ticketsForThisFestival);
+
+        model.addAttribute("ticket", ticket);
+    }
+
+// Adding a performance to a festival
 
     @GetMapping("/addPerformance")
     public String showAddPerformanceForm(@RequestParam("festivalId") Long festivalId, Model model) {

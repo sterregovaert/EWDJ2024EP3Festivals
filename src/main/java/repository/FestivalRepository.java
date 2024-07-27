@@ -17,4 +17,5 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     List<Festival> findByGenreAndRegionOrderByStartDateTimeAsc(Genre genre, Region region);
 
 
+    int findAvailableSeatsByFestivalId(Long festivalId);
 }
