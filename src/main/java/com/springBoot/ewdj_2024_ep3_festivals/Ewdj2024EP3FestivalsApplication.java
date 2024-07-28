@@ -66,8 +66,8 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     }
 
     @Bean
-    FestivalsService festivalService() {
-        return new FestivalsService();
+    FestivalService festivalService() {
+        return new FestivalService();
     }
 
     @Bean

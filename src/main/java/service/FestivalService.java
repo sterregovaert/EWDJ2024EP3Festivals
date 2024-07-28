@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class FestivalsService {
+public class FestivalService {
     @Autowired
     private FestivalRepository festivalRepository;
     @Autowired
@@ -144,5 +144,11 @@ public class FestivalsService {
             return subGenres;
         }
         return Collections.emptyList();
+    }
+
+    public void updateAvailableSeats(Long festivalId, int quantity) {
+        Festival festival = findFestivalById(festivalId);
+        festival.setAvailableSeats(festival.getAvailableSeats() - quantity);
+        festivalRepository.save(festival);
     }
 }

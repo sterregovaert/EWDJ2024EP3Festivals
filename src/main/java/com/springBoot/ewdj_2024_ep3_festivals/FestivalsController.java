@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import repository.MyUserRepository;
-import service.FestivalsService;
+import service.FestivalService;
 import service.PerformanceService;
 import service.TicketService;
 import validator.PerformanceValidation;
@@ -27,7 +27,7 @@ import java.util.Map;
 public class FestivalsController {
 
     @Autowired
-    FestivalsService festivalsService;
+    FestivalService festivalService;
     @Autowired
     PerformanceService performanceService;
     @Autowired
@@ -44,11 +44,11 @@ public class FestivalsController {
     @GetMapping
     public String getFestivals(@RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "region", required = false) String region, Model model, WebRequest request, Principal principal) {
 
-        model.addAttribute("festivals", festivalsService.fetchFestivals(genre, region));
+        model.addAttribute("festivals", festivalService.fetchFestivals(genre, region));
 
         if (principal != null) {
             MyUser user = myUserRepository.findByUsername(principal.getName());
-            Map<Long, Integer> ticketsBoughtPerFestival = festivalsService.getTicketsBoughtPerFestivalForUser(genre, region, user.getUserId());
+            Map<Long, Integer> ticketsBoughtPerFestival = festivalService.getTicketsBoughtPerFestivalForUser(genre, region, user.getUserId());
             model.addAttribute("ticketsBoughtPerFestival", ticketsBoughtPerFestival);
         }
 
@@ -68,7 +68,10 @@ public class FestivalsController {
     }
 
     @PostMapping("/buy")
-    public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, RedirectAttributes redirectAttributes, BindingResult result, Model model, Principal principal) {
+    public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, BindingResult result, Model model, Principal principal, RedirectAttributes redirectAttributes) {
+        ticket.setUser(myUserRepository.findByUsername(principal.getName()));
+        ticket.setFestival(festivalService.findFestivalById(festivalId));
+
         ticketValidation.validate(ticket, result);
 
         if (result.hasErrors()) {
@@ -76,7 +79,9 @@ public class FestivalsController {
             return "festival-buy";
         }
 
+        festivalService.updateAvailableSeats(ticket.getFestival().getFestivalId(), ticket.getQuantity());
         ticketService.saveTicket(ticket);
+
         redirectAttributes.addFlashAttribute("message", ticket.getQuantity() + " tickets were purchased");
 
         return "redirect:/dashboard";
@@ -84,28 +89,26 @@ public class FestivalsController {
 
 
     private void setupBuyTicketModel(Long festivalId, Model model, Ticket ticket, Principal principal) {
-
-        System.out.println("Festival ID:");
-        System.out.println(festivalId);
-        System.out.println("Principal:");
-        System.out.println(principal.getName());
-
         MyUser user = myUserRepository.findByUsername(principal.getName());
+        if (user != null) {
+            ticket.setUser(user);
+        } else {
+            throw new IllegalStateException("User not found");
+        }
         ticket.setUser(user);
 
-        Festival festival = festivalsService.findFestivalById(festivalId);
-        ticket.setFestival(festival);
-        model.addAttribute("festival", festival);
+        Festival festival = festivalService.findFestivalById(festivalId);
+        if (festival != null) {
+            ticket.setFestival(festival);
+            model.addAttribute("festival", festival);
+        } else {
+            throw new IllegalStateException("Festival not found");
+        }
 
-        int ticketsForThisFestival = festivalsService.getTicketsForFestivalByUser(festivalId, user.getUserId());
+        int ticketsForThisFestival = festivalService.getTicketsForFestivalByUser(festivalId, user.getUserId());
         model.addAttribute("ticketsBought", ticketsForThisFestival);
 
         model.addAttribute("ticket", ticket);
-
-        System.out.println("user of ticket");
-        System.out.println(ticket.getUser().getUsername());
-        System.out.println("festival of ticket");
-        System.out.println(ticket.getFestival().getName());
     }
 
 // Adding a performance to a festival
@@ -118,7 +121,7 @@ public class FestivalsController {
 
     @PostMapping("/addPerformance")
     public String addPerformance(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
-        Festival festival = festivalsService.findFestivalById(festivalId);
+        Festival festival = festivalService.findFestivalById(festivalId);
         performance.setFestival(festival);
 
         performanceValidation.validate(performance, result);
@@ -134,7 +137,7 @@ public class FestivalsController {
     }
 
     private void setupAddPerformanceFormModel(Long festivalId, Model model, Performance performance) {
-        Festival festival = festivalsService.findFestivalById(festivalId);
+        Festival festival = festivalService.findFestivalById(festivalId);
 
         if (festival != null) {
             performance.setFestival(festival);
@@ -149,7 +152,7 @@ public class FestivalsController {
             model.addAttribute("error", "Festival not found");
         }
 
-        List<SubGenre> subGenres = festivalsService.getSubGenresByGenre(festival.getGenre());
+        List<SubGenre> subGenres = festivalService.getSubGenresByGenre(festival.getGenre());
         model.addAttribute("subGenres", subGenres);
 
         model.addAttribute("performance", performance);

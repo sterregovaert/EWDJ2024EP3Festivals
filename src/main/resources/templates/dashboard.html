@@ -2,14 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="ISO-8859-1">
-    <title>Dashboard</title>
+    <title th:text="#{dashboard.title}">Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var messageDiv = document.querySelector(".alert-success");
+            if (messageDiv) {
+                setTimeout(function () {
+                    messageDiv.style.display = "none";
+                }, 5000); // 5000 milliseconds = 5 seconds
+            }
+        });
+    </script>
 </head>
 <body>
 <div th:replace="~{nav :: navbar}"></div>
+
+<!-- Display success message if it exists -->
+<div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+
 <th:block th:if="${userRole == 'user'}">
-    <a th:if="${ticketCount > 0}" th:href="|/tickets|">
-        <button>View Tickets</button>
+    <a th:href="|/tickets|" th:if="${ticketCount > 0}">
+        <button th:text="#{dashboard.viewTickets}">View Tickets</button>
     </a>
 </th:block>
 

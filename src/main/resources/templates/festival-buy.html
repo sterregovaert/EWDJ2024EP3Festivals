@@ -23,10 +23,10 @@
 
     <div>
         <label for="quantity">Quantity:</label>
-        <input id="quantity" min="1" name="quantity" required th:field="*{quantity}" type="number"/>
+        <input id="quantity" name="quantity" th:field="*{quantity}" type="number"/>
         <p th:errorclass="error" th:errors="*{quantity}" th:if="${#fields.hasErrors('quantity')}"></p>
     </div>
-    
+
     <button type="submit">Buy Ticket(s)</button>
 </form>
 </body>
