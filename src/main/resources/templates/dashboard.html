@@ -27,14 +27,14 @@
     </a>
 </th:block>
 
-<h2>Music Genres</h2>
+<h2 th:text="#{dashboard.musicGenres}">Music Genres</h2>
 <ul>
     <li th:each="genre : ${genres}">
         <a th:href="@{/festivals(genre=${genre.name})}" th:text="${genre.name}">Genre</a>
     </li>
 </ul>
 
-<h2>Regions</h2>
+<h2 th:text="#{dashboard.regions}">Regions</h2>
 <ul>
     <li th:each="region : ${regions}">
         <a th:href="@{/festivals(region=${region.name})}" th:text="${region.name}">Region</a>

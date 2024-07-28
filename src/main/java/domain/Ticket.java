@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Range;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor//(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @EqualsAndHashCode(exclude = "ticketId")
 @Table(name = "ticket")
 public class Ticket {

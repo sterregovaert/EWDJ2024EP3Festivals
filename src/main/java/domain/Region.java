@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor//(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @EqualsAndHashCode(exclude = "regionId")
 @Getter
 @Setter

@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor//(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @EqualsAndHashCode(of = "username")
 @Table(name = "users")
 public class MyUser implements Serializable {

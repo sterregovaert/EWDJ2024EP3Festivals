@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/tickets")
-public class TicketsController {
+public class TicketController {
 
     @Autowired
     private MyUserRepository myUserRepository;
@@ -25,7 +25,6 @@ public class TicketsController {
     private TicketService ticketService;
     @Autowired
     private FestivalRepository festivalRepository;
-
     @Autowired
     private TicketValidator ticketValidator;
 

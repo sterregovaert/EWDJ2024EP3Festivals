@@ -2,32 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="ISO-8859-1">
-    <title>Buy ticket for festival</title>
+    <title th:text="#{festivalBuy.title}">Buy ticket for festival</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
 <body>
 <div th:replace="~{nav :: navbar}"></div>
-<p>You're buying tickets for: <span th:text="${festival.name}"></span></p>
-<p>Available seats: <span th:text="${festival.availableSeats}"></span></p>
-<p>Tickets already bought: <span th:text="${ticketsBought}"></span></p>
 
+<!--Info-->
+<p>
+    <span th:text="#{festivalBuy.buyingTicketsFor}">You're buying tickets for:</span>
+    <span th:text="${festival.name}"></span>
+</p>
+<p>
+    <span th:text="#{festivalBuy.availableSeats}">Available seats:</span>
+    <span th:text="${festival.availableSeats}"></span>
+</p>
+<p>
+    <span th:text="#{festivalBuy.ticketsBought}">Tickets already bought:</span>
+    <span th:text="${ticketsBought}"></span>
+</p>
+
+<!--Buy ticket-->
 <form class="flex flex-col mt-16 gap-4" method="post" th:action="@{/festivals/buy(festivalId=${festival.festivalId})}"
       th:object="${ticket}">
 
-    <!--All errors-->
-    <div th:if="${#fields.hasErrors('*')}">
-        <ul>
-            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
-        </ul>
-    </div>
-
     <div>
-        <label for="quantity">Quantity:</label>
+        <label for="quantity" th:text="#{festivalBuy.quantity}">Quantity:</label>
         <input id="quantity" name="quantity" th:field="*{quantity}" type="number"/>
         <p th:errorclass="error" th:errors="*{quantity}" th:if="${#fields.hasErrors('quantity')}"></p>
     </div>
 
-    <button type="submit">Buy Ticket(s)</button>
+    <button th:text="#{festivalBuy.buyTickets}" type="submit">Buy Ticket(s)</button>
 </form>
 </body>
 </html>

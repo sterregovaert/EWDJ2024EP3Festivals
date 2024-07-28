@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="ISO-8859-1">
-    <title>Festivals</title>
+    <title th:text="#{festivals.title}">Festivals</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
 <body>
@@ -14,49 +14,66 @@
         <li th:each="festival : ${festivals}">
             <h3 th:text="${festival.name}">Festival Name</h3>
 
-            <p>Date and Start Time: <span th:text="${{festival.startDateTime}}">Date and Time</span>
+            <p>
+                <span th:text="#{festivals.dateAndStartTime}">Date and Start Time:</span>
+                <span th:text="${{festival.startDateTime}}">Date and Time</span>
             </p>
 
-            <p th:if="${region} == null">Region: <span th:text="${festival.region.name}">Region</span></p>
-            <p th:if="${genre} == null">Genre: <span th:text="${festival.genre.name}">Genre</span></p>
+            <p th:if="${region} == null">
+                <span th:text="#{festivals.region}">Region:</span>
+                <span th:text="${festival.region.name}">Region</span>
+            </p>
+            <p th:if="${genre} == null">
+                <span th:text="#{festivals.genre}">Genre:</span>
+                <span th:text="${festival.genre.name}">Genre</span>
+            </p>
 
-            <p>Performances:
+            <p>
+                <span th:text="#{festivals.performances}">Performances:</span>
             <ul>
                 <li th:each="performance : ${festival.performances}"
                     th:text="${performance.artistName} + ' at ' + ${{performance.startDateTime}} + ' to ' + ${{performance.endDateTime}}">
                     Performance
                 </li>
             </ul>
+            </p>
 
-            <p>Available Seats: <span th:text="${festival.availableSeats}">Available Seats</span></p>
+            <p>
+                <span th:text="#{festivals.availableSeats}">Available Seats:</span>
+                <span th:text="${festival.availableSeats}">Available Seats</span>
+            </p>
 
             <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || userRole == 'admin'}">
-                Ticket Price:
+                <span th:text="#{festivals.ticketPrice}">Ticket Price:</span>
                 <span th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span>
             </p>
 
             <!--Tickets bought-->
             <th:block th:if="${userRole == 'user'}">
-                <p th:if="${ticketsBoughtPerFestival[festival.festivalId] > 0}">Tickets Bought:
+                <p th:if="${ticketsBoughtPerFestival[festival.festivalId] > 0}">
+                    <span th:text="#{festivals.ticketsBought}">Tickets Bought:</span>
                     <span th:text="${ticketsBoughtPerFestival[festival.festivalId]}">Number</span>
                 </p>
             </th:block>
             <!--Buy ticket-->
             <th:block th:if="${festival.availableSeats != null && festival.availableSeats > 0 && userRole == 'user'}">
                 <a class="button-link" th:href="@{/festivals/buy(festivalId=${festival.festivalId})}">
-                    Buy Ticket(s)
+                    <span th:text="#{festivals.buyTickets}">Buy Ticket(s)</span>
                 </a>
             </th:block>
 
             <!--Add performance-->
             <th:block th:if="${userRole == 'admin'}">
-                <a class="button-link" th:href="@{/festivals/addPerformance(festivalId=${festival.festivalId})}">Add
-                    Performance</a>
+                <a class="button-link" th:href="@{/festivals/addPerformance(festivalId=${festival.festivalId})}">
+                    <span th:text="#{festivals.addPerformance}">Add Performance</span>
+                </a>
             </th:block>
 
             <!--Remove performance-->
             <th:block th:if="${userRole == 'admin'}">
-                <a class="button-link" th:href="@{/festivals/removePerformance}">Remove Performance(s)</a>
+                <a class="button-link" th:href="@{/festivals/removePerformance}">
+                    <span th:text="#{festivals.removePerformance}">Remove Performance(s)</span>
+                </a>
             </th:block>
 
         </li>

@@ -22,33 +22,30 @@ import java.util.Set;
 @Setter
 @Table(name = "performance")
 @ValidFestivalNumbersConstraint
-//@ValidPerformanceTime(message = "Start time must be between 10:00 and 23:00 with minutes as 00, and not overlap with other performances")
+//@ValidPerformanceTime(message = "{performance.validPerformanceTime}")
 public class Performance {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long performanceId;
 
-    @NotNull(message = "Name can not be empty")
-    @NotBlank(message = "Name can not be empty")
-    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Name should only exist out of letters or spaces, for example “The Rolling Stones”")
+    @NotNull(message = "{performance.artistName.notNull}")
+    @NotBlank(message = "{performance.artistName.notBlank}")
+    @Pattern(regexp = "^[A-Za-z\\s]+$", message = "{performance.artistName.pattern}")
     private String artistName;
 
-    @NotNull(message = "Start date/time can not be empty")
+    @NotNull(message = "{performance.startDateTime.notNull}")
     private LocalDateTime startDateTime;
 
-    @NotNull(message = "End date/time can not be empty")
+    @NotNull(message = "{performance.endDateTime.notNull}")
     private LocalDateTime endDateTime;
 
     @ManyToMany
     @JoinTable(name = "performance_sub_genre", joinColumns = @JoinColumn(name = "performanceId"), inverseJoinColumns = @JoinColumn(name = "subGenreId"))
-    @Size(max = 2, message = "Maximum 2 sub-genres are allowed")
+    @Size(max = 2, message = "{performance.subGenres.size}")
     private Set<SubGenre> subGenres;
 
-//    private SubGenre subGenre1;
-//    private SubGenre subGenre2;
-
-    @Range(min = 1000, max = 9999, message = "Festival number must be between 1000 and 9999")
+    @Range(min = 1000, max = 9999, message = "{performance.festivalNumber1.range}")
     private int festivalNumber1;
 
     private int festivalNumber2;
@@ -56,5 +53,4 @@ public class Performance {
     @ManyToOne
     @JoinColumn(name = "festivalId", nullable = false)
     private Festival festival;
-
 }
