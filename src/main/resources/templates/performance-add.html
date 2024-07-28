@@ -21,9 +21,14 @@
     <span th:text="#{performanceAdd.festivalStartDateTime}">Festival Start Date and Time:</span>
     <span th:text="${{festival.startDateTime}}"></span>
 </p>
+<!--TODO find why this is causing error, go to controller to avoid this problem being caused-->
+<!--<p>-->
+<!--    <span th:text="#{performanceAdd.festivalGenre}">Festival Genre:</span>-->
+<!--    <span th:text="${festival.genre.getName()}"></span>-->
+<!--</p>-->
 <p>
     <span th:text="#{performanceAdd.festivalGenre}">Festival Genre:</span>
-    <span th:text="${festival.genre.getName()}"></span>
+    <span th:text="${festival.genre != null ? festival.genre.getName() : 'N/A'}"></span>
 </p>
 
 <form class="flex flex-col mt-16 gap-4" method="post"
