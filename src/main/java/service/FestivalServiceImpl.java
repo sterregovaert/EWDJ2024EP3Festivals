@@ -1,14 +1,15 @@
 package service;
 
-import domain.Festival;
-import domain.Genre;
-import domain.Region;
-import domain.SubGenre;
+import domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.*;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class FestivalServiceImpl implements FestivalService {
@@ -104,16 +105,20 @@ public class FestivalServiceImpl implements FestivalService {
     }
 
     public List<String> getArtistsByFestival(Long festivalId) {
-        // Mock implementation, replace with actual logic
-        return Arrays.asList("Artist1", "Artist2", "Artist3");
-
-        // festival => for every performance get artist => return list of DISTINCT artists
-
-
+        return festivalRepository.findById(festivalId)
+                .map(festival -> festival.getPerformances().stream()
+                        .map(Performance::getArtistName)
+                        .distinct()
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
     }
 
     public List<String> getFestivalsByGenre(String genre) {
-        // Mock implementation, replace with actual logic
-        return Arrays.asList("Festival1", "Festival2", "Festival3");
+        return genreRepository.findByName(genre)
+                .map(festivalRepository::findByGenre)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(Festival::getName)
+                .collect(Collectors.toList());
     }
 }

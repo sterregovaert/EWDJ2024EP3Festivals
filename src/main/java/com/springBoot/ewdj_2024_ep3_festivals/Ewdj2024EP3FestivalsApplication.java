@@ -10,7 +10,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-import perform.PerformRestFestival;
 import service.*;
 import validator.PerformanceValidation;
 import validator.TicketValidation;
@@ -27,16 +26,15 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     public static void main(String[] args) {
         SpringApplication.run(Ewdj2024EP3FestivalsApplication.class, args);
 
-        try {
-            new PerformRestFestival();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            new PerformRestFestival();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-//        registry.addRedirectViewController("/", "/rest/emp/dummy");
         registry.addRedirectViewController("/", "/dashboard");
         registry.addViewController("/403").setViewName("403");
     }

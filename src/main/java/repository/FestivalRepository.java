@@ -20,4 +20,6 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
     @Query("SELECT f.availableSeats FROM Festival f WHERE f.festivalId = :festivalId")
     int findAvailableSeatsByFestivalId(Long festivalId);
+
+    List<Festival> findByGenre(Genre genre);
 }
