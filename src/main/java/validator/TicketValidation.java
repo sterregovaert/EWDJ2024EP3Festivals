@@ -28,13 +28,14 @@ public class TicketValidation implements Validator {
         // Check if the quantity of all tickets for a single festival is not above the limit
         Integer totalTicketsForFestival = ticketRepository.sumTicketQuantitiesByUserIdAndFestivalId(ticket.getUser().getUserId(), ticket.getFestival().getFestivalId());
         if (totalTicketsForFestival != null && totalTicketsForFestival + ticket.getQuantity() > FESTIVAL_TICKET_LIMIT) {
-            errors.rejectValue("quantity", "quantity.exceedsFestivalLimit", new Object[]{FESTIVAL_TICKET_LIMIT}, "You can buy no more than {limit} tickets for a single festival.");
+//            errors.rejectValue("quantity", "quantity.exceedsFestivalLimit", new Object[]{FESTIVAL_TICKET_LIMIT}, "You can buy no more than {limit} tickets for a single festival.");
+            errors.rejectValue("quantity", "quantity.exceedsFestivalLimit", new Object[]{FESTIVAL_TICKET_LIMIT}, "You can buy no more than {0} tickets for a single festival.");
         }
 
         // Check if the total number of tickets bought across all festivals is more than the limit
         int totalTicketsBought = ticketRepository.sumTicketQuantitiesByUsername(ticket.getUser().getUsername());
         if (totalTicketsBought + ticket.getQuantity() > TOTAL_TICKET_LIMIT) {
-            errors.rejectValue("quantity", "quantity.totalExceedsLimit", new Object[]{TOTAL_TICKET_LIMIT}, "You can buy no more than {limit} tickets in total for all festivals.");
+            errors.rejectValue("quantity", "quantity.totalExceedsLimit", new Object[]{TOTAL_TICKET_LIMIT}, "You can buy no more than {0} tickets in total for all festivals.");
         }
 
         // Check if the quantity of tickets being bought is more than the available seats

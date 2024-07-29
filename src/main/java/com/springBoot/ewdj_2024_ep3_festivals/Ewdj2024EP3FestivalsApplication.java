@@ -36,6 +36,7 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+//        registry.addRedirectViewController("/", "/rest/emp/dummy");
         registry.addRedirectViewController("/", "/dashboard");
         registry.addViewController("/403").setViewName("403");
     }
@@ -67,7 +68,7 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
 
     @Bean
     FestivalService festivalService() {
-        return new FestivalService();
+        return new FestivalServiceImpl();
     }
 
     @Bean
