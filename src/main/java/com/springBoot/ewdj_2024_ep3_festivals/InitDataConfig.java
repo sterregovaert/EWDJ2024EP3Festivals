@@ -17,6 +17,9 @@ import java.util.stream.Stream;
 @Component
 public class InitDataConfig implements CommandLineRunner {
     private static final String BCRYPTED_PASWOORD = "$2a$12$pEsi.Zg3VSZ7WJcyfpObE.zW6bsgIZV965XSE3kFcqR9nRr0XKC8G";
+    // string 'paswoord': https://bcrypt-generator.com
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
+
     @Autowired
     private MyUserRepository myUserRepository;
     @Autowired
@@ -31,8 +34,7 @@ public class InitDataConfig implements CommandLineRunner {
     private PerformanceRepository performanceRepository;
     @Autowired
     private TicketRepository ticketRepository;
-    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
-    // string 'paswoord': https://bcrypt-generator.com
+
 
     @Override
     public void run(String... args) {
@@ -55,30 +57,16 @@ public class InitDataConfig implements CommandLineRunner {
         // -------- -------- --------
         // -------- SUBGENRES --------
         // -------- -------- --------
-//        List<Genre> genres = genreRepository.findAll();
-
         List<SubGenre> subGenres = genres.stream().flatMap(genre -> {
             return switch (genre.getName()) {
-                case "Rock" -> Stream.of(
-                        SubGenre.builder().name("Alternative Rock").genre(genre).build(),
-                        SubGenre.builder().name("Classic Rock").genre(genre).build(),
-                        SubGenre.builder().name("Hard Rock").genre(genre).build()
-                );
-                case "Pop" -> Stream.of(
-                        SubGenre.builder().name("Synth Pop").genre(genre).build(),
-                        SubGenre.builder().name("Electro Pop").genre(genre).build(),
-                        SubGenre.builder().name("Indie Pop").genre(genre).build()
-                );
-                case "Jazz" -> Stream.of(
-                        SubGenre.builder().name("Smooth Jazz").genre(genre).build(),
-                        SubGenre.builder().name("Bebop").genre(genre).build(),
-                        SubGenre.builder().name("Swing").genre(genre).build()
-                );
-                case "Electronic" -> Stream.of(
-                        SubGenre.builder().name("House").genre(genre).build(),
-                        SubGenre.builder().name("Techno").genre(genre).build(),
-                        SubGenre.builder().name("Trance").genre(genre).build()
-                );
+                case "Rock" ->
+                        Stream.of(SubGenre.builder().name("Alternative Rock").genre(genre).build(), SubGenre.builder().name("Classic Rock").genre(genre).build(), SubGenre.builder().name("Hard Rock").genre(genre).build());
+                case "Pop" ->
+                        Stream.of(SubGenre.builder().name("Synth Pop").genre(genre).build(), SubGenre.builder().name("Electro Pop").genre(genre).build(), SubGenre.builder().name("Indie Pop").genre(genre).build());
+                case "Jazz" ->
+                        Stream.of(SubGenre.builder().name("Smooth Jazz").genre(genre).build(), SubGenre.builder().name("Bebop").genre(genre).build(), SubGenre.builder().name("Swing").genre(genre).build());
+                case "Electronic" ->
+                        Stream.of(SubGenre.builder().name("House").genre(genre).build(), SubGenre.builder().name("Techno").genre(genre).build(), SubGenre.builder().name("Trance").genre(genre).build());
                 default -> Stream.empty();
             };
         }).collect(Collectors.toList());
@@ -109,7 +97,6 @@ public class InitDataConfig implements CommandLineRunner {
 
         List<Festival> festivals = new ArrayList<>();
         List<Performance> performances = new ArrayList<>();
-        List<Performance> scheduledPerformances = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             // festival
             String adjective = adjectives.get(ThreadLocalRandom.current().nextInt(adjectives.size()));
@@ -117,19 +104,12 @@ public class InitDataConfig implements CommandLineRunner {
             String whimsicalWord = whimsicalWords.get(ThreadLocalRandom.current().nextInt(whimsicalWords.size()));
             String festivalName = String.format("%s %s %s", adjective, whimsicalWord, type);
 
-            LocalDateTime startOfFestival = LocalDateTime.of(2024, ThreadLocalRandom.current()
-                    .nextInt(7, 13), ThreadLocalRandom.current() // month
+            LocalDateTime startOfFestival = LocalDateTime.of(2024, ThreadLocalRandom.current().nextInt(7, 13), ThreadLocalRandom.current() // month
                     .nextInt(1, 29), ThreadLocalRandom.current() // day
                     .nextInt(9, 20), 0) // hour and minutes
                     ;
 
-            Festival festival = Festival.builder()
-                    .startDateTime(startOfFestival)
-                    .region(allRegions.get(ThreadLocalRandom.current().nextInt(allRegions.size())))
-                    .genre(allGenres.get(ThreadLocalRandom.current().nextInt(allGenres.size())))
-                    .availableSeats(ThreadLocalRandom.current().nextInt(0, 31))
-                    .ticketPrice(ThreadLocalRandom.current().nextDouble(1, 150.1))
-                    .name(festivalName).build();
+            Festival festival = Festival.builder().startDateTime(startOfFestival).region(allRegions.get(ThreadLocalRandom.current().nextInt(allRegions.size()))).genre(allGenres.get(ThreadLocalRandom.current().nextInt(allGenres.size()))).availableSeats(ThreadLocalRandom.current().nextInt(0, 31)).ticketPrice(ThreadLocalRandom.current().nextDouble(1, 150.1)).name(festivalName).build();
 
             festivals.add(festival);
 
@@ -138,8 +118,6 @@ public class InitDataConfig implements CommandLineRunner {
                 Performance performance = new Performance();
                 List<String> artistNames = genreToArtistsMap.get(festival.getGenre().getName());
                 String artistName = artistNames.get(new Random().nextInt(artistNames.size()));
-
-                int performanceDurationHours = 1;
 
                 LocalDateTime startOfPerformance = festival.getStartDateTime().plusHours(j + 1);
 

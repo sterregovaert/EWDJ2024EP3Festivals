@@ -12,22 +12,6 @@ import java.security.Principal;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-//    @Autowired
-//    private DateFormatter dateFormatter;
-//
-//    @Autowired
-//    private TimeFormatter timeFormatter;
-//
-//    @ModelAttribute("dateFormatter")
-//    public DateFormatter dateFormatter() {
-//        return dateFormatter;
-//    }
-//
-//    @ModelAttribute("timeFormatter")
-//    public TimeFormatter timeFormatter() {
-//        return timeFormatter;
-//    }
-
     @ModelAttribute
     public void addAttributes(Model model, Principal principal, Authentication authentication) {
         if (principal != null) {
