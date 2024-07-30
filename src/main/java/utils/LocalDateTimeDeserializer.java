@@ -14,7 +14,7 @@ public class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
     @Override
     public LocalDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         String valueAsString = p.getValueAsString();
-        if (valueAsString == null || valueAsString.isBlank()) {
+        if (valueAsString == null || valueAsString.trim().isEmpty()) {
             return null;
         }
         return LocalDateTime.parse(valueAsString, FORMATTER);
