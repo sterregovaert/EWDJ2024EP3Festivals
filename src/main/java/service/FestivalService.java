@@ -34,5 +34,5 @@ public interface FestivalService {
     // REST
     List<String> getArtistsByFestival(Long festivalId);
 
-    List<String> getFestivalsByGenre(String genre);
+    List<Festival> getFestivalsByGenre(String genre);
 }

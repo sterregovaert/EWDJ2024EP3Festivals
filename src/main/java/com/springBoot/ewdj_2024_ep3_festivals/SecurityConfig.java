@@ -40,6 +40,10 @@ public class SecurityConfig {
                                         .requestMatchers("/festivals/buy").hasRole(String.valueOf(Role.USER))
                                         .requestMatchers("/festivals/addPerformance").hasRole(String.valueOf(Role.ADMIN))
 
+                                        // rest
+                                        .requestMatchers("/api/festival/**").permitAll()
+                                        .requestMatchers("/api/festivals").permitAll()
+
                                         // general stuff
                                         .requestMatchers("/css/**").permitAll()
                                         .requestMatchers("/i18n/**").permitAll()

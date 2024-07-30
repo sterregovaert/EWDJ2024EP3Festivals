@@ -1,6 +1,7 @@
 package service;
 
 import domain.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.*;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class FestivalServiceImpl implements FestivalService {
     @Autowired
@@ -113,12 +115,9 @@ public class FestivalServiceImpl implements FestivalService {
                 .orElse(Collections.emptyList());
     }
 
-    public List<String> getFestivalsByGenre(String genre) {
-        return genreRepository.findByName(genre)
-                .map(festivalRepository::findByGenre)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(Festival::getName)
-                .collect(Collectors.toList());
+    public List<Festival> getFestivalsByGenre(String genre) {
+        Genre genreEntity = genreRepository.findByName(genre).orElseThrow(() -> new IllegalArgumentException("Genre not found"));
+
+        return festivalRepository.findByGenre(genreEntity);
     }
 }

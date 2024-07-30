@@ -1,5 +1,6 @@
 package domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -39,17 +40,21 @@ public class Festival {
 
     private double ticketPrice;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "festival", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Performance> performances;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "regionId")
     private Region region;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "genreId")
     private Genre genre;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "festival", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets;
 

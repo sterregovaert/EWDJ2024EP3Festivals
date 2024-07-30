@@ -1,5 +1,6 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
+import domain.Festival;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import service.FestivalService;
@@ -21,7 +22,7 @@ public class FestivalsRestController {
 
     // overview of festivals by genre
     @GetMapping("/festivals")
-    public List<String> getFestivalsByGenre(@RequestParam String genre) {
+    public List<Festival> getFestivalsByGenre(@RequestParam String genre) {
         return festivalService.getFestivalsByGenre(genre);
     }
 }
