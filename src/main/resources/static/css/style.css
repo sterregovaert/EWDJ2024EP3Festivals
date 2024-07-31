@@ -18,46 +18,15 @@ input {
 }
 
 /*NAVIGATION*/
-.user-icon {
-  width: 2rem;
-}
-
 /*LOGIN*/
-#login-box {
-  width: 30rem;
-  padding: 2rem;
-  margin: 100px auto;
-  background: #fff;
-  border-radius: 15px;
-  border: 1px solid #000;
-}
-
-/*SPORT*/
-.sportImage {
-  width: 3rem;
-  height: 3rem;
-}
-
-.competition-button {
-  background-color: white; /* Green */
-  border: 2px solid black;
-  padding: 0.25rem 1rem;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 25px;
-  display: inline-block;
-  width: fit-content;
-}
-
 /*OTHER*/
 .error {
   padding: 15px;
   margin-bottom: 20px;
-  border: 1px solid transparent;
+  border: 1px solid #ebccd1;
   border-radius: 4px;
   color: #a94442;
   background-color: #f2dede;
-  border-color: #ebccd1;
 }
 
 .msg {

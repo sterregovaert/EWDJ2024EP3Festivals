@@ -40,6 +40,7 @@ public class PerformanceTimeValidator implements ConstraintValidator<ValidPerfor
             LocalDateTime otherStart = otherPerformance.getStartDateTime();
             LocalDateTime otherEnd = otherPerformance.getEndDateTime();
 
+            // TODO check if it shouldn't be displayed somewhere else the error instead of startdatetime
             // Check if the performance overlaps with any existing performance
             if ((value.isAfter(otherStart) || value.isEqual(otherStart)) && value.isBefore(otherEnd)) {
                 context.disableDefaultConstraintViolation();

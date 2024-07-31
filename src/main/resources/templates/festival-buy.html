@@ -9,31 +9,37 @@
 <body>
 <div th:replace="~{nav :: navbar}"></div>
 
-<!--Info-->
-<p>
-    <span th:text="#{festivalBuy.buyingTicketsFor}">You're buying tickets for:</span>
-    <span th:text="${festival.name}"></span>
-</p>
-<p>
-    <span th:text="#{festivalBuy.availableSeats}">Available seats:</span>
-    <span th:text="${festival.availableSeats}"></span>
-</p>
-<p>
-    <span th:text="#{festivalBuy.ticketsBought}">Tickets already bought:</span>
-    <span th:text="${ticketsBought}"></span>
-</p>
+<div class="flex justify-center align-center mt-8 mb-8">
+    <div class="w-5/12 border-2 border-black p-16 rounded-md bg-blue-100">
+        <!--Info-->
+        <p>
+            <span th:text="#{festivalBuy.buyingTicketsFor}">You're buying tickets for:</span>
+            <span th:text="${festival.name}"></span>
+        </p>
+        <p>
+            <span th:text="#{festivalBuy.availableSeats}">Available seats:</span>
+            <span th:text="${festival.availableSeats}"></span>
+        </p>
+        <p>
+            <span th:text="#{festivalBuy.ticketsBought}">Tickets already bought:</span>
+            <span th:text="${ticketsBought}"></span>
+        </p>
 
-<!--Buy ticket-->
-<form class="flex flex-col mt-16 gap-4" method="post" th:action="@{/festivals/buy(festivalId=${festival.festivalId})}"
-      th:object="${ticket}">
+        <!--Buy ticket-->
+        <form class="flex flex-col mt-16 gap-4" method="post"
+              th:action="@{/festivals/buy(festivalId=${festival.festivalId})}"
+              th:object="${ticket}">
 
-    <div>
-        <label for="quantity" th:text="#{festivalBuy.quantity}">Quantity:</label>
-        <input id="quantity" name="quantity" th:field="*{quantity}" type="number"/>
-        <p th:errorclass="error" th:errors="*{quantity}" th:if="${#fields.hasErrors('quantity')}"></p>
+            <div>
+                <label for="quantity" th:text="#{festivalBuy.quantity}">Quantity:</label>
+                <input id="quantity" name="quantity" th:field="*{quantity}" type="number"/>
+                <p th:errorclass="error" th:errors="*{quantity}" th:if="${#fields.hasErrors('quantity')}"></p>
+            </div>
+
+            <button class="bg-blue-500 text-white" th:text="#{festivalBuy.buyTickets}" type="submit">Buy Ticket(s)
+            </button>
+        </form>
     </div>
-
-    <button th:text="#{festivalBuy.buyTickets}" type="submit">Buy Ticket(s)</button>
-</form>
+</div>
 </body>
 </html>

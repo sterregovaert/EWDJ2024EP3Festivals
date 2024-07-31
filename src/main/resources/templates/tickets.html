@@ -9,46 +9,49 @@
 <body>
 <div th:replace="~{nav :: navbar}"></div>
 
-<table class="divide-y divide-gray-200">
-    <thead class="bg-gray-700">
-    <tr>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
-            th:text="#{tickets.ticketId}">Ticket ID
-        </th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
-            th:text="#{tickets.startDateTime}">Start Date and Time
-        </th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
-            th:text="#{tickets.festivalName}">Festival name
-        </th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
-            th:text="#{tickets.region}">Region
-        </th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
-            th:text="#{tickets.genre}">Genre
-        </th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
-            th:text="#{tickets.quantity}">Quantity
-        </th>
-    </tr>
-    </thead>
-    <tbody class="bg-white divide-y divide-gray-200" th:each="ticket : ${tickets}">
-    <tr>
-        <td th:text="${ticket.ticketId}"></td>
-        <td th:text="${{ticket.festival.startDateTime}}"></td>
-        <td th:text="${ticket.festival.name}"></td>
-        <td th:text="${ticket.festival.region.name}"></td>
-        <td th:text="${ticket.festival.genre.name}"></td>
-        <td th:text="${ticket.quantity}"></td>
-    </tr>
-    </tbody>
-    <tfoot>
-    <tr>
-        <td class="text-right font-bold" colspan="5" th:text="#{tickets.total}">Total:</td>
-        <td class="font-bold" th:text="${#aggregates.sum(tickets.![quantity])}"></td>
-    </tr>
-    </tfoot>
-</table>
-
+<div class="flex justify-center align-center mt-8 mb-8">
+    <div class="border-2 border-black p-16 rounded-md bg-blue-100">
+        <table class="divide-y divide-gray-200">
+            <thead class="bg-blue-700">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
+                    th:text="#{tickets.ticketId}">Ticket ID
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
+                    th:text="#{tickets.startDateTime}">Start Date and Time
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
+                    th:text="#{tickets.festivalName}">Festival name
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
+                    th:text="#{tickets.region}">Region
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
+                    th:text="#{tickets.genre}">Genre
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider" scope="col"
+                    th:text="#{tickets.quantity}">Quantity
+                </th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" th:each="ticket : ${tickets}">
+            <tr>
+                <td class="flex p-2 justify-center" th:text="${ticket.ticketId}"></td>
+                <td th:text="${{ticket.festival.startDateTime}}"></td>
+                <td class="flex mr-4" th:text="${ticket.festival.name}"></td>
+                <td th:text="${ticket.festival.region.name}"></td>
+                <td th:text="${ticket.festival.genre.name}"></td>
+                <td th:text="${ticket.quantity}"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td class="text-right font-bold" colspan="5" th:text="#{tickets.total}">Total:</td>
+                <td class="font-bold" th:text="${#aggregates.sum(tickets.![quantity])}"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
 </body>
 </html>

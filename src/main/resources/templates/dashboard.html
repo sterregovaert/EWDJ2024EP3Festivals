@@ -19,27 +19,53 @@
 <body>
 <div th:replace="~{nav :: navbar}"></div>
 
-<!-- Display success message if it exists -->
-<div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+<div class="flex justify-center align-center mt-8 mb-8">
+    <div class="flex w-3/12 justify-center border-2 border-black p-16 rounded-md bg-blue-100">
+        <div class="flex flex-col gap-8">
+            <div class="flex flex-col mb-4 justify-center gap-8">
+                <!-- Display success message if it exists -->
+                <div class="alert alert-success text-green-500 fond-bold" th:if="${message}"
+                     th:text="${message}"></div>
 
-<th:block th:if="${userRole == 'user'}">
-    <a th:href="|/tickets|" th:if="${ticketCount > 0}">
-        <button th:text="#{dashboard.viewTickets}">View Tickets</button>
-    </a>
-</th:block>
+                <th:block th:if="${userRole == 'user'}">
+                    <a th:href="|/tickets|" th:if="${ticketCount > 0}">
+                        <button class="bg-blue-500 text-white" th:text="#{dashboard.viewTickets}">View Tickets</button>
+                    </a>
+                </th:block>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold mb-4" th:text="#{dashboard.musicGenres}">Music Genres</h2>
+                <ul>
+                    <li class="flex items-center" th:each="genre : ${genres}">
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2"></path>
+                        </svg>
+                        <a th:href="@{/festivals(genre=${genre.name})}" th:text="${genre.name}">Genre</a>
 
-<h2 th:text="#{dashboard.musicGenres}">Music Genres</h2>
-<ul>
-    <li th:each="genre : ${genres}">
-        <a th:href="@{/festivals(genre=${genre.name})}" th:text="${genre.name}">Genre</a>
-    </li>
-</ul>
+                    </li>
+                </ul>
+            </div>
 
-<h2 th:text="#{dashboard.regions}">Regions</h2>
-<ul>
-    <li th:each="region : ${regions}">
-        <a th:href="@{/festivals(region=${region.name})}" th:text="${region.name}">Region</a>
-    </li>
-</ul>
+            <div>
+                <h2 class="text-2xl font-bold mb-4" th:text="#{dashboard.regions}">Regions</h2>
+                <ul>
+                    <li class="flex items-center" th:each="region : ${regions}">
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2"></path>
+                        </svg>
+                        <a th:href="@{/festivals(region=${region.name})}" th:text="${region.name}">Region</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
 </body>
 </html>

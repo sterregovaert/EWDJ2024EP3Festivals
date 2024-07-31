@@ -8,77 +8,99 @@
 </head>
 <body>
 <div th:replace="~{nav :: navbar}"></div>
+
+
 <div>
-    <h2 th:text="${(genre != null) ? (region != null) ? (genre + ' &amp; ' + region) : genre : (region != null) ? region : ''}">
+    <h2 class="font-bold text-blue-900 text-3xl flex justify-center mt-4 mb-4"
+        th:text="${(genre != null) ? (region != null) ? (genre + ' &amp; ' + region) : genre : (region != null) ? region : ''}">
         Music Genre and Region</h2>
-    <ul>
-        <li th:each="festival : ${festivals}">
-            <h3 th:text="${festival.name}">Festival Name</h3>
+    <div class="flex flex-wrap justify-center gap-4 mt-8 mb-8">
+        <div class="flex flex-col gap-4 w-1/4 border-2 border-black p-4 rounded-md bg-blue-100"
+             th:each="festival : ${festivals}">
+            <h3 class="font-bold text-2xl" th:text="${festival.name}">Festival Name</h3>
 
-            <p>
-                <span th:text="#{festivals.dateAndStartTime}">Date and Start Time:</span>
-                <span th:text="${{festival.startDateTime}}">Date and Time</span>
-            </p>
 
-            <p th:if="${region} == null">
-                <span th:text="#{festivals.region}">Region:</span>
-                <span th:text="${festival.region.name}">Region</span>
-            </p>
-            <p th:if="${genre} == null">
-                <span th:text="#{festivals.genre}">Genre:</span>
-                <span th:text="${festival.genre.name}">Genre</span>
-            </p>
-
-            <p>
-                <span th:text="#{festivals.performances}">Performances:</span>
-            <ul>
-                <li th:each="performance : ${festival.performances}"
-                    th:text="${performance.artistName} + ' at ' + ${{performance.startDateTime}} + ' to ' + ${{performance.endDateTime}}">
-                    Performance
-                </li>
-            </ul>
-            </p>
-
-            <p>
-                <span th:text="#{festivals.availableSeats}">Available Seats:</span>
-                <span th:text="${festival.availableSeats}">Available Seats</span>
-            </p>
-
-            <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || userRole == 'admin'}">
-                <span th:text="#{festivals.ticketPrice}">Ticket Price:</span>
-                <span th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span>
-            </p>
-
-            <!--Tickets bought-->
-            <th:block th:if="${userRole == 'user'}">
-                <p th:if="${ticketsBoughtPerFestival[festival.festivalId] > 0}">
-                    <span th:text="#{festivals.ticketsBought}">Tickets Bought:</span>
-                    <span th:text="${ticketsBoughtPerFestival[festival.festivalId]}">Number</span>
+            <div class="flex flex-col gap-1">
+                <p>
+                    <span th:text="#{festivals.dateAndStartTime}">Date and Start Time:</span>
+                    <span th:text="${{festival.startDateTime}}">Date and Time</span>
                 </p>
-            </th:block>
-            <!--Buy ticket-->
-            <th:block th:if="${festival.availableSeats != null && festival.availableSeats > 0 && userRole == 'user'}">
-                <a class="button-link" th:href="@{/festivals/buy(festivalId=${festival.festivalId})}">
-                    <span th:text="#{festivals.buyTickets}">Buy Ticket(s)</span>
-                </a>
-            </th:block>
 
-            <!--Add performance-->
-            <th:block th:if="${userRole == 'admin'}">
-                <a class="button-link" th:href="@{/festivals/addPerformance(festivalId=${festival.festivalId})}">
-                    <span th:text="#{festivals.addPerformance}">Add Performance</span>
-                </a>
-            </th:block>
+                <p th:if="${region} == null">
+                    <span th:text="#{festivals.region}">Region:</span>
+                    <span th:text="${festival.region.name}">Region</span>
+                </p>
+                <p th:if="${genre} == null">
+                    <span th:text="#{festivals.genre}">Genre:</span>
+                    <span th:text="${festival.genre.name}">Genre</span>
+                </p>
 
-            <!--Remove performance-->
-            <th:block th:if="${userRole == 'admin'}">
-                <a class="button-link" th:href="@{/festivals/removePerformance}">
-                    <span th:text="#{festivals.removePerformance}">Remove Performance(s)</span>
-                </a>
-            </th:block>
+                <div class="p-2 border-blue-200 border-2 rounded-md">
+                    <p class="font-bold">
+                        <span th:text="#{festivals.performances}">Performances:</span>
+                    </p>
+                    <ul>
+                        <li th:each="performance : ${festival.performances}"
+                            th:text="${performance.artistName} + ' at ' + ${{performance.startDateTime}} + ' to ' + ${{performance.endDateTime}}">
+                            Performance
+                        </li>
+                    </ul>
+                </div>
 
-        </li>
-    </ul>
+                <p>
+                    <span th:text="#{festivals.availableSeats}">Available Seats:</span>
+                    <span th:text="${festival.availableSeats}">Available Seats</span>
+                </p>
+
+                <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || userRole == 'admin'}">
+                    <span th:text="#{festivals.ticketPrice}">Ticket Price:</span>
+                    <span th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span>
+                </p>
+
+                <!--Tickets bought-->
+                <th:block th:if="${userRole == 'user'}">
+                    <p th:if="${ticketsBoughtPerFestival[festival.festivalId] > 0}">
+                        <span th:text="#{festivals.ticketsBought}">Tickets Bought:</span>
+                        <span th:text="${ticketsBoughtPerFestival[festival.festivalId]}">Number</span>
+                    </p>
+                </th:block>
+            </div>
+
+
+            <div class="flex flex-col gap-2">
+                <!--Buy ticket-->
+                <th:block
+                        th:if="${festival.availableSeats != null && festival.availableSeats > 0 && userRole == 'user'}">
+                    <a class="button-link" th:href="@{/festivals/buy(festivalId=${festival.festivalId})}">
+                        <button class="bg-blue-500 text-white">
+                            <span th:text="#{festivals.buyTickets}">Buy Ticket(s)</span>
+                        </button>
+                    </a>
+                </th:block>
+
+                <!--Add performance-->
+                <th:block th:if="${userRole == 'admin'}">
+                    <a class="button-link"
+                       th:href="@{/festivals/addPerformance(festivalId=${festival.festivalId})}">
+                        <button class="bg-blue-500 text-white">
+                            <span th:text="#{festivals.addPerformance}">Add Performance</span>
+                        </button>
+                    </a>
+                </th:block>
+
+                <!--Remove performance-->
+                <th:block th:if="${userRole == 'admin'}">
+                    <a class="button-link" th:href="@{/festivals/removePerformance}">
+                        <button class="bg-blue-300 text-black">
+                            <span th:text="#{festivals.removePerformance}">Remove Performance(s)</span>
+                        </button>
+                    </a>
+                </th:block>
+            </div>
+
+
+        </div>
+    </div>
 </div>
 </body>
 </html>

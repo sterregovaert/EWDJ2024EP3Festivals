@@ -8,10 +8,10 @@
 </head>
 <body>
 <div th:fragment="navbar">
-    <nav class="flex gap-4 bg-gray-700 justify-end p-2 items-center">
+    <nav class="flex gap-4 bg-blue-900 justify-end p-2 items-center">
         <div class="flex font-bold border-black border-2 rounded-full py-1 px-4 bg-white gap-2">
             <span th:text="${userRole}"></span>
-            <img alt="User Icon" class="user-icon" th:src="@{'/icons/' + ${userRole} + '.png'}">
+            <img alt="User Icon" class="w-5 h-5" th:src="@{'/icons/' + ${userRole} + '.png'}">
             <p th:text="|${username}|"></p>
         </div>
         <div class="font-bold border-black border-2 rounded-full py-1 px-4 bg-white">

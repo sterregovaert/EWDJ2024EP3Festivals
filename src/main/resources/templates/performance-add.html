@@ -9,107 +9,125 @@
 <body>
 <div th:replace="~{nav :: navbar}"></div>
 
-<p>
-    <span th:text="#{performanceAdd.festivalName}">Festival Name:</span>
-    <span th:text="${festival.name}"></span>
-</p>
-<p>
-    <span th:text="#{performanceAdd.festivalId}">Festival ID:</span>
-    <span th:text="${festival.festivalId}"></span>
-</p>
-<p>
-    <span th:text="#{performanceAdd.festivalStartDateTime}">Festival Start Date and Time:</span>
-    <span th:text="${{festival.startDateTime}}"></span>
-</p>
-<!--TODO find why this is causing error, go to controller to avoid this problem being caused-->
-<!--<p>-->
-<!--    <span th:text="#{performanceAdd.festivalGenre}">Festival Genre:</span>-->
-<!--    <span th:text="${festival.genre.getName()}"></span>-->
-<!--</p>-->
-<p>
-    <span th:text="#{performanceAdd.festivalGenre}">Festival Genre:</span>
-    <span th:text="${festival.genre != null ? festival.genre.getName() : 'N/A'}"></span>
-</p>
-
-<form class="flex flex-col mt-16 gap-4" method="post"
-      th:action="@{/festivals/addPerformance(festivalId=${festival.festivalId})}" th:object="${performance}">
-
-    <!--All errors that don't appear in the other specified error fields-->
-    <!--    <div th:if="${#fields.hasErrors('*')}">-->
-    <!--        <ul>-->
-    <!--            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>-->
-    <!--        </ul>-->
-    <!--    </div>-->
-    <div th:if="${#fields.hasErrors('*')}">
-        <ul>
-            <li th:each="err : ${#fields.errors('*')}"
-                th:if="${!#fields.hasErrors('artistName') && !#fields.hasErrors('startDateTime') && !#fields.hasErrors('endDateTime') && !#fields.hasErrors('subGenres') && !#fields.hasErrors('festivalNumber1') && !#fields.hasErrors('festivalNumber2')}"
-                th:text="${err}"></li>
-        </ul>
-    </div>
-
-    <!--Artist name-->
-    <div>
-        <label for="artistName" th:text="#{performanceAdd.artistName}">Name of artist or group:</label>
-        <input id="artistName" name="artistName" th:field="*{artistName}" type="text"/>
-        <p th:errorclass="error" th:errors="*{artistName}" th:if="${#fields.hasErrors('artistName')}"></p>
-    </div>
-
-    <div>
-        <!-- Start date time -->
+<div class="flex justify-center align-center mt-8 mb-8">
+    <div class="flex flex-col gap-8 w-5/12 border-2 border-black p-16 rounded-md bg-blue-100">
         <div>
-            <label for="startDateTime" th:text="#{performanceAdd.startDateTime}">Start Date/Time:</label>
-            <input id="startDateTime" name="startDateTime" th:value="${performance.startDateTime}"
-                   type="datetime-local">
-
-            <p th:errorclass="error" th:errors="*{startDateTime}"
-               th:if="${#fields.hasErrors('startDateTime')}"></p>
+            <h1 class="font-bold text-2xl">
+                <span th:text="#{performanceAdd.festivalName}">Festival Name:</span>
+                <span th:text="${festival.name}"></span>
+            </h1>
+            <p>
+                <span th:text="#{performanceAdd.festivalId}">Festival ID:</span>
+                <span th:text="${festival.festivalId}"></span>
+            </p>
+            <p>
+                <span th:text="#{performanceAdd.festivalStartDateTime}">Festival Start Date and Time:</span>
+                <span th:text="${{festival.startDateTime}}"></span>
+            </p>
+            <!--TODO find why this is causing error, go to controller to avoid this problem being caused-->
+            <!--<p>-->
+            <!--    <span th:text="#{performanceAdd.festivalGenre}">Festival Genre:</span>-->
+            <!--    <span th:text="${festival.genre.getName()}"></span>-->
+            <!--</p>-->
+            <p>
+                <span th:text="#{performanceAdd.festivalGenre}">Festival Genre:</span>
+                <span th:text="${festival.genre != null ? festival.genre.getName() : 'N/A'}"></span>
+            </p>
         </div>
 
-        <!-- End date time -->
         <div>
-            <label for="endDateTime" th:text="#{performanceAdd.endDateTime}">End Date/Time:</label>
-            <input id="endDateTime" name="endDateTime" th:value="${performance.endDateTime}" type="datetime-local">
-            <p th:errorclass="error" th:errors="*{endDateTime}" th:if="${#fields.hasErrors('endDateTime')}"></p>
+            <h1 class="font-bold text-2xl" th:text="#{performanceAdd.submitButton}"></h1>
+            <form class="flex flex-col gap-4" method="post"
+                  th:action="@{/festivals/addPerformance(festivalId=${festival.festivalId})}"
+                  th:object="${performance}">
+
+                <!--All errors that don't appear in the other specified error fields-->
+                <!--    <div th:if="${#fields.hasErrors('*')}">-->
+                <!--        <ul>-->
+                <!--            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>-->
+                <!--        </ul>-->
+                <!--    </div>-->
+                <div th:if="${#fields.hasErrors('*')}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('*')}"
+                            th:if="${!#fields.hasErrors('artistName') && !#fields.hasErrors('startDateTime') && !#fields.hasErrors('endDateTime') && !#fields.hasErrors('subGenres') && !#fields.hasErrors('festivalNumber1') && !#fields.hasErrors('festivalNumber2')}"
+                            th:text="${err}"></li>
+                    </ul>
+                </div>
+
+                <!--Artist name-->
+                <div>
+                    <label for="artistName" th:text="#{performanceAdd.artistName}">Name of artist or group:</label>
+                    <input id="artistName" name="artistName" th:field="*{artistName}" type="text"/>
+                    <p th:errorclass="error" th:errors="*{artistName}" th:if="${#fields.hasErrors('artistName')}"></p>
+                </div>
+
+                <div>
+                    <!-- Start date time -->
+                    <div>
+                        <label for="startDateTime" th:text="#{performanceAdd.startDateTime}">Start Date/Time:</label>
+                        <input id="startDateTime" name="startDateTime" th:value="${performance.startDateTime}"
+                               type="datetime-local">
+
+                        <p th:errorclass="error" th:errors="*{startDateTime}"
+                           th:if="${#fields.hasErrors('startDateTime')}"></p>
+                    </div>
+
+                    <!-- End date time -->
+                    <div>
+                        <label for="endDateTime" th:text="#{performanceAdd.endDateTime}">End Date/Time:</label>
+                        <input id="endDateTime" name="endDateTime" th:value="${performance.endDateTime}"
+                               type="datetime-local">
+                        <p th:errorclass="error" th:errors="*{endDateTime}"
+                           th:if="${#fields.hasErrors('endDateTime')}"></p>
+                    </div>
+
+                </div>
+
+
+                <!--Subgenres-->
+                <div>
+                    <div th:each="index : ${#numbers.sequence(1, 2)}">
+                        <label th:for="${'subGenre' + index}" th:text="#{performanceAdd.subGenre}">Subgenre
+                            [[${index}]]:</label>
+                        <select name="subGenres" th:field="*{subGenres}" th:id="${'subGenre' + index}">
+                            <option th:selected="${#lists.isEmpty(subGenres)}" value="">Select a subgenre</option>
+                            <option th:each="subGenre : ${subGenres}"
+                                    th:selected="${#lists.contains(subGenres, subGenre)}"
+                                    th:text="${subGenre.name}"
+                                    th:value="${subGenre.subGenreId}"></option>
+                        </select>
+                    </div>
+                    <p th:errorclass="error" th:errors="*{subGenres}" th:if="${#fields.hasErrors('subGenres')}"></p>
+                </div>
+
+
+                <!--Festival numbers-->
+                <div>
+                    <div>
+                        <label for="festivalNumber1"
+                               th:text="#{performanceAdd.festivalNumber1}">Festival-number1:</label>
+                        <input id="festivalNumber1" name="festivalNumber1" th:field="*{festivalNumber1}" type="number"/>
+                        <p th:errorclass="error" th:errors="*{festivalNumber1}"
+                           th:if="${#fields.hasErrors('festivalNumber1')}"></p>
+                    </div>
+                    <div>
+                        <label for="festivalNumber2" th:text="#{performanceAdd.festivalNumber2}">Festival-number
+                            2:</label>
+                        <input id="festivalNumber2" name="festivalNumber2" th:field="*{festivalNumber2}" type="number"/>
+                        <p th:errorclass="error" th:errors="*{festivalNumber2}"
+                           th:if="${#fields.hasErrors('festivalNumber2')}"></p>
+                    </div>
+                </div>
+
+                <!--submit button-->
+                <button class="bg-blue-500 text-white" th:text="#{performanceAdd.submitButton}" type="submit">Add
+                    performance
+                </button>
+            </form>
         </div>
 
     </div>
-
-
-    <!--Subgenres-->
-    <div>
-        <div th:each="index : ${#numbers.sequence(1, 2)}">
-            <label th:for="${'subGenre' + index}" th:text="#{performanceAdd.subGenre}">Subgenre [[${index}]]:</label>
-            <select name="subGenres" th:field="*{subGenres}" th:id="${'subGenre' + index}">
-                <option th:selected="${#lists.isEmpty(subGenres)}" value="">Select a subgenre</option>
-                <option th:each="subGenre : ${subGenres}" th:selected="${#lists.contains(subGenres, subGenre)}"
-                        th:text="${subGenre.name}"
-                        th:value="${subGenre.subGenreId}"></option>
-            </select>
-        </div>
-        <p th:errorclass="error" th:errors="*{subGenres}" th:if="${#fields.hasErrors('subGenres')}"></p>
-    </div>
-
-
-    <!--Festival numbers-->
-    <div>
-        <div>
-            <label for="festivalNumber1" th:text="#{performanceAdd.festivalNumber1}">Festival-number1:</label>
-            <input id="festivalNumber1" name="festivalNumber1" th:field="*{festivalNumber1}" type="number"/>
-            <p th:errorclass="error" th:errors="*{festivalNumber1}"
-               th:if="${#fields.hasErrors('festivalNumber1')}"></p>
-        </div>
-        <div>
-            <label for="festivalNumber2" th:text="#{performanceAdd.festivalNumber2}">Festival-number 2:</label>
-            <input id="festivalNumber2" name="festivalNumber2" th:field="*{festivalNumber2}" type="number"/>
-            <p th:errorclass="error" th:errors="*{festivalNumber2}"
-               th:if="${#fields.hasErrors('festivalNumber2')}"></p>
-        </div>
-    </div>
-
-    <!--submit button-->
-    <button th:text="#{performanceAdd.submitButton}" type="submit">Add performance</button>
-</form>
-
+</div>
 </body>
 </html>
