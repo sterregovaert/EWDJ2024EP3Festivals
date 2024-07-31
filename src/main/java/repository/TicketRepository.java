@@ -11,10 +11,10 @@ import java.util.List;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
+    List<Ticket> findByUserOrderByFestivalStartDateTimeAscFestivalRegionAscFestivalGenreAsc(MyUser user);
+
     @Query("SELECT SUM(t.quantity) FROM Ticket t WHERE t.user.username = :username")
     Integer sumTicketQuantitiesByUsername(@Param("username") String username);
-
-    List<Ticket> findByUserOrderByFestivalStartDateTimeAscFestivalRegionAscFestivalGenreAsc(MyUser user);
 
     @Query("SELECT SUM(t.quantity) FROM Ticket t WHERE t.user.userId = :userId AND t.festival.festivalId = :festivalId")
     Integer sumTicketQuantitiesByUserIdAndFestivalId(Long userId, Long festivalId);

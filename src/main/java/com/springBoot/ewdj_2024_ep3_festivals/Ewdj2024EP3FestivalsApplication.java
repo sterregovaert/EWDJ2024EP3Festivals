@@ -85,7 +85,6 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
         return new TicketService();
     }
 
-
     /*VALIDATOR*/
     @Bean
     TicketValidator ticketValidator() {

@@ -4,7 +4,10 @@ import domain.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.*;
+import repository.FestivalRepository;
+import repository.GenreRepository;
+import repository.MyUserRepository;
+import repository.RegionRepository;
 
 import java.security.Principal;
 import java.util.*;
@@ -17,14 +20,12 @@ public class FestivalServiceImpl implements FestivalService {
     MyUserRepository myUserRepository;
     @Autowired
     private FestivalRepository festivalRepository;
-
     @Autowired
     private RegionRepository regionRepository;
     @Autowired
-    private TicketRepository ticketRepository;
-    @Autowired
     private GenreRepository genreRepository;
-
+    @Autowired
+    private TicketService ticketService;
 
     // TODO getTicketsBoughtPerFestivalForUser can be added to data of fetchFestivalsByGenreAndRegion or something
     public List<Festival> fetchFestivalsByGenreAndRegion(String genre, String region) {
@@ -40,43 +41,17 @@ public class FestivalServiceImpl implements FestivalService {
 
         Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
         for (Festival festival : festivals) {
-            int ticketsBought = getTicketsForFestivalByUser(festival.getFestivalId(), user.getUserId());
+            int ticketsBought = ticketService.getTicketsForFestivalByUser(festival.getFestivalId(), user.getUserId());
             ticketsBoughtPerFestival.put(festival.getFestivalId(), ticketsBought);
         }
 
         return ticketsBoughtPerFestival;
     }
 
-    // ---- ---- ---- ----
-    // TODO explanation
-    // ---- ---- ---- ----
 
-    public Festival findFestivalById(Long festivalId) {
-        return festivalRepository.findById(festivalId).orElse(null);
-    }
-
-    public int getTicketsForFestivalByUser(Long festivalId, Long userId) {
-        Integer ticketsCount = ticketRepository.sumTicketQuantitiesByUserIdAndFestivalId(userId, festivalId);
-        return ticketsCount != null ? ticketsCount : 0;
-    }
-
-
-    public void updateAvailableSeats(Long festivalId, int quantity) {
-        Festival festival = findFestivalById(festivalId);
-        festival.setAvailableSeats(festival.getAvailableSeats() - quantity);
-        festivalRepository.save(festival);
-    }
-
-    // ---- ---- ---- ----
     // REST
-    // ---- ---- ---- ----
     public List<String> getArtistsByFestival(Long festivalId) {
-        return festivalRepository.findById(festivalId)
-                .map(festival -> festival.getPerformances().stream()
-                        .map(Performance::getArtistName)
-                        .distinct()
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+        return festivalRepository.findById(festivalId).map(festival -> festival.getPerformances().stream().map(Performance::getArtistName).distinct().collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 
     public List<Festival> getFestivalsByGenre(String genre) {

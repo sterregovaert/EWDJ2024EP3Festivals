@@ -19,4 +19,10 @@ public class GlobalExceptionHandler {
         model.addAttribute("ticketCount", 0);
         return modelAndView;
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public String handleIllegalStateException(IllegalStateException e, Model model) {
+        model.addAttribute("error", e.getMessage());
+        return "error";
+    }
 }

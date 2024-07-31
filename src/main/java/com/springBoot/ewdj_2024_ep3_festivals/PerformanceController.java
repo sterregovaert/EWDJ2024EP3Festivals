@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import service.FestivalService;
+import repository.FestivalRepository;
 import service.PerformanceService;
 import validator.PerformanceValidation;
 
@@ -25,7 +25,7 @@ public class PerformanceController {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    private FestivalService festivalService;
+    private FestivalRepository festivalRepository;
 
     // ---- ---- ---- ----
     // ADDING performance to festival
@@ -82,7 +82,7 @@ public class PerformanceController {
             performanceService.deletePerformanceById(performanceId);
             String successMessage = messageSource.getMessage("performanceRemove.successMessage", null, LocaleContextHolder.getLocale());
             redirectAttributes.addFlashAttribute("message", successMessage);
-            Festival festival = festivalService.findFestivalById(festivalId);
+            Festival festival = festivalRepository.findById(festivalId).orElse(null);
             return "redirect:/festivals?genre=" + festival.getGenre().getName() + "&region=" + festival.getRegion().getName();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());

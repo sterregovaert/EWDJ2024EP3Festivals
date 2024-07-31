@@ -55,7 +55,7 @@ public class PerformanceService {
     }
 
     public void setupPerformanceForFestival(Long festivalId, Performance performance) throws Exception {
-        Festival festival = festivalService.findFestivalById(festivalId);
+        Festival festival = festivalRepository.findById(festivalId).orElse(null);
 
         if (festival == null) {
             throw new Exception("Festival not found");
@@ -65,7 +65,7 @@ public class PerformanceService {
     }
 
     public void setupRemovePerformanceFormModel(Long festivalId, Model model) throws Exception {
-        Festival festival = festivalService.findFestivalById(festivalId);
+        Festival festival = festivalRepository.findById(festivalId).orElse(null);
         if (festival == null) {
             throw new Exception("Festival not found");
         }
