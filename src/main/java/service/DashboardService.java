@@ -1,5 +1,7 @@
 package service;
 
+import domain.Genre;
+import domain.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -7,6 +9,8 @@ import org.springframework.stereotype.Service;
 import repository.GenreRepository;
 import repository.RegionRepository;
 import repository.TicketRepository;
+
+import java.util.List;
 
 @Service
 public class DashboardService {
@@ -18,12 +22,15 @@ public class DashboardService {
     @Autowired
     TicketRepository ticketRepository;
 
-    public Object findAllGenres() {
-        return genreRepository.findAllByOrderByNameAsc();
+
+    public List<Genre> findAllGenres() {
+        List<Genre> genres = genreRepository.findAllByOrderByNameAsc();
+        return genres != null ? genres : List.of();
     }
 
-    public Object findAllRegions() {
-        return regionRepository.findAllByOrderByNameAsc();
+    public List<Region> findAllRegions() {
+        List<Region> regions = regionRepository.findAllByOrderByNameAsc();
+        return regions != null ? regions : List.of();
     }
 
     public int findTicketCountForCurrentUser() {
