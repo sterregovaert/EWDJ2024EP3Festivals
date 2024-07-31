@@ -71,14 +71,20 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     }
 
     @Bean
+    PerformanceService performanceService() {
+        return new PerformanceService();
+    }
+
+    @Bean
+    SubGenreService subGenreService() {
+        return new SubGenreService();
+    }
+
+    @Bean
     TicketService ticketsService() {
         return new TicketService();
     }
 
-    @Bean
-    PerformanceService performanceService() {
-        return new PerformanceService();
-    }
 
     /*VALIDATOR*/
     @Bean

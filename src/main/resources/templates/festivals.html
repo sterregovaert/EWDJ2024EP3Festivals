@@ -99,7 +99,7 @@
                 <!--Add performance-->
                 <th:block th:if="${userRole == 'admin'}">
                     <a class="button-link"
-                       th:href="@{/performance/addPerformance(festivalId=${festival.festivalId})}">
+                       th:href="@{/performance/add(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-500 text-white">
                             <span th:text="#{festivals.addPerformance}">Add Performance</span>
                         </button>
@@ -109,7 +109,7 @@
                 <!--Remove performance-->
                 <th:block th:if="${userRole == 'admin'}">
                     <a class="button-link"
-                       th:href="@{/performance/removePerformance(festivalId=${festival.festivalId})}">
+                       th:href="@{/performance/remove(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-300 text-black">
                             <span th:text="#{festivals.removePerformance}">Remove Performance(s)</span>
                         </button>

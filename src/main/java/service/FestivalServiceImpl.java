@@ -17,14 +17,13 @@ public class FestivalServiceImpl implements FestivalService {
     MyUserRepository myUserRepository;
     @Autowired
     private FestivalRepository festivalRepository;
-    @Autowired
-    private GenreRepository genreRepository;
+
     @Autowired
     private RegionRepository regionRepository;
     @Autowired
     private TicketRepository ticketRepository;
     @Autowired
-    private SubGenreRepository subGenreRepository;
+    private GenreRepository genreRepository;
 
 
     // TODO getTicketsBoughtPerFestivalForUser can be added to data of fetchFestivalsByGenreAndRegion or something
@@ -62,20 +61,15 @@ public class FestivalServiceImpl implements FestivalService {
     }
 
 
-    public List<SubGenre> getSubGenresByGenre(Genre genre) {
-        if (genre != null) {
-            List<SubGenre> subGenres = subGenreRepository.findByGenre(genre);
-            return subGenres;
-        }
-        return Collections.emptyList();
-    }
-
     public void updateAvailableSeats(Long festivalId, int quantity) {
         Festival festival = findFestivalById(festivalId);
         festival.setAvailableSeats(festival.getAvailableSeats() - quantity);
         festivalRepository.save(festival);
     }
 
+    // ---- ---- ---- ----
+    // REST
+    // ---- ---- ---- ----
     public List<String> getArtistsByFestival(Long festivalId) {
         return festivalRepository.findById(festivalId)
                 .map(festival -> festival.getPerformances().stream()

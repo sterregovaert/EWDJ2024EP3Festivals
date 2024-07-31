@@ -20,7 +20,6 @@ public class FestivalsController {
     @Autowired
     FestivalService festivalService;
 
-
     // Fetching festivals
     @GetMapping
     public String getFestivals(@RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "region", required = false) String region, Model model, WebRequest request, Principal principal) {

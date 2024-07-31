@@ -38,8 +38,8 @@ public class SecurityConfig {
                                         .requestMatchers("/tickets").hasAnyRole(String.valueOf(Role.USER))
                                         .requestMatchers("/tickets/buy").hasRole(String.valueOf(Role.USER))
                                         .requestMatchers("/festivals").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
-                                        .requestMatchers("/performance/addPerformance").hasRole(String.valueOf(Role.ADMIN))
-                                        .requestMatchers("/performance/removePerformance").hasRole(String.valueOf(Role.ADMIN))
+                                        .requestMatchers("/performance/add").hasRole(String.valueOf(Role.ADMIN))
+                                        .requestMatchers("/performance/remove").hasRole(String.valueOf(Role.ADMIN))
 
 
                                         // rest

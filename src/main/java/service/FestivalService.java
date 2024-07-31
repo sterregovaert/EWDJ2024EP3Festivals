@@ -1,8 +1,6 @@
 package service;
 
 import domain.Festival;
-import domain.Genre;
-import domain.SubGenre;
 
 import java.security.Principal;
 import java.util.List;
@@ -17,9 +15,6 @@ public interface FestivalService {
     int getTicketsForFestivalByUser(Long festivalId, Long userId);
 
     Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Principal principal);
-
-    // TODO move this to Genre service
-    List<SubGenre> getSubGenresByGenre(Genre genre);
 
     void updateAvailableSeats(Long festivalId, int quantity);
 
