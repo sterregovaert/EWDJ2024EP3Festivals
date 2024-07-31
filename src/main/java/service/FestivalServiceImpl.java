@@ -6,15 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.security.Principal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class FestivalServiceImpl implements FestivalService {
+    @Autowired
+    MyUserRepository myUserRepository;
     @Autowired
     private FestivalRepository festivalRepository;
     @Autowired
@@ -27,39 +27,30 @@ public class FestivalServiceImpl implements FestivalService {
     private SubGenreRepository subGenreRepository;
 
 
-    public List<Festival> fetchFestivals(String genre, String region) {
-        if (genre != null && region != null) {
-            return fetchFestivalsByGenreAndRegion(genre, region);
-        } else if (genre != null) {
-            return fetchFestivalsByGenre(genre);
-        } else if (region != null) {
-            return fetchFestivalsByRegion(region);
-        } else {
-            return fetchAllFestivals();
+    // TODO getTicketsBoughtPerFestivalForUser can be added to data of fetchFestivalsByGenreAndRegion or something
+    public List<Festival> fetchFestivalsByGenreAndRegion(String genre, String region) {
+        Optional<Genre> genreEntity = genreRepository.findByName(genre);
+        Optional<Region> regionEntity = regionRepository.findByName(region);
+        return festivalRepository.findByGenreAndRegion(genreEntity.orElse(null), regionEntity.orElse(null));
+    }
+
+    public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Principal principal) {
+        List<Festival> festivals = fetchFestivalsByGenreAndRegion(genre, region);
+
+        MyUser user = myUserRepository.findByUsername(principal.getName());
+
+        Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
+        for (Festival festival : festivals) {
+            int ticketsBought = getTicketsForFestivalByUser(festival.getFestivalId(), user.getUserId());
+            ticketsBoughtPerFestival.put(festival.getFestivalId(), ticketsBought);
         }
+
+        return ticketsBoughtPerFestival;
     }
 
-    public List<Festival> fetchFestivalsByGenre(String genreName) {
-        return genreRepository.findByName(genreName).map(genre -> festivalRepository.findByGenreOrderByRegionDescStartDateTimeAsc(genre)).orElse(Collections.emptyList());
-    }
-
-    public List<Festival> fetchFestivalsByRegion(String regionName) {
-        return regionRepository.findByName(regionName).map(region -> festivalRepository.findByRegionOrderByGenreAscStartDateTimeAsc(region)).orElse(Collections.emptyList());
-    }
-
-    public List<Festival> fetchFestivalsByGenreAndRegion(String genreName, String regionName) {
-        Genre genre = genreRepository.findByName(genreName).orElse(null);
-        Region region = regionRepository.findByName(regionName).orElse(null);
-        if (genre != null && region != null) {
-            return festivalRepository.findByGenreAndRegionOrderByStartDateTimeAsc(genre, region);
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    public List<Festival> fetchAllFestivals() {
-        return festivalRepository.findAllByOrderByGenreAscRegionAscStartDateTimeAsc();
-    }
+    // ---- ---- ---- ----
+    // TODO explanation
+    // ---- ---- ---- ----
 
     public Festival findFestivalById(Long festivalId) {
         return festivalRepository.findById(festivalId).orElse(null);
@@ -68,27 +59,6 @@ public class FestivalServiceImpl implements FestivalService {
     public int getTicketsForFestivalByUser(Long festivalId, Long userId) {
         Integer ticketsCount = ticketRepository.sumTicketQuantitiesByUserIdAndFestivalId(userId, festivalId);
         return ticketsCount != null ? ticketsCount : 0;
-    }
-
-    public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Long userId) {
-        List<Festival> festivals;
-        if (genre != null && region != null) {
-            festivals = fetchFestivalsByGenreAndRegion(genre, region);
-        } else if (genre != null) {
-            festivals = fetchFestivalsByGenre(genre);
-        } else if (region != null) {
-            festivals = fetchFestivalsByRegion(region);
-        } else {
-            festivals = fetchAllFestivals();
-        }
-
-        Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
-        for (Festival festival : festivals) {
-            int ticketsBought = getTicketsForFestivalByUser(festival.getFestivalId(), userId);
-            ticketsBoughtPerFestival.put(festival.getFestivalId(), ticketsBought);
-        }
-
-        return ticketsBoughtPerFestival;
     }
 
 

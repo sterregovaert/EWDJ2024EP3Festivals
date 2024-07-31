@@ -4,27 +4,19 @@ import domain.Festival;
 import domain.Genre;
 import domain.SubGenre;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
 public interface FestivalService {
-    // TODO can be simplified to maybe one method
-    List<Festival> fetchFestivals(String genre, String region);
-
-    List<Festival> fetchFestivalsByGenre(String genreName);
-
-    List<Festival> fetchFestivalsByRegion(String regionName);
-
-    List<Festival> fetchFestivalsByGenreAndRegion(String genreName, String regionName);
-
-    List<Festival> fetchAllFestivals();
+    List<Festival> fetchFestivalsByGenreAndRegion(String genre, String region);
 
     Festival findFestivalById(Long festivalId);
 
     // TODO move this to ticket service?
     int getTicketsForFestivalByUser(Long festivalId, Long userId);
 
-    Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Long userId);
+    Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Principal principal);
 
     // TODO move this to Genre service
     List<SubGenre> getSubGenresByGenre(Genre genre);
