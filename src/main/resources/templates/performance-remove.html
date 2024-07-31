@@ -12,7 +12,7 @@
 <div class="flex justify-center align-center mt-8 mb-8">
     <div class="w-5/12 border-2 border-black p-16 rounded-md bg-blue-100">
         <div>
-            <h1 th:text="'Remove Performances for ' + ${festival.name}"></h1>
+            <h1 th:text="#{performanceRemove.titleFor} + ' ' + ${festival.name}"></h1>
             <div class="error" th:if="${error}" th:text="${error}"></div>
             <div class="message" th:if="${message}" th:text="${message}"></div>
             <ul>
@@ -22,7 +22,9 @@
                           th:action="@{/festivals/removePerformance(festivalId=${festival.festivalId})}"
                           th:object="${performance}">
                         <input th:name="performanceId" th:value="${performance.performanceId}" type="hidden"/>
-                        <button class="bg-red-500 text-white" type="submit">Delete</button>
+                        <button class="bg-red-500 text-white" th:text="#{performanceRemove.deleteButton}" type="submit">
+                            Delete
+                        </button>
                     </form>
                 </li>
             </ul>

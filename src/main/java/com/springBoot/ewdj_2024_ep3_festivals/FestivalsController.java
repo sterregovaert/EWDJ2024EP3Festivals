@@ -4,6 +4,8 @@ import domain.*;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,6 +40,8 @@ public class FestivalsController {
     TicketValidation ticketValidation;
     @Autowired
     TicketService ticketService;
+    @Autowired
+    private MessageSource messageSource;
 
 // Fetching festivals
 
@@ -178,7 +182,8 @@ public class FestivalsController {
     @PostMapping("/removePerformance")
     public String removePerformance(@RequestParam("festivalId") Long festivalId, @RequestParam("performanceId") Long performanceId, RedirectAttributes redirectAttributes) {
         performanceService.deletePerformanceById(performanceId);
-        redirectAttributes.addFlashAttribute("message", "Performance removed successfully");
+        String successMessage = messageSource.getMessage("performanceRemove.successMessage", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("message", successMessage);
         Festival festival = festivalService.findFestivalById(festivalId);
         return "redirect:/festivals?genre=" + festival.getGenre().getName() + "&region=" + festival.getRegion().getName();
     }
