@@ -39,6 +39,8 @@ public class SecurityConfig {
                                         .requestMatchers("/festivals").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
                                         .requestMatchers("/festivals/buy").hasRole(String.valueOf(Role.USER))
                                         .requestMatchers("/festivals/addPerformance").hasRole(String.valueOf(Role.ADMIN))
+                                        .requestMatchers("/festivals/removePerformance").hasRole(String.valueOf(Role.ADMIN))
+
 
                                         // rest
                                         .requestMatchers("/api/festival/**").permitAll()

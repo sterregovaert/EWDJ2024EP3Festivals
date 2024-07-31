@@ -5,15 +5,33 @@
     <title th:text="#{festivals.title}">Festivals</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var messageDiv = document.querySelector(".alert-success");
+            if (messageDiv) {
+                setTimeout(function () {
+                    messageDiv.style.display = "none";
+                }, 5000); // 5000 milliseconds = 5 seconds
+            }
+        });
+    </script>
 </head>
 <body>
 <div th:replace="~{nav :: navbar}"></div>
 
 
 <div>
-    <h2 class="font-bold text-blue-900 text-3xl flex justify-center mt-4 mb-4"
-        th:text="${(genre != null) ? (region != null) ? (genre + ' &amp; ' + region) : genre : (region != null) ? region : ''}">
-        Music Genre and Region</h2>
+    <div class="flex flex-col justify-center items-center">
+        <h2 class="font-bold text-blue-900 text-3xl mt-4 mb-4"
+            th:text="${(genre != null) ? (region != null) ? (genre + ' &amp; ' + region) : genre : (region != null) ? region : ''}">
+            Music Genre and Region</h2>
+
+        <!-- Display success message if it exists -->
+        <div class="alert alert-success text-green-500 fond-bold" th:if="${message}"
+             th:text="${message}"></div>
+    </div>
+
+
     <div class="flex flex-wrap justify-center gap-4 mt-8 mb-8">
         <div class="flex flex-col gap-4 w-1/4 border-2 border-black p-4 rounded-md bg-blue-100"
              th:each="festival : ${festivals}">
@@ -90,7 +108,7 @@
 
                 <!--Remove performance-->
                 <th:block th:if="${userRole == 'admin'}">
-                    <a class="button-link" th:href="@{/festivals/removePerformance}">
+                    <a class="button-link" th:href="@{/festivals/removePerformance(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-300 text-black">
                             <span th:text="#{festivals.removePerformance}">Remove Performance(s)</span>
                         </button>

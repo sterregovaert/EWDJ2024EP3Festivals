@@ -7,6 +7,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+<div th:replace="~{nav :: navbar}"></div>
+
+<div class="flex justify-center align-center mt-8 mb-8">
+    <div class="w-5/12 border-2 border-black p-16 rounded-md bg-blue-100">
+        <div>
+            <h1 th:text="'Remove Performances for ' + ${festival.name}"></h1>
+            <div class="error" th:if="${error}" th:text="${error}"></div>
+            <div class="message" th:if="${message}" th:text="${message}"></div>
+            <ul>
+                <li th:each="performance : ${performances}">
+                    <span th:text="${performance.artistName}"></span>
+                    <form method="post"
+                          th:action="@{/festivals/removePerformance(festivalId=${festival.festivalId})}"
+                          th:object="${performance}">
+                        <input th:name="performanceId" th:value="${performance.performanceId}" type="hidden"/>
+                        <button class="bg-red-500 text-white" type="submit">Delete</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

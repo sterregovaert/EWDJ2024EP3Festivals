@@ -158,4 +158,29 @@ public class FestivalsController {
         model.addAttribute("performance", performance);
     }
 
+    // removing a performance from a festival
+    // act on http://localhost:8080/festivals/addPerformance?festivalId=44
+    @GetMapping("/removePerformance")
+    public String showRemovePerformanceForm(@RequestParam("festivalId") Long festivalId, Model model) {
+        Festival festival = festivalService.findFestivalById(festivalId);
+        if (festival != null) {
+            List<Performance> performances = performanceService.getPerformancesByFestival(festivalId);
+
+            model.addAttribute("performances", performances);
+            model.addAttribute("festival", festival);
+        } else {
+            model.addAttribute("error", "Festival not found");
+        }
+
+        return "performance-remove";
+    }
+
+    @PostMapping("/removePerformance")
+    public String removePerformance(@RequestParam("festivalId") Long festivalId, @RequestParam("performanceId") Long performanceId, RedirectAttributes redirectAttributes) {
+        performanceService.deletePerformanceById(performanceId);
+        redirectAttributes.addFlashAttribute("message", "Performance removed successfully");
+        Festival festival = festivalService.findFestivalById(festivalId);
+        return "redirect:/festivals?genre=" + festival.getGenre().getName() + "&region=" + festival.getRegion().getName();
+    }
+
 }
