@@ -36,10 +36,10 @@ public class SecurityConfig {
                                         .requestMatchers("/login").permitAll()
                                         .requestMatchers("/dashboard").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
                                         .requestMatchers("/tickets").hasAnyRole(String.valueOf(Role.USER))
+                                        .requestMatchers("/tickets/buy").hasRole(String.valueOf(Role.USER))
                                         .requestMatchers("/festivals").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
-                                        .requestMatchers("/festivals/buy").hasRole(String.valueOf(Role.USER))
-                                        .requestMatchers("/festivals/addPerformance").hasRole(String.valueOf(Role.ADMIN))
-                                        .requestMatchers("/festivals/removePerformance").hasRole(String.valueOf(Role.ADMIN))
+                                        .requestMatchers("/performance/addPerformance").hasRole(String.valueOf(Role.ADMIN))
+                                        .requestMatchers("/performance/removePerformance").hasRole(String.valueOf(Role.ADMIN))
 
 
                                         // rest

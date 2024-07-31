@@ -1,15 +1,21 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
+import domain.Festival;
 import domain.MyUser;
 import domain.Ticket;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import repository.FestivalRepository;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import repository.MyUserRepository;
+import service.FestivalService;
+import service.PerformanceService;
 import service.TicketService;
+import validator.PerformanceValidation;
+import validator.TicketValidation;
 import validator.TicketValidator;
 
 import java.security.Principal;
@@ -20,11 +26,17 @@ import java.util.List;
 public class TicketController {
 
     @Autowired
-    private MyUserRepository myUserRepository;
+    FestivalService festivalService;
     @Autowired
-    private TicketService ticketService;
+    PerformanceService performanceService;
     @Autowired
-    private FestivalRepository festivalRepository;
+    MyUserRepository myUserRepository;
+    @Autowired
+    PerformanceValidation performanceValidation;
+    @Autowired
+    TicketValidation ticketValidation;
+    @Autowired
+    TicketService ticketService;
     @Autowired
     private TicketValidator ticketValidator;
 
@@ -39,48 +51,57 @@ public class TicketController {
         return "tickets";
     }
 
-//    @GetMapping("/buy/{id}")
-//    public String buyTicket(@PathVariable Long id, Model model, Principal principal) {
-//        Ticket ticket = new Ticket();
-//
-//        MyUser user = userRepository.findByUsername(principal.getName());
-//        Festival festival = festivalRepository.findById(id).orElse(null);
-//        if (festival == null) {
-//            return "redirect:/error";
-//        }
-//        ticket.setFestival(festival);
-//
-////        List<Ticket> tickets = ticketRepository.findByUserAndFestival(user, festival);
-////        model.addAttribute("tickets", tickets);
-////        model.addAttribute("ticketCount", tickets.size());
-//
-//        ticket.setQuantity(1);
-//        model.addAttribute("ticket", ticket);
-//        return "ticket-buy";
-//    }
-//
-//    @PostMapping("/buy/{id}")
-//    public String buyTickets(@PathVariable Long id, @Valid Ticket ticket, BindingResult result, Model model, Principal principal, @RequestParam int quantity) {
-//        MyUser user = userRepository.findByUsername(principal.getName());
-//        Festival festival = festivalRepository.findById(id).orElse(null);
-//
-//        ticket.setFestival(festival);
-//        ticket.setUser(user);
-//        ticket.setQuantity(quantity);
-//        ticket.setFestival(festival);
-//
-//        ticketValidator.validate(ticket, result);
-//
-//        if (result.hasErrors()) {
-//            model.addAttribute("ticket", ticket);
-//            return "ticket-buy";
-//        }
-//
-//        festival.setAvailableSeats(festival.getAvailableSeats() - quantity);
-//        festivalRepository.save(festival);
-//
-////        ticketRepository.save(ticket);
-//
-//        return "redirect:/festival/" + String.valueOf(ticket.getFestival());
-//    }
+    // BUY TICKET for festival
+
+    @GetMapping("/buy")
+    public String buyFestivalTicketGet(@RequestParam("festivalId") Long festivalId, Model model, Principal principal) {
+        setupBuyTicketModel(festivalId, model, new Ticket(), principal);
+
+        return "ticket-buy";
+    }
+
+    @PostMapping("/buy")
+    public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, BindingResult result, Model model, Principal principal, RedirectAttributes redirectAttributes) {
+        ticket.setUser(myUserRepository.findByUsername(principal.getName()));
+        ticket.setFestival(festivalService.findFestivalById(festivalId));
+
+        ticketValidation.validate(ticket, result);
+
+        if (result.hasErrors()) {
+            setupBuyTicketModel(festivalId, model, ticket, principal);
+            return "ticket-buy";
+        }
+
+        festivalService.updateAvailableSeats(ticket.getFestival().getFestivalId(), ticket.getQuantity());
+        ticketService.saveTicket(ticket);
+
+        redirectAttributes.addFlashAttribute("message", ticket.getQuantity() + " tickets were purchased");
+
+        return "redirect:/dashboard";
+    }
+
+
+    private void setupBuyTicketModel(Long festivalId, Model model, Ticket ticket, Principal principal) {
+        MyUser user = myUserRepository.findByUsername(principal.getName());
+        if (user != null) {
+            ticket.setUser(user);
+        } else {
+            throw new IllegalStateException("User not found");
+        }
+        ticket.setUser(user);
+
+        Festival festival = festivalService.findFestivalById(festivalId);
+        if (festival != null) {
+            ticket.setFestival(festival);
+            model.addAttribute("festival", festival);
+        } else {
+            throw new IllegalStateException("Festival not found");
+        }
+
+        int ticketsForThisFestival = festivalService.getTicketsForFestivalByUser(festivalId, user.getUserId());
+        model.addAttribute("ticketsBought", ticketsForThisFestival);
+
+        model.addAttribute("ticket", ticket);
+    }
+
 }

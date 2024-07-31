@@ -89,7 +89,7 @@
                 <!--Buy ticket-->
                 <th:block
                         th:if="${festival.availableSeats != null && festival.availableSeats > 0 && userRole == 'user'}">
-                    <a class="button-link" th:href="@{/festivals/buy(festivalId=${festival.festivalId})}">
+                    <a class="button-link" th:href="@{/tickets/buy(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-500 text-white">
                             <span th:text="#{festivals.buyTickets}">Buy Ticket(s)</span>
                         </button>
@@ -99,7 +99,7 @@
                 <!--Add performance-->
                 <th:block th:if="${userRole == 'admin'}">
                     <a class="button-link"
-                       th:href="@{/festivals/addPerformance(festivalId=${festival.festivalId})}">
+                       th:href="@{/performance/addPerformance(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-500 text-white">
                             <span th:text="#{festivals.addPerformance}">Add Performance</span>
                         </button>
@@ -108,7 +108,8 @@
 
                 <!--Remove performance-->
                 <th:block th:if="${userRole == 'admin'}">
-                    <a class="button-link" th:href="@{/festivals/removePerformance(festivalId=${festival.festivalId})}">
+                    <a class="button-link"
+                       th:href="@{/performance/removePerformance(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-300 text-black">
                             <span th:text="#{festivals.removePerformance}">Remove Performance(s)</span>
                         </button>

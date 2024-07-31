@@ -27,7 +27,7 @@
 
         <!--Buy ticket-->
         <form class="flex flex-col mt-16 gap-4" method="post"
-              th:action="@{/festivals/buy(festivalId=${festival.festivalId})}"
+              th:action="@{/tickets/buy(festivalId=${festival.festivalId})}"
               th:object="${ticket}">
 
             <div>

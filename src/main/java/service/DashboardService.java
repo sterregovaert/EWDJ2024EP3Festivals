@@ -10,6 +10,7 @@ import repository.GenreRepository;
 import repository.RegionRepository;
 import repository.TicketRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,15 +23,14 @@ public class DashboardService {
     @Autowired
     TicketRepository ticketRepository;
 
-
     public List<Genre> findAllGenres() {
         List<Genre> genres = genreRepository.findAllByOrderByNameAsc();
-        return genres != null ? genres : List.of();
+        return genres != null ? genres : Collections.emptyList();
     }
 
     public List<Region> findAllRegions() {
         List<Region> regions = regionRepository.findAllByOrderByNameAsc();
-        return regions != null ? regions : List.of();
+        return regions != null ? regions : Collections.emptyList();
     }
 
     public int findTicketCountForCurrentUser() {

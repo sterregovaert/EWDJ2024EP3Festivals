@@ -19,7 +19,7 @@
                 <li th:each="performance : ${performances}">
                     <span th:text="${performance.artistName}"></span>
                     <form method="post"
-                          th:action="@{/festivals/removePerformance(festivalId=${festival.festivalId})}"
+                          th:action="@{/performance/removePerformance(festivalId=${festival.festivalId})}"
                           th:object="${performance}">
                         <input th:name="performanceId" th:value="${performance.performanceId}" type="hidden"/>
                         <button class="bg-red-500 text-white" th:text="#{performanceRemove.deleteButton}" type="submit">
