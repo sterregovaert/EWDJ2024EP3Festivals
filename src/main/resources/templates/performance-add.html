@@ -25,10 +25,6 @@
                 <span th:text="${{festival.startDateTime}}"></span>
             </p>
             <!--TODO find why this is causing error, go to controller to avoid this problem being caused-->
-            <!--<p>-->
-            <!--    <span th:text="#{performanceAdd.festivalGenre}">Festival Genre:</span>-->
-            <!--    <span th:text="${festival.genre.getName()}"></span>-->
-            <!--</p>-->
             <p>
                 <span th:text="#{performanceAdd.festivalGenre}">Festival Genre:</span>
                 <span th:text="${festival.genre != null ? festival.genre.getName() : 'N/A'}"></span>
