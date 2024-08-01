@@ -5,6 +5,7 @@ import domain.MyUser;
 import domain.Ticket;
 import exceptions.FestivalNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import repository.FestivalRepository;
 import repository.TicketRepository;
@@ -12,6 +13,7 @@ import validator.TicketQuantityValidator;
 
 import java.util.List;
 
+@Service
 public class TicketService {
 
     @Autowired

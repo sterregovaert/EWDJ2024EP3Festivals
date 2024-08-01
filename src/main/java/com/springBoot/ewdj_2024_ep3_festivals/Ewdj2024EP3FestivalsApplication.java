@@ -55,7 +55,6 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     }
 
     /*SERVICE*/
-    // TODO check if both user service can be combined into 1
     @Bean
     MyUserService myUserService() {
         return new MyUserService();
