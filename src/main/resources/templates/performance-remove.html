@@ -12,12 +12,15 @@
 <div class="flex justify-center align-center mt-8 mb-8">
     <div class="w-5/12 border-2 border-black p-16 rounded-md bg-blue-100">
         <div>
-            <h1 th:text="#{performanceRemove.titleFor} + ' ' + ${festival.name}"></h1>
+            <h1 class="font-bold text-2xl" th:text="#{performanceRemove.titleFor} + ' ' + ${festival.name}"></h1>
             <div class="error" th:if="${error}" th:text="${error}"></div>
             <div class="message" th:if="${message}" th:text="${message}"></div>
-            <ul>
-                <li th:each="performance : ${performances}">
-                    <span th:text="${performance.artistName}"></span>
+            <ul class="flex flex-col gap-4">
+                <li class="flex gap-2 items-center" th:each="performance : ${performances}">
+                    <p>
+                        <span th:text="${performance.artistName}"></span>
+                        <span th:text="${{performance.startDateTime}}"></span>
+                    </p>
                     <form method="post"
                           th:action="@{/performance/remove(festivalId=${festival.festivalId})}"
                           th:object="${performance}">
