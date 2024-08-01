@@ -53,7 +53,6 @@ public class TicketService {
         ticket.setUser(myUserRepository.findByUsername(username));
         ticket.setFestival(festivalRepository.findById(festivalId).orElse(null));
 
-        // TODO fix quantity > available seats
         ticketQuantityValidator.validate(ticket, result);
 
         if (!result.hasErrors()) {
@@ -69,6 +68,9 @@ public class TicketService {
 
     public void updateAvailableSeats(Long festivalId, int quantity) {
         Festival festival = festivalRepository.findById(festivalId).orElse(null);
+        if (festival == null) {
+            throw new IllegalStateException("Festival not found");
+        }
         festival.setAvailableSeats(festival.getAvailableSeats() - quantity);
         festivalRepository.save(festival);
     }

@@ -25,23 +25,33 @@ public class TicketController {
         return "tickets";
     }
 
-    @GetMapping("/buy")
-    public String buyFestivalTicketGet(@RequestParam("festivalId") Long festivalId, Model model, Principal principal) {
-        Ticket ticket = ticketService.setupBuyTicketModel(festivalId, principal.getName());
+
+    private String setupBuyTicketModel(Long festivalId, Ticket ticket, Model model, Principal principal) {
         model.addAttribute("ticket", ticket);
         model.addAttribute("festival", ticket.getFestival());
         model.addAttribute("ticketsBought", ticketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
         return "ticket-buy";
     }
 
+    @GetMapping("/buy")
+    public String buyFestivalTicketGet(@RequestParam("festivalId") Long festivalId, Model model, Principal principal) {
+        Ticket ticket = ticketService.setupBuyTicketModel(festivalId, principal.getName());
+//        model.addAttribute("ticket", ticket);
+//        model.addAttribute("festival", ticket.getFestival());
+//        model.addAttribute("ticketsBought", ticketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
+//        return "ticket-buy";
+        return setupBuyTicketModel(festivalId, ticket, model, principal);
+    }
+
     @PostMapping("/buy")
     public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, BindingResult result, Model model, Principal principal, RedirectAttributes redirectAttributes) {
         ticketService.validateAndBuyTicket(festivalId, ticket, principal.getName(), result);
         if (result.hasErrors()) {
-            model.addAttribute("ticket", ticket);
-            model.addAttribute("festival", ticket.getFestival());
-            model.addAttribute("ticketsBought", ticketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
-            return "ticket-buy";
+//            model.addAttribute("ticket", ticket);
+//            model.addAttribute("festival", ticket.getFestival());
+//            model.addAttribute("ticketsBought", ticketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
+//            return "ticket-buy";
+            return setupBuyTicketModel(festivalId, ticket, model, principal);
         }
 
         redirectAttributes.addFlashAttribute("message", ticket.getQuantity() + " tickets were purchased");
