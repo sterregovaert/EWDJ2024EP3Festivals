@@ -31,28 +31,27 @@ public class SecurityConfig {
                 //store the csrf token in a cookie
                 //http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())).
                         authorizeHttpRequests(requests ->
-                                requests
-                                        // pages that need to be secured
-                                        .requestMatchers("/login").permitAll()
-                                        .requestMatchers("/dashboard").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
-                                        .requestMatchers("/tickets").hasAnyRole(String.valueOf(Role.USER))
-                                        .requestMatchers("/tickets/buy").hasRole(String.valueOf(Role.USER))
-                                        .requestMatchers("/festivals").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
-                                        .requestMatchers("/performance/add").hasRole(String.valueOf(Role.ADMIN))
-                                        .requestMatchers("/performance/remove").hasRole(String.valueOf(Role.ADMIN))
+                        requests
+                                // pages that need to be secured
+                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/dashboard").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
+                                .requestMatchers("/tickets").hasAnyRole(String.valueOf(Role.USER))
+                                .requestMatchers("/tickets/buy").hasRole(String.valueOf(Role.USER))
+                                .requestMatchers("/festivals").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
+                                .requestMatchers("/performance/add").hasRole(String.valueOf(Role.ADMIN))
+                                .requestMatchers("/performance/remove").hasRole(String.valueOf(Role.ADMIN))
 
 
-                                        // rest
-                                        .requestMatchers("/api/festival/**").permitAll()
-                                        .requestMatchers("/api/festivals").permitAll()
+                                // rest
+                                .requestMatchers("/api/festival/**").permitAll()
+                                .requestMatchers("/api/festivals").permitAll()
 
-                                        // general stuff
-                                        .requestMatchers("/css/**").permitAll()
-                                        .requestMatchers("/i18n/**").permitAll()
-                                        .requestMatchers("/error**").permitAll()
-                                        .requestMatchers("/static/favicon.ico").permitAll()
-                                        .requestMatchers("/icons/**").permitAll()
-//                                      .requestMatchers("/*").permitAll()
+                                // general stuff
+                                .requestMatchers("/error").permitAll()
+                                .requestMatchers("/css/**").permitAll()
+                                .requestMatchers("/i18n/**").permitAll()
+                                .requestMatchers("/static/favicon.ico").permitAll()
+                                .requestMatchers("/icons/**").permitAll()
                 )
                 .formLogin(form ->
                         form.defaultSuccessUrl("/dashboard", true)
