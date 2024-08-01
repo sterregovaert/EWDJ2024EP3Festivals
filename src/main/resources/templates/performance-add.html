@@ -12,6 +12,7 @@
 <div class="flex justify-center align-center mt-8 mb-8">
     <div class="flex flex-col gap-8 w-5/12 border-2 border-black p-16 rounded-md bg-blue-100">
         <div>
+            <p th:errorclass="error" th:errors="*{festival}" th:if="${#fields.hasErrors('festival')}"></p>
             <h1 class="font-bold text-2xl">
                 <span th:text="#{performanceAdd.festivalName}">Festival Name:</span>
                 <span th:text="${festival.name}"></span>
