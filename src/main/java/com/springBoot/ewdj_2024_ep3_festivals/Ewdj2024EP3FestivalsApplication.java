@@ -36,7 +36,7 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addRedirectViewController("/", "/dashboard");
-        registry.addViewController("/403").setViewName("403");
+        registry.addViewController("/error").setViewName("error");
     }
 
     /*LOCALE*/

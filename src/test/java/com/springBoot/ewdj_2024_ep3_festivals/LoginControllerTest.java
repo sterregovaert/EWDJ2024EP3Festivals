@@ -52,9 +52,9 @@ public class LoginControllerTest {
 
     @Test
     public void accessDeniedPageGet() throws Exception {
-        mockMvc.perform(get("/403"))
+        mockMvc.perform(get("/error"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("403"));
+                .andExpect(view().name("error"));
     }
 
 

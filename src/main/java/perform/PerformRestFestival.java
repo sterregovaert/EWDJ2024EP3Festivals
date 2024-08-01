@@ -2,7 +2,6 @@ package perform;
 
 import domain.Festival;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -36,17 +35,7 @@ public class PerformRestFestival {
     }
 
     private void getFestivalsByGenre(String genre) {
-        webClient.get().uri(uriBuilder -> uriBuilder.scheme("http").host("localhost").port(8080).path("/api/festivals").queryParam("genre", genre).build()).retrieve().bodyToFlux(Festival.class).collectList().doOnNext(this::printFestivalList).block();
-
-
-        webClient.get().uri(SERVER_URI + "/festivals").retrieve().bodyToFlux(Festival.class).flatMap(festival -> {
-            printEmpData(festival);
-            return Mono.empty();
-        }).blockLast();
-    }
-
-    private void printEmpData(Festival festival) {
-        System.out.printf("ID=%s, Name=%s, StartDateTime=%s%n", festival.getFestivalId(), festival.getName(), festival.getStartDateTime());
+        webClient.get().uri(uriBuilder -> uriBuilder.scheme("http").host("localhost").port(8080).path("/api/festivals").queryParam("genre", genre).build()).retrieve().bodyToFlux(Festival.class).collectList().doOnNext(this::printFestivalList).doOnError(error -> System.err.println("Error occurred: " + error.getMessage())).block();
     }
 
     private void printFestivalList(List<Festival> list) {

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title th:text="#{error.title}">Error</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div th:replace="~{nav :: navbar}"></div>
+
+<div class="w-1/3 p-8 mt-24 mx-auto bg-white rounded-lg border border-black">
+    <h1 th:text="'HTTP Status ' + ${errorCode} + ' - ' + ${errorMessage}">Error</h1>
+
+    <form method="post" th:action="@{/logout}">
+        <button class="bg-blue-500 text-white">
+            <input type="submit" value="Logout"/>
+        </button>
+        <p th:text="${user}"></p>
+        <p th:text="${userRole}"></p>
+        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+    </form>
+</div>
+
+</body>
+</html>

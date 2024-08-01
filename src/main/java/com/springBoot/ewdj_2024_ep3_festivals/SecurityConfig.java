@@ -49,7 +49,7 @@ public class SecurityConfig {
                                         // general stuff
                                         .requestMatchers("/css/**").permitAll()
                                         .requestMatchers("/i18n/**").permitAll()
-                                        .requestMatchers("/403**").permitAll()
+                                        .requestMatchers("/error**").permitAll()
                                         .requestMatchers("/static/favicon.ico").permitAll()
                                         .requestMatchers("/icons/**").permitAll()
 //                                      .requestMatchers("/*").permitAll()
@@ -60,7 +60,7 @@ public class SecurityConfig {
                                 .usernameParameter("username").passwordParameter("password")
                 )
                 .exceptionHandling(handling -> handling
-                        .accessDeniedPage("/403")
+                        .accessDeniedPage("/error")
                 );
 
         return http.build();
