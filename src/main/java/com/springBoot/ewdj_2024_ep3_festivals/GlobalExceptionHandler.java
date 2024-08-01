@@ -1,8 +1,6 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
-import exceptions.FestivalNotFoundException;
-import exceptions.GenreNotFoundException;
-import exceptions.UserNotFoundException;
+import exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -44,8 +42,20 @@ public class GlobalExceptionHandler {
         return "redirect:/error";
     }
 
+
     @ExceptionHandler(GenreNotFoundException.class)
     public ResponseEntity<String> handleGenreNotFoundException(GenreNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(NoArtistsException.class)
+    public ResponseEntity<String> handleNoArtistsException(NoArtistsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoFestivalsException.class)
+    public ResponseEntity<String> handleNoFestivalsException(NoFestivalsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
 }

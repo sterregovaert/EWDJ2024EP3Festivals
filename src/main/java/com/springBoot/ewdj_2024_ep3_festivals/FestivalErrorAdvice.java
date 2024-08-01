@@ -1,7 +1,8 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
-import exceptions.DuplicateFestivalException;
 import exceptions.FestivalNotFoundException;
+import exceptions.NoArtistsException;
+import exceptions.NoFestivalsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,9 +20,16 @@ class FestivalErrorAdvice {
     }
 
     @ResponseBody
-    @ExceptionHandler(DuplicateFestivalException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    String duplicateFestivalHandler(DuplicateFestivalException ex) {
+    @ExceptionHandler(NoFestivalsException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    String noFestivalsFoundHandler(NoFestivalsException ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(NoArtistsException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    String noArtistsFoundHandler(NoArtistsException ex) {
         return ex.getMessage();
     }
 }
