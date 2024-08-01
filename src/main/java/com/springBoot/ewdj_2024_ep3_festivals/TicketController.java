@@ -36,10 +36,6 @@ public class TicketController {
     @GetMapping("/buy")
     public String buyFestivalTicketGet(@RequestParam("festivalId") Long festivalId, Model model, Principal principal) {
         Ticket ticket = ticketService.setupBuyTicketModel(festivalId, principal.getName());
-//        model.addAttribute("ticket", ticket);
-//        model.addAttribute("festival", ticket.getFestival());
-//        model.addAttribute("ticketsBought", ticketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
-//        return "ticket-buy";
         return setupBuyTicketModel(festivalId, ticket, model, principal);
     }
 
@@ -47,10 +43,6 @@ public class TicketController {
     public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, BindingResult result, Model model, Principal principal, RedirectAttributes redirectAttributes) {
         ticketService.validateAndBuyTicket(festivalId, ticket, principal.getName(), result);
         if (result.hasErrors()) {
-//            model.addAttribute("ticket", ticket);
-//            model.addAttribute("festival", ticket.getFestival());
-//            model.addAttribute("ticketsBought", ticketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
-//            return "ticket-buy";
             return setupBuyTicketModel(festivalId, ticket, model, principal);
         }
 
