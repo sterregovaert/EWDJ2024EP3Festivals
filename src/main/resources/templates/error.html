@@ -10,10 +10,10 @@
 <div th:replace="~{nav :: navbar}"></div>
 
 <div class="w-1/3 p-8 mt-24 mx-auto bg-white rounded-lg border border-black">
-    <h1 th:text="'HTTP Status ' + ${errorCode} + ' - ' + ${errorMessage}">Error</h1>
+    <h1 class="font-bold text-2xl" th:text="'HTTP Status ' + ${errorCode} + ' - ' + ${errorMessage}">Error</h1>
 
     <form method="post" th:action="@{/logout}">
-        <button class="bg-blue-500 text-white">
+        <button class="bg-blue-500 text-white mt-4 mb-4">
             <input type="submit" value="Logout"/>
         </button>
         <p th:text="${user}"></p>

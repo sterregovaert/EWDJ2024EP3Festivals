@@ -59,7 +59,7 @@ public class SecurityConfig {
                                 .usernameParameter("username").passwordParameter("password")
                 )
                 .exceptionHandling(handling -> handling
-                        .accessDeniedPage("/error")
+                        .accessDeniedPage("/error?errorCode=403&errorMessage=Access+Denied")
                 );
 
         return http.build();

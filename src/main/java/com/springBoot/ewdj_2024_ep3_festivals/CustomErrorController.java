@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class CustomErrorController implements ErrorController {
@@ -15,26 +16,29 @@ public class CustomErrorController implements ErrorController {
     private static final String ERROR_MESSAGE = "errorMessage";
 
     @RequestMapping("/error")
-    public String handleError(HttpServletRequest request, Model model) {
-        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+    public String handleError(@RequestParam(name = "errorCode", required = false, defaultValue = "Unknown") String errorCode, @RequestParam(name = "errorMessage", required = false, defaultValue = "An unexpected error occurred") String errorMessage, HttpServletRequest request, Model model) {
 
-        if (status != null) {
-            Integer statusCode = Integer.valueOf(status.toString());
+        if ("Unknown".equals(errorCode) && "An unexpected error occurred".equals(errorMessage)) {
+            Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
-            if (statusCode == HttpStatus.NOT_FOUND.value()) {
-                model.addAttribute(ERROR_CODE, "404");
-                model.addAttribute(ERROR_MESSAGE, "Page not found");
-            } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
-                model.addAttribute(ERROR_CODE, "403");
-                model.addAttribute(ERROR_MESSAGE, "Access is denied");
-            } else {
-                model.addAttribute(ERROR_CODE, statusCode.toString());
-                model.addAttribute(ERROR_MESSAGE, "An unexpected error occurred");
+            if (status != null) {
+                Integer statusCode = Integer.valueOf(status.toString());
+
+                if (statusCode == HttpStatus.NOT_FOUND.value()) {
+                    errorCode = "404";
+                    errorMessage = "Page not found";
+                } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
+                    errorCode = "403";
+                    errorMessage = "Access is denied";
+                } else {
+                    errorCode = statusCode.toString();
+                    errorMessage = "An unexpected error occurred";
+                }
             }
-        } else {
-            model.addAttribute(ERROR_CODE, "Unknown");
-            model.addAttribute(ERROR_MESSAGE, "An unexpected error occurred");
         }
+
+        model.addAttribute(ERROR_CODE, errorCode);
+        model.addAttribute(ERROR_MESSAGE, errorMessage);
 
         return "error";
     }
