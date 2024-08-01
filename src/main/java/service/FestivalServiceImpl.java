@@ -1,6 +1,7 @@
 package service;
 
 import domain.*;
+import dto.FestivalDto;
 import exceptions.FestivalNotFoundException;
 import exceptions.GenreNotFoundException;
 import exceptions.NoArtistsException;
@@ -13,9 +14,7 @@ import repository.GenreRepository;
 import repository.RegionRepository;
 
 import java.security.Principal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,27 +32,41 @@ public class FestivalServiceImpl implements FestivalService {
     @Autowired
     private MyUserService myUserService;
 
-    // TODO getTicketsBoughtPerFestivalForUser can be added to data of fetchFestivalsByGenreAndRegion or something
-    public List<Festival> fetchFestivalsByGenreAndRegion(String genre, String region) {
+//    public List<Festival> fetchFestivalsByGenreAndRegion(String genre, String region) {
+//        Optional<Genre> genreEntity = genreRepository.findByName(genre);
+//        Optional<Region> regionEntity = regionRepository.findByName(region);
+//        return festivalRepository.findByGenreAndRegion(genreEntity.orElse(null), regionEntity.orElse(null));
+//    }
+//
+//    public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Principal principal) {
+//        List<Festival> festivals = fetchFestivalsByGenreAndRegion(genre, region);
+//
+//        MyUser user = myUserService.getUserByUsername(principal.getName());
+//
+//        Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
+//        for (Festival festival : festivals) {
+//            int ticketsBought = ticketService.getTicketsForFestivalByUser(festival.getFestivalId(), user.getUserId());
+//            ticketsBoughtPerFestival.put(festival.getFestivalId(), ticketsBought);
+//        }
+//
+//        return ticketsBoughtPerFestival;
+//    }
+
+    public List<FestivalDto> fetchFestivalsWithTickets(String genre, String region, Principal principal) {
         Optional<Genre> genreEntity = genreRepository.findByName(genre);
         Optional<Region> regionEntity = regionRepository.findByName(region);
-        return festivalRepository.findByGenreAndRegion(genreEntity.orElse(null), regionEntity.orElse(null));
-    }
 
-    public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Principal principal) {
-        List<Festival> festivals = fetchFestivalsByGenreAndRegion(genre, region);
+        List<Festival> festivals = festivalRepository.findByGenreAndRegion(genreEntity.orElse(null), regionEntity.orElse(null));
 
         MyUser user = myUserService.getUserByUsername(principal.getName());
 
-        Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
-        for (Festival festival : festivals) {
-            int ticketsBought = ticketService.getTicketsForFestivalByUser(festival.getFestivalId(), user.getUserId());
-            ticketsBoughtPerFestival.put(festival.getFestivalId(), ticketsBought);
-        }
-
-        return ticketsBoughtPerFestival;
+        return festivals.stream()
+                .map(festival -> {
+                    int ticketsBought = ticketService.getTicketsForFestivalByUser(festival.getFestivalId(), user.getUserId());
+                    return new FestivalDto(festival, ticketsBought);
+                })
+                .collect(Collectors.toList());
     }
-
 
     // REST
     public List<String> getArtistsByFestival(Long festivalId) {

@@ -23,8 +23,9 @@ public class FestivalsController {
     // Fetching festivals
     @GetMapping
     public String getFestivals(@RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "region", required = false) String region, Model model, WebRequest request, Principal principal) {
-        model.addAttribute("festivals", festivalService.fetchFestivalsByGenreAndRegion(genre, region));
-        model.addAttribute("ticketsBoughtPerFestival", festivalService.getTicketsBoughtPerFestivalForUser(genre, region, principal));
+//        model.addAttribute("festivals", festivalService.fetchFestivalsByGenreAndRegion(genre, region));
+//        model.addAttribute("ticketsBoughtPerFestival", festivalService.getTicketsBoughtPerFestivalForUser(genre, region, principal));
+        model.addAttribute("festivals", festivalService.fetchFestivalsWithTickets(genre, region, principal));
         model.addAttribute("genre", genre);
         model.addAttribute("region", region);
 

@@ -19,6 +19,7 @@
 <body>
 <div th:replace="~{nav :: navbar}"></div>
 
+
 <div>
     <div class="flex flex-col justify-center items-center">
         <h2 class="font-bold text-blue-900 text-3xl mt-4 mb-4"
@@ -26,28 +27,30 @@
             Music Genre and Region</h2>
 
         <!-- Display success message if it exists -->
-        <div class="alert alert-success text-green-500 font-bold" th:if="${message}"
+        <div class="alert alert-success text-green-500 fond-bold" th:if="${message}"
              th:text="${message}"></div>
     </div>
 
+
     <div class="flex flex-wrap justify-center gap-4 mt-8 mb-8">
         <div class="flex flex-col gap-4 w-1/4 border-2 border-black p-4 rounded-md bg-blue-100"
-             th:each="festivalDto : ${festivals}">
-            <h3 class="font-bold text-2xl" th:text="${festivalDto.festival.name}">Festival Name</h3>
+             th:each="festival : ${festivals}">
+            <h3 class="font-bold text-2xl" th:text="${festival.name}">Festival Name</h3>
+
 
             <div class="flex flex-col gap-1">
                 <p>
                     <span th:text="#{festivals.dateAndStartTime}">Date and Start Time:</span>
-                    <span th:text="${festivalDto.festival.startDateTime}">Date and Time</span>
+                    <span th:text="${{festival.startDateTime}}">Date and Time</span>
                 </p>
 
                 <p th:if="${genre} == null">
                     <span th:text="#{festivals.genre}">Genre:</span>
-                    <span th:text="${festivalDto.festival.genre.name}">Genre</span>
+                    <span th:text="${festival.genre.name}">Genre</span>
                 </p>
                 <p th:if="${region} == null">
                     <span th:text="#{festivals.region}">Region:</span>
-                    <span th:text="${festivalDto.festival.region.name}">Region</span>
+                    <span th:text="${festival.region.name}">Region</span>
                 </p>
 
                 <div class="p-2 border-blue-200 border-2 rounded-md">
@@ -55,8 +58,8 @@
                         <span th:text="#{festivals.performances}">Performances:</span>
                     </p>
                     <ul>
-                        <li th:each="performance : ${festivalDto.festival.performances}"
-                            th:text="${performance.artistName} + ' at ' + ${performance.startDateTime} + ' to ' + ${performance.endDateTime}">
+                        <li th:each="performance : ${festival.performances}"
+                            th:text="${performance.artistName} + ' at ' + ${{performance.startDateTime}} + ' to ' + ${{performance.endDateTime}}">
                             Performance
                         </li>
                     </ul>
@@ -64,53 +67,57 @@
 
                 <p>
                     <span th:text="#{festivals.availableSeats}">Available Seats:</span>
-                    <span th:text="${festivalDto.festival.availableSeats}">Available Seats</span>
+                    <span th:text="${festival.availableSeats}">Available Seats</span>
                 </p>
 
-                <p th:if="${festivalDto.festival.availableSeats != null && festivalDto.festival.availableSeats > 0 || userRole == 'admin'}">
+                <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || userRole == 'admin'}">
                     <span th:text="#{festivals.ticketPrice}">Ticket Price:</span>
-                    <span th:text="|&euro;${#numbers.formatDecimal(festivalDto.festival.ticketPrice,1,2)}|">Price</span>
+                    <span th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span>
                 </p>
 
-                <!-- Tickets bought -->
+                <!--Tickets bought-->
                 <th:block th:if="${userRole == 'user'}">
-                    <p th:if="${festivalDto.ticketsBought > 0}">
+                    <p th:if="${ticketsBoughtPerFestival[festival.festivalId] > 0}">
                         <span th:text="#{festivals.ticketsBought}">Tickets Bought:</span>
-                        <span th:text="${festivalDto.ticketsBought}">Number</span>
+                        <span th:text="${ticketsBoughtPerFestival[festival.festivalId]}">Number</span>
                     </p>
                 </th:block>
             </div>
 
+
             <div class="flex flex-col gap-2">
-                <!-- Buy ticket -->
+                <!--Buy ticket-->
                 <th:block
-                        th:if="${festivalDto.festival.availableSeats != null && festivalDto.festival.availableSeats > 0 && userRole == 'user'}">
-                    <a class="button-link" th:href="@{/tickets/buy(festivalId=${festivalDto.festival.festivalId})}">
+                        th:if="${festival.availableSeats != null && festival.availableSeats > 0 && userRole == 'user'}">
+                    <a class="button-link" th:href="@{/tickets/buy(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-500 text-white">
                             <span th:text="#{festivals.buyTickets}">Buy Ticket(s)</span>
                         </button>
                     </a>
                 </th:block>
 
-                <!-- Add performance -->
+                <!--Add performance-->
                 <th:block th:if="${userRole == 'admin'}">
-                    <a class="button-link" th:href="@{/performance/add(festivalId=${festivalDto.festival.festivalId})}">
+                    <a class="button-link"
+                       th:href="@{/performance/add(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-500 text-white">
                             <span th:text="#{festivals.addPerformance}">Add Performance</span>
                         </button>
                     </a>
                 </th:block>
 
-                <!-- Remove performance -->
+                <!--Remove performance-->
                 <th:block th:if="${userRole == 'admin'}">
                     <a class="button-link"
-                       th:href="@{/performance/remove(festivalId=${festivalDto.festival.festivalId})}">
+                       th:href="@{/performance/remove(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-300 text-black">
                             <span th:text="#{festivals.removePerformance}">Remove Performance(s)</span>
                         </button>
                     </a>
                 </th:block>
             </div>
+
+
         </div>
     </div>
 </div>
