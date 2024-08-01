@@ -8,41 +8,20 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import repository.MyUserRepository;
-import service.FestivalService;
-import service.PerformanceService;
 import service.TicketService;
-import validator.PerformanceValidation;
-import validator.TicketValidation;
-import validator.TicketValidator;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 @RequestMapping("/tickets")
 public class TicketController {
 
     @Autowired
-    FestivalService festivalService;
-    @Autowired
-    PerformanceService performanceService;
-    @Autowired
-    MyUserRepository myUserRepository;
-    @Autowired
-    PerformanceValidation performanceValidation;
-    @Autowired
-    TicketValidation ticketValidation;
-    @Autowired
     TicketService ticketService;
-    @Autowired
-    private TicketValidator ticketValidator;
 
     @GetMapping
     public String showTickets(Model model, Principal principal) {
-        String username = principal.getName();
-        List<Ticket> tickets = ticketService.findTicketsByUsername(username);
-        model.addAttribute("tickets", tickets);
+        model.addAttribute("tickets", ticketService.findTicketsByUsername(principal.getName()));
         return "tickets";
     }
 

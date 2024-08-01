@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import repository.FestivalRepository;
 import repository.MyUserRepository;
 import repository.TicketRepository;
-import validator.TicketValidator;
+import validator.TicketQuantityValidator;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class TicketService {
     @Autowired
     private FestivalRepository festivalRepository;
     @Autowired
-    private TicketValidator ticketValidator;
+    private TicketQuantityValidator ticketQuantityValidator;
 
     public void saveTicket(Ticket ticket) {
         ticketRepository.save(ticket);
@@ -54,7 +54,7 @@ public class TicketService {
         ticket.setFestival(festivalRepository.findById(festivalId).orElse(null));
 
         // TODO fix quantity > available seats
-        ticketValidator.validate(ticket, result);
+        ticketQuantityValidator.validate(ticket, result);
 
         if (!result.hasErrors()) {
             updateAvailableSeats(festivalId, ticket.getQuantity());

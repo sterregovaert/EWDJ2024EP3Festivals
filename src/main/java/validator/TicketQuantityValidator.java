@@ -7,7 +7,7 @@ import org.springframework.validation.Validator;
 import repository.FestivalRepository;
 import repository.TicketRepository;
 
-public class TicketValidation implements Validator {
+public class TicketQuantityValidator implements Validator {
 
     private static final int FESTIVAL_TICKET_LIMIT = 15;
     private static final int TOTAL_TICKET_LIMIT = 50;
