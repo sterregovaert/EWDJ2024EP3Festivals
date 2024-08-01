@@ -14,14 +14,14 @@ class FestivalErrorAdvice {
     @ResponseBody
     @ExceptionHandler(FestivalNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String employeeNotFoundHandler(FestivalNotFoundException ex) {
+    String festivalNotFoundHandler(FestivalNotFoundException ex) {
         return ex.getMessage();
     }
 
     @ResponseBody
     @ExceptionHandler(DuplicateFestivalException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    String duplicateEmployeeHandler(DuplicateFestivalException ex) {
+    String duplicateFestivalHandler(DuplicateFestivalException ex) {
         return ex.getMessage();
     }
 }

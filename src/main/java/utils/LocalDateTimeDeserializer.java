@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import static utils.InitFormatter.FORMATTER;
+import static utils.InitFormatter.DATE_TIME_FORMATTER;
 
 public class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 
@@ -17,6 +17,6 @@ public class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
         if (valueAsString == null || valueAsString.trim().isEmpty()) {
             return null;
         }
-        return LocalDateTime.parse(valueAsString, FORMATTER);
+        return LocalDateTime.parse(valueAsString, DATE_TIME_FORMATTER);
     }
 }

@@ -1,6 +1,8 @@
 package service;
 
 import domain.*;
+import exceptions.FestivalNotFoundException;
+import exceptions.GenreNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +11,10 @@ import repository.GenreRepository;
 import repository.RegionRepository;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,12 +55,18 @@ public class FestivalServiceImpl implements FestivalService {
 
     // REST
     public List<String> getArtistsByFestival(Long festivalId) {
-        return festivalRepository.findById(festivalId).map(festival -> festival.getPerformances().stream().map(Performance::getArtistName).distinct().collect(Collectors.toList())).orElse(Collections.emptyList());
+        return festivalRepository.findById(festivalId)
+                .map(festival -> festival.getPerformances().stream()
+                        .map(Performance::getArtistName)
+                        .distinct()
+                        .collect(Collectors.toList()))
+                .orElseThrow(() -> new FestivalNotFoundException(festivalId.intValue()));
     }
 
     public List<Festival> getFestivalsByGenre(String genre) {
-        Genre genreEntity = genreRepository.findByName(genre).orElseThrow(() -> new IllegalArgumentException("Genre not found"));
+        Genre genreEntity = genreRepository.findByName(genre).orElseThrow(() -> new GenreNotFoundException("Genre not found"));
 
         return festivalRepository.findByGenre(genreEntity);
     }
+
 }

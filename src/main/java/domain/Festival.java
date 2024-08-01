@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import utils.LocalDateTimeDeserializer;
 import utils.LocalDateTimeSerializer;
+import utils.TicketPriceDeserializer;
+import utils.TicketPriceSerializer;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,6 +40,8 @@ public class Festival {
 
     private int availableSeats;
 
+    @JsonSerialize(using = TicketPriceSerializer.class)
+    @JsonDeserialize(using = TicketPriceDeserializer.class)
     private double ticketPrice;
 
     @JsonIgnore
