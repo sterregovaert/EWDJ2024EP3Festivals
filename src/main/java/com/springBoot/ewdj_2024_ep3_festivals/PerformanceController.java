@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import repository.FestivalRepository;
 import service.PerformanceService;
-import validator.PerformanceValidation;
+import validator.PerformanceDateTimeValidation;
+import validator.PerformanceFestivalNumber1Validation;
 
 @Controller
 @RequestMapping("/performance")
@@ -21,7 +22,9 @@ public class PerformanceController {
     @Autowired
     PerformanceService performanceService;
     @Autowired
-    PerformanceValidation performanceValidation;
+    PerformanceDateTimeValidation performanceDateTimeValidation;
+    @Autowired
+    PerformanceFestivalNumber1Validation performanceFestivalNumber1Validation;
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -41,7 +44,8 @@ public class PerformanceController {
     public String addPerformance(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
         performanceService.setupPerformanceForFestival(festivalId, performance, result, model);
         // TODO split up the validate in sub validations
-        performanceValidation.validate(performance, result);
+        performanceDateTimeValidation.validate(performance, result);
+        performanceFestivalNumber1Validation.validate(performance, result);
 
         if (result.hasErrors()) {
             performanceService.setupAddPerformanceFormModel(festivalId, performance, model);

@@ -2,7 +2,7 @@ package domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import validator.ValidFestivalNumbersConstraint;
+import validator.ValidFestivalNumber2RangeConstraint;
 
 @Entity
 @Data
@@ -13,7 +13,7 @@ import validator.ValidFestivalNumbersConstraint;
 @Getter
 @Setter
 @Table(name = "artist")
-@ValidFestivalNumbersConstraint
+@ValidFestivalNumber2RangeConstraint
 public class Artist {
     private static final long serialVersionUID = 1L;
     @Id

@@ -4,7 +4,7 @@ import domain.Performance;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class FestivalNumberValidator implements ConstraintValidator<ValidFestivalNumbersConstraint, Performance> {
+public class FestivalNumber2RangeValidator implements ConstraintValidator<ValidFestivalNumber2RangeConstraint, Performance> {
 
     private static final int MAX_DIFFERENCE = 1000;
 
@@ -19,7 +19,7 @@ public class FestivalNumberValidator implements ConstraintValidator<ValidFestiva
 
         if (festivalNumber2 < festivalNumber1 || festivalNumber2 > festivalNumber1 + MAX_DIFFERENCE) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("{festivalNumber2.range}")
+            context.buildConstraintViolationWithTemplate("{performance.festivalNumber2.range}")
                     .addPropertyNode("festivalNumber2")
                     .addConstraintViolation();
             return false;
@@ -29,7 +29,7 @@ public class FestivalNumberValidator implements ConstraintValidator<ValidFestiva
     }
 
     @Override
-    public void initialize(ValidFestivalNumbersConstraint constraintAnnotation) {
+    public void initialize(ValidFestivalNumber2RangeConstraint constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 }

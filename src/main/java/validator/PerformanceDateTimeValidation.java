@@ -7,10 +7,9 @@ import org.springframework.validation.Validator;
 import repository.PerformanceRepository;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
-public class PerformanceValidation implements Validator {
+public class PerformanceDateTimeValidation implements Validator {
 
     @Autowired
     private PerformanceRepository performanceRepository;
@@ -24,14 +23,6 @@ public class PerformanceValidation implements Validator {
     public void validate(Object target, Errors errors) {
         Performance performance = (Performance) target;
 
-        // Check if startDateTime is between 10:00 and 23:00 and minutes are 00
-        if (performance.getStartDateTime() != null) {
-            LocalTime startTime = performance.getStartDateTime().toLocalTime();
-            if (startTime.getMinute() != 0 || startTime.isBefore(LocalTime.of(10, 0)) || startTime.isAfter(LocalTime.of(22, 59))) {
-                errors.rejectValue("startDateTime", "startDateTime.invalidTime", new Object[]{"10:00", "23:00"}, "Start time must be between 10:00 and 23:00 with minutes set to 00");
-            }
-        }
-
         // Check if the time slot (startDateTime - endDateTime) is not already taken by another performance from the same festival
         if (performance.getStartDateTime() != null && performance.getEndDateTime() != null) {
             List<Performance> performances = performanceRepository.findByFestivalFestivalId(performance.getFestival().getFestivalId());
@@ -42,7 +33,7 @@ public class PerformanceValidation implements Validator {
                 LocalDateTime otherStart = otherPerformance.getStartDateTime();
                 LocalDateTime otherEnd = otherPerformance.getEndDateTime();
                 if ((performance.getStartDateTime().isBefore(otherEnd) && performance.getEndDateTime().isAfter(otherStart))) {
-                    errors.rejectValue("startDateTime", "startDateTime.timeSlotTaken");
+                    errors.rejectValue("startDateTime", "performance.startDateTime.timeSlotTaken");
                     break;
                 }
             }
@@ -52,20 +43,16 @@ public class PerformanceValidation implements Validator {
         if (performance.getStartDateTime() != null && performance.getFestival() != null) {
             LocalDateTime festivalStartDateTime = performance.getFestival().getStartDateTime();
             if (performance.getStartDateTime().isBefore(festivalStartDateTime)) {
-                errors.rejectValue("startDateTime", "startDateTime.beforeFestivalStartDateTime");
+                errors.rejectValue("startDateTime", "performance.startDateTime.beforeFestivalStartDateTime");
             }
         }
 
         // check if performance.endDateTime is after performance.startDateTime
         if (performance.getEndDateTime() != null && performance.getStartDateTime() != null) {
             if (!performance.getEndDateTime().isAfter(performance.getStartDateTime())) {
-                errors.rejectValue("endDateTime", "endDateTime.beforeStartDateTime");
+                errors.rejectValue("endDateTime", "performance.endDateTime.beforeStartDateTime");
             }
         }
 
-        // check if festivalNumber1 is divisible by 3
-        if (performance.getFestivalNumber1() % 3 != 0) {
-            errors.rejectValue("festivalNumber1", "festivalNumber1.notDivisibleBy3");
-        }
     }
 }

@@ -12,7 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import perform.PerformRestFestival;
 import service.*;
-import validator.PerformanceValidation;
+import validator.PerformanceDateTimeValidation;
+import validator.PerformanceFestivalNumber1Validation;
 import validator.TicketQuantityValidator;
 
 import java.util.Locale;
@@ -92,8 +93,13 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
 
     /*VALIDATOR*/
     @Bean
-    PerformanceValidation performanceValidation() {
-        return new PerformanceValidation();
+    PerformanceDateTimeValidation performanceValidation() {
+        return new PerformanceDateTimeValidation();
+    }
+
+    @Bean
+    PerformanceFestivalNumber1Validation performanceFestivalNumber1Validation() {
+        return new PerformanceFestivalNumber1Validation();
     }
 
     @Bean
