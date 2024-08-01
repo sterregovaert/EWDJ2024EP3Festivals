@@ -13,7 +13,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import perform.PerformRestFestival;
 import service.*;
 import validator.PerformanceDateTimeValidation;
-import validator.PerformanceFestivalNumber1Validation;
+import validator.PerformanceTimeSlotValidation;
 import validator.TicketQuantityValidator;
 
 import java.util.Locale;
@@ -98,8 +98,8 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     }
 
     @Bean
-    PerformanceFestivalNumber1Validation performanceFestivalNumber1Validation() {
-        return new PerformanceFestivalNumber1Validation();
+    PerformanceTimeSlotValidation performanceTimeSlotValidation() {
+        return new PerformanceTimeSlotValidation();
     }
 
     @Bean

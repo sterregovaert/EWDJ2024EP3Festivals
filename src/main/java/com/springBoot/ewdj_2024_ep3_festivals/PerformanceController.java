@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import repository.FestivalRepository;
 import service.PerformanceService;
 import validator.PerformanceDateTimeValidation;
-import validator.PerformanceFestivalNumber1Validation;
+import validator.PerformanceTimeSlotValidation;
 
 @Controller
 @RequestMapping("/performance")
@@ -24,7 +24,7 @@ public class PerformanceController {
     @Autowired
     PerformanceDateTimeValidation performanceDateTimeValidation;
     @Autowired
-    PerformanceFestivalNumber1Validation performanceFestivalNumber1Validation;
+    PerformanceTimeSlotValidation performanceTimeSlotValidation;
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -43,9 +43,8 @@ public class PerformanceController {
     @PostMapping("/add")
     public String addPerformance(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Performance performance, BindingResult result, Model model) {
         performanceService.setupPerformanceForFestival(festivalId, performance, result, model);
-        // TODO split up the validate in sub validations
+        performanceTimeSlotValidation.validate(performance, result);
         performanceDateTimeValidation.validate(performance, result);
-        performanceFestivalNumber1Validation.validate(performance, result);
 
         if (result.hasErrors()) {
             performanceService.setupAddPerformanceFormModel(festivalId, performance, model);

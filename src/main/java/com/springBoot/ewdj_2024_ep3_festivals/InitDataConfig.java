@@ -125,8 +125,8 @@ public class InitDataConfig implements CommandLineRunner {
                 performance.setStartDateTime(startOfPerformance);
                 performance.setEndDateTime(startOfPerformance.plusHours(1));
                 performance.setFestival(festival);
-                performance.setFestivalNumber1(1000);
-                performance.setFestivalNumber2(1001);
+                performance.setFestivalNumber1(3333);
+                performance.setFestivalNumber2(3333);
 
                 performances.add(performance);
             }
