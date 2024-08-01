@@ -3,10 +3,10 @@ package service;
 import domain.Festival;
 import domain.MyUser;
 import domain.Ticket;
+import exceptions.FestivalNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import repository.FestivalRepository;
-import repository.MyUserRepository;
 import repository.TicketRepository;
 import validator.TicketQuantityValidator;
 
@@ -17,31 +17,28 @@ public class TicketService {
     @Autowired
     private TicketRepository ticketRepository;
     @Autowired
-    private MyUserRepository myUserRepository;
-    @Autowired
     private FestivalRepository festivalRepository;
     @Autowired
     private TicketQuantityValidator ticketQuantityValidator;
+    @Autowired
+    private MyUserService myUserService;
 
     public void saveTicket(Ticket ticket) {
         ticketRepository.save(ticket);
     }
 
+    private Festival getFestivalById(Long festivalId) {
+        return festivalRepository.findById(festivalId)
+                .orElseThrow(() -> new FestivalNotFoundException(festivalId.intValue()));
+    }
+
     public List<Ticket> findTicketsByUsername(String username) {
-        MyUser user = myUserRepository.findByUsername(username);
-        return ticketRepository.findByUserOrderByFestivalStartDateTimeAscFestivalRegionAscFestivalGenreAsc(user);
+        return ticketRepository.findByUserOrderByFestivalStartDateTimeAscFestivalRegionAscFestivalGenreAsc(myUserService.getUserByUsername(username));
     }
 
     public Ticket setupBuyTicketModel(Long festivalId, String username) {
-        MyUser user = myUserRepository.findByUsername(username);
-        if (user == null) {
-            throw new IllegalStateException("User not found");
-        }
-
-        Festival festival = festivalRepository.findById(festivalId).orElse(null);
-        if (festival == null) {
-            throw new IllegalStateException("Festival not found");
-        }
+        MyUser user = myUserService.getUserByUsername(username);
+        Festival festival = getFestivalById(festivalId);
 
         Ticket ticket = new Ticket();
         ticket.setUser(user);
@@ -50,8 +47,8 @@ public class TicketService {
     }
 
     public void validateAndBuyTicket(Long festivalId, Ticket ticket, String username, BindingResult result) {
-        ticket.setUser(myUserRepository.findByUsername(username));
-        ticket.setFestival(festivalRepository.findById(festivalId).orElse(null));
+        ticket.setUser(myUserService.getUserByUsername(username));
+        ticket.setFestival(getFestivalById(festivalId));
 
         ticketQuantityValidator.validate(ticket, result);
 

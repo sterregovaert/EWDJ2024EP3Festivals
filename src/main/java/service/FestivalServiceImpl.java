@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.FestivalRepository;
 import repository.GenreRepository;
-import repository.MyUserRepository;
 import repository.RegionRepository;
 
 import java.security.Principal;
@@ -17,8 +16,6 @@ import java.util.stream.Collectors;
 @Service
 public class FestivalServiceImpl implements FestivalService {
     @Autowired
-    MyUserRepository myUserRepository;
-    @Autowired
     private FestivalRepository festivalRepository;
     @Autowired
     private RegionRepository regionRepository;
@@ -26,6 +23,8 @@ public class FestivalServiceImpl implements FestivalService {
     private GenreRepository genreRepository;
     @Autowired
     private TicketService ticketService;
+    @Autowired
+    private MyUserService myUserService;
 
     // TODO getTicketsBoughtPerFestivalForUser can be added to data of fetchFestivalsByGenreAndRegion or something
     public List<Festival> fetchFestivalsByGenreAndRegion(String genre, String region) {
@@ -37,7 +36,7 @@ public class FestivalServiceImpl implements FestivalService {
     public Map<Long, Integer> getTicketsBoughtPerFestivalForUser(String genre, String region, Principal principal) {
         List<Festival> festivals = fetchFestivalsByGenreAndRegion(genre, region);
 
-        MyUser user = myUserRepository.findByUsername(principal.getName());
+        MyUser user = myUserService.getUserByUsername(principal.getName());
 
         Map<Long, Integer> ticketsBoughtPerFestival = new HashMap<>();
         for (Festival festival : festivals) {
