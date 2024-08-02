@@ -20,7 +20,7 @@
             <span th:text="#{festivalBuy.availablePlaces}">Available places:</span>
             <span th:text="${festival.availablePlaces}"></span>
         </p>
-        <p>
+        <p th:if="${ticketsBought > 0}">
             <span th:text="#{festivalBuy.ticketsBought}">Tickets already bought:</span>
             <span th:text="${ticketsBought}"></span>
         </p>
