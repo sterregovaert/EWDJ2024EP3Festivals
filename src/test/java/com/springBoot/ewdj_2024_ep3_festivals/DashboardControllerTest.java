@@ -3,18 +3,18 @@ package com.springBoot.ewdj_2024_ep3_festivals;
 import domain.Genre;
 import domain.Region;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import service.DashboardService;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,79 +35,133 @@ public class DashboardControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    // -------------------------------------------------------
-    private ResultActions performCommonAssertions() throws Exception {
-        return mockMvc.perform(get("/dashboard"))
+
+    @WithMockUser(username = "user", roles = {"USER"})
+    @Test
+    public void testShowDashboardWithValidUserRole() throws Exception {
+        List<Genre> genres = List.of(
+                Genre.builder().name("Rock").build(),
+                Genre.builder().name("Jazz").build()
+        );
+        List<Region> regions = List.of(
+                Region.builder().name("North").build(),
+                Region.builder().name("South").build()
+        );
+        int ticketCount = 5;
+
+        Mockito.when(dashboardService.findAllGenres()).thenReturn(genres);
+        Mockito.when(dashboardService.findAllRegions()).thenReturn(regions);
+        Mockito.when(dashboardService.findTicketCountForCurrentUser()).thenReturn(ticketCount);
+
+        mockMvc.perform(get("/dashboard"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("dashboard"))
-                .andExpect(model().attributeExists("genres"))
-                .andExpect(model().attributeExists("regions"))
-                .andExpect(model().attributeExists("ticketCount"));
+                .andExpect(model().attribute("genres", genres))
+                .andExpect(model().attribute("regions", regions))
+                .andExpect(model().attribute("ticketCount", ticketCount));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    public void testShowDashboard() throws Exception {
-        when(dashboardService.findAllGenres()).thenReturn(List.of(
-                Genre.builder().name("Genre1").build(),
-                Genre.builder().name("Genre2").build()
-        ));
-        when(dashboardService.findAllRegions()).thenReturn(List.of(
-                Region.builder().name("Region1").build(),
-                Region.builder().name("Region2").build()
-        ));
-        when(dashboardService.findTicketCountForCurrentUser()).thenReturn(5);
+    public void testShowDashboardWithNoGenres() throws Exception {
+        List<Region> regions = List.of(
+                Region.builder().name("North").build(),
+                Region.builder().name("South").build()
+        );
+        int ticketCount = 5;
 
-        performCommonAssertions()
-                .andExpect(model().attribute("genres", List.of(
-                        Genre.builder().name("Genre1").build(),
-                        Genre.builder().name("Genre2").build()
-                )))
-                .andExpect(model().attribute("regions", List.of(
-                        Region.builder().name("Region1").build(),
-                        Region.builder().name("Region2").build()
-                )))
-                .andExpect(model().attribute("ticketCount", 5));
+        Mockito.when(dashboardService.findAllGenres()).thenReturn(Collections.emptyList());
+        Mockito.when(dashboardService.findAllRegions()).thenReturn(regions);
+        Mockito.when(dashboardService.findTicketCountForCurrentUser()).thenReturn(ticketCount);
+
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("genres", Collections.emptyList()))
+                .andExpect(model().attribute("regions", regions))
+                .andExpect(model().attribute("ticketCount", ticketCount));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    public void testShowDashboardWithEmptyGenresAndRegions() throws Exception {
-        when(dashboardService.findAllGenres()).thenReturn(List.of());
-        when(dashboardService.findAllRegions()).thenReturn(List.of());
-        when(dashboardService.findTicketCountForCurrentUser()).thenReturn(0);
+    public void testShowDashboardWithNoRegions() throws Exception {
+        List<Genre> genres = List.of(
+                Genre.builder().name("Rock").build(),
+                Genre.builder().name("Jazz").build()
+        );
+        int ticketCount = 5;
 
-        performCommonAssertions()
-                .andExpect(model().attribute("genres", List.of()))
-                .andExpect(model().attribute("regions", List.of()))
+        Mockito.when(dashboardService.findAllGenres()).thenReturn(genres);
+        Mockito.when(dashboardService.findAllRegions()).thenReturn(Collections.emptyList());
+        Mockito.when(dashboardService.findTicketCountForCurrentUser()).thenReturn(ticketCount);
+
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("genres", genres))
+                .andExpect(model().attribute("regions", Collections.emptyList()))
+                .andExpect(model().attribute("ticketCount", ticketCount));
+    }
+
+    @WithMockUser(username = "user", roles = {"USER"})
+    @Test
+    public void testShowDashboardWithNoTickets() throws Exception {
+        List<Genre> genres = List.of(
+                Genre.builder().name("Rock").build(),
+                Genre.builder().name("Jazz").build()
+        );
+        List<Region> regions = List.of(
+                Region.builder().name("North").build(),
+                Region.builder().name("South").build()
+        );
+        
+        Mockito.when(dashboardService.findAllGenres()).thenReturn(genres);
+        Mockito.when(dashboardService.findAllRegions()).thenReturn(regions);
+        Mockito.when(dashboardService.findTicketCountForCurrentUser()).thenReturn(0);
+
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("genres", genres))
+                .andExpect(model().attribute("regions", regions))
+                .andExpect(model().attribute("ticketCount", 0));
+    }
+
+    @WithMockUser(username = "user", roles = {})
+    @Test
+    public void testShowDashboardWithNoUserRole() throws Exception {
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser(username = "user", roles = {"USER"})
+    @Test
+    public void testShowDashboardWithExceptionInFindAllGenres() throws Exception {
+        Mockito.when(dashboardService.findAllGenres()).thenThrow(new RuntimeException("Database error"));
+        Mockito.when(dashboardService.findAllRegions()).thenReturn(Collections.emptyList());
+        Mockito.when(dashboardService.findTicketCountForCurrentUser()).thenReturn(0);
+
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("genres", Collections.emptyList()))
+                .andExpect(model().attribute("regions", Collections.emptyList()))
                 .andExpect(model().attribute("ticketCount", 0));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    public void testShowDashboardWithNullGenresAndRegions() throws Exception {
-        when(dashboardService.findAllGenres()).thenReturn(List.of());
-        when(dashboardService.findAllRegions()).thenReturn(List.of());
-        when(dashboardService.findTicketCountForCurrentUser()).thenReturn(0);
+    public void testShowDashboardWithExceptionInFindAllRegions() throws Exception {
+        Mockito.when(dashboardService.findAllGenres()).thenReturn(Collections.emptyList());
+        Mockito.when(dashboardService.findAllRegions()).thenThrow(new RuntimeException("Database error"));
+        Mockito.when(dashboardService.findTicketCountForCurrentUser()).thenReturn(0);
 
-        performCommonAssertions()
-                .andExpect(model().attribute("genres", List.of()))
-                .andExpect(model().attribute("regions", List.of()))
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("genres", Collections.emptyList()))
+                .andExpect(model().attribute("regions", Collections.emptyList()))
                 .andExpect(model().attribute("ticketCount", 0));
     }
-
-    @WithMockUser(username = "user", roles = {"USER"})
-    @Test
-    public void testShowDashboardWithException() throws Exception {
-        when(dashboardService.findAllGenres()).thenThrow(new RuntimeException("Service error"));
-        when(dashboardService.findAllRegions()).thenReturn(List.of());
-        when(dashboardService.findTicketCountForCurrentUser()).thenReturn(0);
-
-        performCommonAssertions()
-                .andExpect(model().attribute("genres", List.of()))
-                .andExpect(model().attribute("regions", List.of()))
-                .andExpect(model().attribute("ticketCount", 0));
-    }
-
 
 }

@@ -34,12 +34,12 @@ public class SecurityConfig {
                         requests
                                 // pages that need to be secured
                                 .requestMatchers("/login").permitAll()
-                                .requestMatchers("/dashboard").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
-                                .requestMatchers("/tickets").hasAnyRole(String.valueOf(Role.USER))
-                                .requestMatchers("/tickets/buy").hasRole(String.valueOf(Role.USER))
-                                .requestMatchers("/festivals").hasAnyRole(String.valueOf(Role.USER), String.valueOf(Role.ADMIN))
-                                .requestMatchers("/performance/add").hasRole(String.valueOf(Role.ADMIN))
-                                .requestMatchers("/performance/remove").hasRole(String.valueOf(Role.ADMIN))
+                                .requestMatchers("/dashboard").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers("/tickets").hasAnyRole(Role.USER.name())
+                                .requestMatchers("/tickets/buy").hasRole(Role.USER.name())
+                                .requestMatchers("/festivals").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers("/performance/add").hasRole(Role.ADMIN.name())
+                                .requestMatchers("/performance/remove").hasRole(Role.ADMIN.name())
 
 
                                 // rest
