@@ -23,7 +23,7 @@ import java.util.List;
 @EqualsAndHashCode(exclude = "festivalId")
 @Getter
 @Setter
-@JsonPropertyOrder({"festivalId", "name", "startDateTime", "region", "genre", "availableSeats", "performances", "ticketPrice", "tickets"})
+@JsonPropertyOrder({"festivalId", "name", "startDateTime", "region", "genre", "availablePlaces", "performances", "ticketPrice", "tickets"})
 @Table(name = "festival")
 public class Festival {
     private static final long serialVersionUID = 1L;
@@ -38,7 +38,7 @@ public class Festival {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime startDateTime;
 
-    private int availableSeats;
+    private int availablePlaces;
 
     @JsonSerialize(using = TicketPriceSerializer.class)
     @JsonDeserialize(using = TicketPriceDeserializer.class)

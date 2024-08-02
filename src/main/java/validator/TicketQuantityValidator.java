@@ -39,10 +39,10 @@ public class TicketQuantityValidator implements Validator {
             errors.rejectValue(QUANTITY_FIELD, "quantity.totalExceedsLimit", new Object[]{TOTAL_TICKET_LIMIT}, "You can buy no more than {0} tickets in total for all festivals.");
         }
 
-        // Check if the quantity of tickets being bought is more than the available seats
-        int availableSeats = festivalRepository.findAvailableSeatsByFestivalId(ticket.getFestival().getFestivalId());
-        if (ticket.getQuantity() > availableSeats) {
-            errors.rejectValue(QUANTITY_FIELD, "quantity.exceedsAvailableSeats");
+        // Check if the quantity of tickets being bought is more than the available places
+        int availablePlaces = festivalRepository.findAvailablePlacesByFestivalId(ticket.getFestival().getFestivalId());
+        if (ticket.getQuantity() > availablePlaces) {
+            errors.rejectValue(QUANTITY_FIELD, "quantity.exceedsAvailablePlaces");
         }
     }
 }

@@ -66,11 +66,11 @@
                 </div>
 
                 <p>
-                    <span th:text="#{festivals.availableSeats}">Available Seats:</span>
-                    <span th:text="${festival.availableSeats}">Available Seats</span>
+                    <span th:text="#{festivals.availablePlaces}">Available Places:</span>
+                    <span th:text="${festival.availablePlaces}">Available Places</span>
                 </p>
 
-                <p th:if="${festival.availableSeats != null && festival.availableSeats > 0 || userRole == 'admin'}">
+                <p th:if="${festival.availablePlaces != null && festival.availablePlaces > 0 || userRole == 'admin'}">
                     <span th:text="#{festivals.ticketPrice}">Ticket Price:</span>
                     <span th:text="|&euro;${#numbers.formatDecimal(festival.ticketPrice,1,2)}|">Price</span>
                 </p>
@@ -88,7 +88,7 @@
             <div class="flex flex-col gap-2">
                 <!--Buy ticket-->
                 <th:block
-                        th:if="${festival.availableSeats != null && festival.availableSeats > 0 && userRole == 'user'}">
+                        th:if="${festival.availablePlaces != null && festival.availablePlaces > 0 && userRole == 'user'}">
                     <a class="button-link" th:href="@{/tickets/buy(festivalId=${festival.festivalId})}">
                         <button class="bg-blue-500 text-white">
                             <span th:text="#{festivals.buyTickets}">Buy Ticket(s)</span>

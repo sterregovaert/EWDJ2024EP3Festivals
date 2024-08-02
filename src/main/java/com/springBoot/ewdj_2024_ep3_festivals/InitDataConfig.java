@@ -109,7 +109,7 @@ public class InitDataConfig implements CommandLineRunner {
                     .nextInt(9, 20), 0) // hour and minutes
                     ;
 
-            Festival festival = Festival.builder().startDateTime(startOfFestival).region(allRegions.get(ThreadLocalRandom.current().nextInt(allRegions.size()))).genre(allGenres.get(ThreadLocalRandom.current().nextInt(allGenres.size()))).availableSeats(ThreadLocalRandom.current().nextInt(0, 31)).ticketPrice(ThreadLocalRandom.current().nextDouble(1, 150.1)).name(festivalName).build();
+            Festival festival = Festival.builder().startDateTime(startOfFestival).region(allRegions.get(ThreadLocalRandom.current().nextInt(allRegions.size()))).genre(allGenres.get(ThreadLocalRandom.current().nextInt(allGenres.size()))).availablePlaces(ThreadLocalRandom.current().nextInt(0, 31)).ticketPrice(ThreadLocalRandom.current().nextDouble(1, 150.1)).name(festivalName).build();
 
             festivals.add(festival);
 

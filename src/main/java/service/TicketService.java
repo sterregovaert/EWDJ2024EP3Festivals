@@ -55,7 +55,7 @@ public class TicketService {
         ticketQuantityValidator.validate(ticket, result);
 
         if (!result.hasErrors()) {
-            updateAvailableSeats(festivalId, ticket.getQuantity());
+            updateAvailablePlaces(festivalId, ticket.getQuantity());
             saveTicket(ticket);
         }
     }
@@ -65,12 +65,12 @@ public class TicketService {
         return ticketsCount != null ? ticketsCount : 0;
     }
 
-    public void updateAvailableSeats(Long festivalId, int quantity) {
+    public void updateAvailablePlaces(Long festivalId, int quantity) {
         Festival festival = festivalRepository.findById(festivalId).orElse(null);
         if (festival == null) {
             throw new IllegalStateException("Festival not found");
         }
-        festival.setAvailableSeats(festival.getAvailableSeats() - quantity);
+        festival.setAvailablePlaces(festival.getAvailablePlaces() - quantity);
         festivalRepository.save(festival);
     }
 

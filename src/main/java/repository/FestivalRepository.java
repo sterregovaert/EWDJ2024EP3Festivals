@@ -16,8 +16,8 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
             "ORDER BY f.genre.name ASC, f.region.name ASC, f.startDateTime ASC")
     List<Festival> findByGenreAndRegion(@Param("genre") Genre genre, @Param("region") Region region);
 
-    @Query("SELECT f.availableSeats FROM Festival f WHERE f.festivalId = :festivalId")
-    int findAvailableSeatsByFestivalId(Long festivalId);
+    @Query("SELECT f.availablePlaces FROM Festival f WHERE f.festivalId = :festivalId")
+    int findAvailablePlacesByFestivalId(Long festivalId);
 
     List<Festival> findByGenre(Genre genre);
 }
