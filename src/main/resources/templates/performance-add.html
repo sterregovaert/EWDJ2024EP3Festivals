@@ -32,6 +32,19 @@
         </div>
 
         <div>
+            <!--            TODO display other performances at the same festival here-->
+            <div>
+                <h2 class="font-bold text-xl">Other Performances</h2>
+                <div th:each="performance : ${performances}">
+                    <p>
+                        <span th:text="${performance.artistName}">Artist Name</span>
+                        <span th:text="${performance.artistName} + ' ' + #{performance.at} + ' ' + ${{performance.startDateTime}}  + ' ' + #{performance.to} + ' ' +  ${{performance.endDateTime}}">> </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div>
             <h1 class="font-bold text-2xl" th:text="#{performanceAdd.submitButton}"></h1>
             <form class="flex flex-col gap-4" method="post"
                   th:action="@{/performance/add(festivalId=${festival.festivalId})}"
