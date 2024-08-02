@@ -34,7 +34,7 @@
         <div>
             <!--            TODO display other performances at the same festival here-->
             <div>
-                <h2 class="font-bold text-xl">Other Performances</h2>
+                <h2 class="font-bold text-xl" th:text="#{performanceAdd.otherPerformances}">Other Performances</h2>
                 <div th:each="performance : ${performances}">
                     <p>
                         <span th:text="${performance.artistName}">Artist Name</span>
