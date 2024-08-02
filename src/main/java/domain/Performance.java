@@ -23,7 +23,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "performance")
-@ValidFestivalNumber2RangeConstraint
+@ValidFestivalNumber2RangeConstraint(maxDifference = 1000)
 public class Performance {
     private static final long serialVersionUID = 1L;
     @Id

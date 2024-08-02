@@ -15,4 +15,6 @@ public @interface ValidFestivalNumber2RangeConstraint {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    int maxDifference() default 1000;
 }
