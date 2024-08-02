@@ -56,7 +56,7 @@
                     </p>
                     <ul>
                         <li th:each="performance : ${festivalDto.festival.performances}"
-                            th:text="${performance.artistName} + ' at ' + ${{performance.startDateTime}} + ' to ' + ${{performance.endDateTime}}">
+                            th:text="${performance.artistName} + ' ' + #{performance.at} + ' ' + ${{performance.startDateTime}}  + ' ' + #{performance.to} + ' ' +  ${{performance.endDateTime}}">
                             Performance
                         </li>
                     </ul>
