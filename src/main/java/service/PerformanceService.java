@@ -43,6 +43,7 @@ public class PerformanceService {
         setupPerformanceDefaults(performance, festival);
         addFestivalAndSubGenresToModel(festival, model);
         model.addAttribute("performance", performance);
+        model.addAttribute("performances", getPerformancesByFestival(festivalId));
     }
 
     public void setupPerformanceForFestival(Long festivalId, Performance performance, BindingResult bindingResult, Model model) {

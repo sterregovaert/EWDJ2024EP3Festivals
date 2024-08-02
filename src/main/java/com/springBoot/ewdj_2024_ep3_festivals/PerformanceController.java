@@ -37,7 +37,7 @@ public class PerformanceController {
     public String showAddPerformanceForm(@RequestParam("festivalId") Long festivalId, Model model) {
         Performance performance = new Performance();
         performanceService.setupAddPerformanceFormModel(festivalId, performance, model);
-        model.addAttribute("performances", performanceService.getPerformancesByFestival(festivalId));
+
         return "performance-add";
     }
 
