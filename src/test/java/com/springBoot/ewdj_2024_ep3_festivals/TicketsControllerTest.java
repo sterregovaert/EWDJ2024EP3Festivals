@@ -1,5 +1,6 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
+import domain.Festival;
 import domain.Ticket;
 import exceptions.FestivalNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import service.TicketService;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,15 +34,13 @@ class TicketsControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
     void testAdminAccessTicketsPage() throws Exception {
-        mockMvc.perform(get("/tickets"))
-                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/tickets")).andExpect(status().isForbidden());
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
     void testAdminAccessBuyTicketPage() throws Exception {
-        mockMvc.perform(get("/tickets/buy").param("festivalId", "1"))
-                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/tickets/buy").param("festivalId", "1")).andExpect(status().isForbidden());
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -48,24 +48,23 @@ class TicketsControllerTest {
     void testShowTickets() throws Exception {
         when(ticketService.findTicketsByUsername("user")).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/tickets"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("tickets"))
-                .andExpect(model().attributeExists("tickets"));
+        mockMvc.perform(get("/tickets")).andExpect(status().isOk()).andExpect(view().name("tickets")).andExpect(model().attributeExists("tickets"));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
     void testBuyFestivalTicketGet() throws Exception {
+        // Initialize Ticket and Festival objects
         Ticket ticket = new Ticket();
+        Festival festival = new Festival();
+        festival.setStartDateTime(LocalDateTime.now());
+        ticket.setFestival(festival);
+
+        // Mock the ticketService.setupBuyTicketModel method
         when(ticketService.setupBuyTicketModel(1L, "user")).thenReturn(ticket);
 
-        mockMvc.perform(get("/tickets/buy").param("festivalId", "1"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("ticket-buy"))
-                .andExpect(model().attributeExists("ticket"))
-                .andExpect(model().attributeExists("festival"))
-                .andExpect(model().attributeExists("ticketsBought"));
+        // Perform the GET request and verify the response
+        mockMvc.perform(get("/tickets/buy").param("festivalId", "1")).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeExists("ticket")).andExpect(model().attributeExists("festival")).andExpect(model().attributeExists("ticketsBought"));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -74,12 +73,7 @@ class TicketsControllerTest {
         Ticket ticket = new Ticket();
         ticket.setQuantity(1);
 
-        mockMvc.perform(post("/tickets/buy")
-                        .param("festivalId", "1")
-                        .flashAttr("ticket", ticket))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/dashboard"))
-                .andExpect(flash().attributeExists("message"));
+        mockMvc.perform(post("/tickets/buy").param("festivalId", "1").flashAttr("ticket", ticket)).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/dashboard")).andExpect(flash().attributeExists("message"));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -88,12 +82,7 @@ class TicketsControllerTest {
         Ticket ticket = new Ticket();
         ticket.setQuantity(0); // Invalid quantity
 
-        mockMvc.perform(post("/tickets/buy")
-                        .param("festivalId", "1")
-                        .flashAttr("ticket", ticket))
-                .andExpect(status().isOk())
-                .andExpect(view().name("ticket-buy"))
-                .andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
+        mockMvc.perform(post("/tickets/buy").param("festivalId", "1").flashAttr("ticket", ticket)).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -103,11 +92,7 @@ class TicketsControllerTest {
         List<Ticket> tickets = List.of(ticket);
         when(ticketService.findTicketsByUsername("user")).thenReturn(tickets);
 
-        mockMvc.perform(get("/tickets"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("tickets"))
-                .andExpect(model().attributeExists("tickets"))
-                .andExpect(model().attribute("tickets", tickets));
+        mockMvc.perform(get("/tickets")).andExpect(status().isOk()).andExpect(view().name("tickets")).andExpect(model().attributeExists("tickets")).andExpect(model().attribute("tickets", tickets));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -115,8 +100,7 @@ class TicketsControllerTest {
     void testBuyFestivalTicketGet_InvalidFestivalId() throws Exception {
         when(ticketService.setupBuyTicketModel(999L, "user")).thenThrow(new FestivalNotFoundException(999));
 
-        mockMvc.perform(get("/tickets/buy").param("festivalId", "999"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/tickets/buy").param("festivalId", "999")).andExpect(status().isNotFound());
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -125,12 +109,7 @@ class TicketsControllerTest {
         Ticket ticket = new Ticket();
         ticket.setQuantity(100); // More than available places
 
-        mockMvc.perform(post("/tickets/buy")
-                        .param("festivalId", "1")
-                        .flashAttr("ticket", ticket))
-                .andExpect(status().isOk())
-                .andExpect(view().name("ticket-buy"))
-                .andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
+        mockMvc.perform(post("/tickets/buy").param("festivalId", "1").flashAttr("ticket", ticket)).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -138,11 +117,7 @@ class TicketsControllerTest {
     void testShowTickets_EmptyModel() throws Exception {
         when(ticketService.findTicketsByUsername("user")).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/tickets"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("tickets"))
-                .andExpect(model().attributeExists("tickets"))
-                .andExpect(model().attribute("tickets", Collections.emptyList()));
+        mockMvc.perform(get("/tickets")).andExpect(status().isOk()).andExpect(view().name("tickets")).andExpect(model().attributeExists("tickets")).andExpect(model().attribute("tickets", Collections.emptyList()));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -152,10 +127,7 @@ class TicketsControllerTest {
         ticket.setQuantity(1);
         when(ticketService.setupBuyTicketModel(999L, "user")).thenThrow(new FestivalNotFoundException(999));
 
-        mockMvc.perform(post("/tickets/buy")
-                        .param("festivalId", "999")
-                        .flashAttr("ticket", ticket))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(post("/tickets/buy").param("festivalId", "999").flashAttr("ticket", ticket)).andExpect(status().isNotFound());
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -164,12 +136,7 @@ class TicketsControllerTest {
         Ticket ticket = new Ticket();
         ticket.setQuantity(100); // More than available places
 
-        mockMvc.perform(post("/tickets/buy")
-                        .param("festivalId", "1")
-                        .flashAttr("ticket", ticket))
-                .andExpect(status().isOk())
-                .andExpect(view().name("ticket-buy"))
-                .andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
+        mockMvc.perform(post("/tickets/buy").param("festivalId", "1").flashAttr("ticket", ticket)).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -180,11 +147,7 @@ class TicketsControllerTest {
         List<Ticket> tickets = List.of(ticket1, ticket2);
         when(ticketService.findTicketsByUsername("user")).thenReturn(tickets);
 
-        mockMvc.perform(get("/tickets"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("tickets"))
-                .andExpect(model().attributeExists("tickets"))
-                .andExpect(model().attribute("tickets", tickets));
+        mockMvc.perform(get("/tickets")).andExpect(status().isOk()).andExpect(view().name("tickets")).andExpect(model().attributeExists("tickets")).andExpect(model().attribute("tickets", tickets));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -193,12 +156,7 @@ class TicketsControllerTest {
         Ticket ticket = new Ticket();
         ticket.setQuantity(0); // Zero quantity
 
-        mockMvc.perform(post("/tickets/buy")
-                        .param("festivalId", "1")
-                        .flashAttr("ticket", ticket))
-                .andExpect(status().isOk())
-                .andExpect(view().name("ticket-buy"))
-                .andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
+        mockMvc.perform(post("/tickets/buy").param("festivalId", "1").flashAttr("ticket", ticket)).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
@@ -207,11 +165,6 @@ class TicketsControllerTest {
         Ticket ticket = new Ticket();
         ticket.setQuantity(-1); // Negative quantity
 
-        mockMvc.perform(post("/tickets/buy")
-                        .param("festivalId", "1")
-                        .flashAttr("ticket", ticket))
-                .andExpect(status().isOk())
-                .andExpect(view().name("ticket-buy"))
-                .andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
+        mockMvc.perform(post("/tickets/buy").param("festivalId", "1").flashAttr("ticket", ticket)).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
     }
 }

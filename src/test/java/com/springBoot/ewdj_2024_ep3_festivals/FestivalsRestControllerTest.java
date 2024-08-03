@@ -85,12 +85,13 @@ class FestivalsRestControllerTest {
         mockMvc.perform(get("/api/festivals").param("genre", genre)).andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Genre not found"));
     }
 
-  
+
     @Test
     void testGetFestivalsByGenre_MissingGenreParameter() throws Exception {
         mockMvc.perform(get("/api/festivals")).andExpect(status().isBadRequest());
     }
 
+    // TODO check if this is even possible to test
     @Test
     void testGetArtistsByFestival_MissingFestivalIdParameter() throws Exception {
         mockMvc.perform(get("/api/festival//artists")).andExpect(status().isBadRequest());
