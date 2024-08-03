@@ -6,27 +6,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.util.Collections;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // DASHBOARD
     @ExceptionHandler(RuntimeException.class)
-    public ModelAndView handleRuntimeException(RuntimeException ex, Model model) {
-        ModelAndView modelAndView = new ModelAndView("dashboard");
-        model.addAttribute("error", "Service error");
-        model.addAttribute("genres", List.of());
-        model.addAttribute("regions", List.of());
-        model.addAttribute("ticketCount", 0);
-        return modelAndView;
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ModelAndView handleRuntimeException(RuntimeException ex, Model model, WebRequest request) {
+        String requestUri = request.getDescription(false);
+        if (requestUri.contains("/dashboard")) {
+            model.addAttribute("genres", Collections.emptyList());
+            model.addAttribute("regions", Collections.emptyList());
+            model.addAttribute("ticketCount", 0);
+            model.addAttribute("errorMessage", "An error occurred while fetching data.");
+            return new ModelAndView("dashboard");
+        } else {
+            ModelAndView mav = new ModelAndView("error");
+            mav.addObject("message", "Internal Server Error");
+            return mav;
+        }
     }
 
-
-    // OTHER
+    // OTHER EXCEPTION HANDLERS
     @ExceptionHandler(IllegalStateException.class)
     public String handleIllegalStateException(IllegalStateException e, Model model) {
         model.addAttribute("error", e.getMessage());
@@ -44,7 +51,6 @@ public class GlobalExceptionHandler {
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         return "redirect:/error";
     }
-
 
     @ExceptionHandler(GenreNotFoundException.class)
     public ResponseEntity<String> handleGenreNotFoundException(GenreNotFoundException ex) {
