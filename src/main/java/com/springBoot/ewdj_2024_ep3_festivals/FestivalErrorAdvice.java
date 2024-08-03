@@ -41,4 +41,13 @@ class FestivalErrorAdvice {
         response.put("message", ex.getMessage());
         return response;
     }
+
+    @ResponseBody
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    Map<String, String> illegalArgumentHandler(IllegalArgumentException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return response;
+    }
 }

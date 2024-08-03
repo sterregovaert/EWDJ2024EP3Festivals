@@ -84,4 +84,23 @@ class FestivalsRestControllerTest {
 
         mockMvc.perform(get("/api/festivals").param("genre", genre)).andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Genre not found"));
     }
+
+  
+    @Test
+    void testGetFestivalsByGenre_MissingGenreParameter() throws Exception {
+        mockMvc.perform(get("/api/festivals")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testGetArtistsByFestival_MissingFestivalIdParameter() throws Exception {
+        mockMvc.perform(get("/api/festival//artists")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testGetArtistsByFestival_EmptyArtistsList() throws Exception {
+        Long festivalId = 3L;
+        when(festivalService.getArtistsByFestival(festivalId)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/festival/{festivalId}/artists", festivalId)).andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
+    }
 }

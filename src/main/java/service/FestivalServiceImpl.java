@@ -70,6 +70,10 @@ public class FestivalServiceImpl implements FestivalService {
 
     // REST
     public List<String> getArtistsByFestival(Long festivalId) {
+        if (festivalId == null) {
+            throw new IllegalArgumentException("Festival ID is required");
+        }
+
         List<String> artists = festivalRepository.findById(festivalId)
                 .map(festival -> festival.getPerformances().stream()
                         .map(Performance::getArtistName)
