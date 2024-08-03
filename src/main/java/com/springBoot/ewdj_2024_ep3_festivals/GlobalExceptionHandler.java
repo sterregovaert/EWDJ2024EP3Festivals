@@ -12,6 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -33,7 +35,6 @@ public class GlobalExceptionHandler {
         }
     }
 
-    // OTHER EXCEPTION HANDLERS
     @ExceptionHandler(IllegalStateException.class)
     public String handleIllegalStateException(IllegalStateException e, Model model) {
         model.addAttribute("error", e.getMessage());
@@ -46,6 +47,7 @@ public class GlobalExceptionHandler {
         return "redirect:/error";
     }
 
+    // TODO check if still necessary for non REST
     @ExceptionHandler(FestivalNotFoundException.class)
     public String handleFestivalNotFound(FestivalNotFoundException ex, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
@@ -53,18 +55,24 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(GenreNotFoundException.class)
-    public ResponseEntity<String> handleGenreNotFoundException(GenreNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> handleGenreNotFoundException(GenreNotFoundException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NoArtistsException.class)
-    public ResponseEntity<String> handleNoArtistsException(NoArtistsException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> handleNoArtistsException(NoArtistsException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NoFestivalsException.class)
-    public ResponseEntity<String> handleNoFestivalsException(NoFestivalsException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> handleNoFestivalsException(NoFestivalsException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 }

@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FestivalsRestControllerTest {
+class FestivalsRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,19 +32,16 @@ public class FestivalsRestControllerTest {
     private FestivalService festivalService;
 
     @Test
-    public void testGetArtistsByFestival() throws Exception {
+    void testGetArtistsByFestival() throws Exception {
         Long festivalId = 1L;
         List<String> artists = Arrays.asList("Artist1", "Artist2");
         when(festivalService.getArtistsByFestival(festivalId)).thenReturn(artists);
 
-        mockMvc.perform(get("/api/festival/{festivalId}/artists", festivalId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0]").value("Artist1"))
-                .andExpect(jsonPath("$[1]").value("Artist2"));
+        mockMvc.perform(get("/api/festival/{festivalId}/artists", festivalId)).andExpect(status().isOk()).andExpect(jsonPath("$[0]").value("Artist1")).andExpect(jsonPath("$[1]").value("Artist2"));
     }
 
     @Test
-    public void testGetFestivalsByGenre() throws Exception {
+    void testGetFestivalsByGenre() throws Exception {
         String genre = "Rock";
         Festival festival1 = new Festival();
         festival1.setName("Rock Festival 1");
@@ -53,49 +50,38 @@ public class FestivalsRestControllerTest {
         List<Festival> festivals = Arrays.asList(festival1, festival2);
         when(festivalService.getFestivalsByGenre(genre)).thenReturn(festivals);
 
-        mockMvc.perform(get("/api/festivals").param("genre", genre))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Rock Festival 1"))
-                .andExpect(jsonPath("$[1].name").value("Rock Festival 2"));
+        mockMvc.perform(get("/api/festivals").param("genre", genre)).andExpect(status().isOk()).andExpect(jsonPath("$[0].name").value("Rock Festival 1")).andExpect(jsonPath("$[1].name").value("Rock Festival 2"));
     }
 
     @Test
-    public void testGetArtistsByFestival_NoArtists() throws Exception {
+    void testGetArtistsByFestival_NoArtists() throws Exception {
         Long festivalId = 2L;
         when(festivalService.getArtistsByFestival(festivalId)).thenThrow(new NoArtistsException("No artists found for festival with ID: " + festivalId));
 
-        mockMvc.perform(get("/api/festival/{festivalId}/artists", festivalId))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("No artists found for festival with ID: " + festivalId));
+        mockMvc.perform(get("/api/festival/{festivalId}/artists", festivalId)).andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("No artists found for festival with ID: " + festivalId));
     }
 
     @Test
-    public void testGetFestivalsByGenre_NoFestivals() throws Exception {
+    void testGetFestivalsByGenre_NoFestivals() throws Exception {
         String genre = "Jazz";
         when(festivalService.getFestivalsByGenre(genre)).thenThrow(new NoFestivalsException("No festivals found for genre: " + genre));
 
-        mockMvc.perform(get("/api/festivals").param("genre", genre))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("No festivals found for genre: " + genre));
+        mockMvc.perform(get("/api/festivals").param("genre", genre)).andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("No festivals found for genre: " + genre));
     }
 
     @Test
-    public void testGetArtistsByFestival_NonExistentFestival() throws Exception {
+    void testGetArtistsByFestival_NonExistentFestival() throws Exception {
         Long festivalId = 999L;
         when(festivalService.getArtistsByFestival(festivalId)).thenThrow(new FestivalNotFoundException(festivalId.intValue()));
 
-        mockMvc.perform(get("/api/festival/{festivalId}/artists", festivalId))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Festival not found with ID: " + festivalId));
+        mockMvc.perform(get("/api/festival/{festivalId}/artists", festivalId)).andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Festival not found with ID: " + festivalId));
     }
 
     @Test
-    public void testGetFestivalsByGenre_NonExistentGenre() throws Exception {
+    void testGetFestivalsByGenre_NonExistentGenre() throws Exception {
         String genre = "NonExistentGenre";
         when(festivalService.getFestivalsByGenre(genre)).thenThrow(new GenreNotFoundException("Genre not found"));
 
-        mockMvc.perform(get("/api/festivals").param("genre", genre))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Genre not found"));
+        mockMvc.perform(get("/api/festivals").param("genre", genre)).andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Genre not found"));
     }
 }
