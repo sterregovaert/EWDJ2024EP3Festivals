@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DashboardControllerTest {
+class DashboardControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -28,9 +28,16 @@ public class DashboardControllerTest {
     @MockBean
     private DashboardService dashboardService;
 
+    @WithMockUser(username = "user", roles = {})
+    @Test
+    void testShowDashboardWithNoUserRole() throws Exception {
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isForbidden());
+    }
+
     @WithMockUser(username = "user", roles = {"NOT_USER"})
     @Test
-    public void testNoAccessWithWrongUserRole() throws Exception {
+    void testNoAccessWithWrongUserRole() throws Exception {
         mockMvc.perform(get("/dashboard"))
                 .andExpect(status().isForbidden());
     }
@@ -38,7 +45,7 @@ public class DashboardControllerTest {
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    public void testShowDashboardWithValidUserRole() throws Exception {
+    void testShowDashboardWithValidUserRole() throws Exception {
         List<Genre> genres = List.of(
                 Genre.builder().name("Rock").build(),
                 Genre.builder().name("Jazz").build()
@@ -63,7 +70,7 @@ public class DashboardControllerTest {
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    public void testShowDashboardWithNoGenres() throws Exception {
+    void testShowDashboardWithNoGenres() throws Exception {
         List<Region> regions = List.of(
                 Region.builder().name("North").build(),
                 Region.builder().name("South").build()
@@ -84,7 +91,7 @@ public class DashboardControllerTest {
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    public void testShowDashboardWithNoRegions() throws Exception {
+    void testShowDashboardWithNoRegions() throws Exception {
         List<Genre> genres = List.of(
                 Genre.builder().name("Rock").build(),
                 Genre.builder().name("Jazz").build()
@@ -105,7 +112,7 @@ public class DashboardControllerTest {
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    public void testShowDashboardWithNoTickets() throws Exception {
+    void testShowDashboardWithNoTickets() throws Exception {
         List<Genre> genres = List.of(
                 Genre.builder().name("Rock").build(),
                 Genre.builder().name("Jazz").build()
@@ -114,7 +121,7 @@ public class DashboardControllerTest {
                 Region.builder().name("North").build(),
                 Region.builder().name("South").build()
         );
-        
+
         Mockito.when(dashboardService.findAllGenres()).thenReturn(genres);
         Mockito.when(dashboardService.findAllRegions()).thenReturn(regions);
         Mockito.when(dashboardService.findTicketCountForCurrentUser()).thenReturn(0);
@@ -127,16 +134,10 @@ public class DashboardControllerTest {
                 .andExpect(model().attribute("ticketCount", 0));
     }
 
-    @WithMockUser(username = "user", roles = {})
-    @Test
-    public void testShowDashboardWithNoUserRole() throws Exception {
-        mockMvc.perform(get("/dashboard"))
-                .andExpect(status().isForbidden());
-    }
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    public void testShowDashboardWithExceptionInFindAllGenres() throws Exception {
+    void testShowDashboardWithExceptionInFindAllGenres() throws Exception {
         Mockito.when(dashboardService.findAllGenres()).thenThrow(new RuntimeException("Database error"));
         Mockito.when(dashboardService.findAllRegions()).thenReturn(Collections.emptyList());
         Mockito.when(dashboardService.findTicketCountForCurrentUser()).thenReturn(0);
@@ -151,7 +152,7 @@ public class DashboardControllerTest {
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    public void testShowDashboardWithExceptionInFindAllRegions() throws Exception {
+    void testShowDashboardWithExceptionInFindAllRegions() throws Exception {
         Mockito.when(dashboardService.findAllGenres()).thenReturn(Collections.emptyList());
         Mockito.when(dashboardService.findAllRegions()).thenThrow(new RuntimeException("Database error"));
         Mockito.when(dashboardService.findTicketCountForCurrentUser()).thenReturn(0);

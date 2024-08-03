@@ -14,6 +14,7 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    // DASHBOARD
     @ExceptionHandler(RuntimeException.class)
     public ModelAndView handleRuntimeException(RuntimeException ex, Model model) {
         ModelAndView modelAndView = new ModelAndView("dashboard");
@@ -24,6 +25,8 @@ public class GlobalExceptionHandler {
         return modelAndView;
     }
 
+
+    // OTHER
     @ExceptionHandler(IllegalStateException.class)
     public String handleIllegalStateException(IllegalStateException e, Model model) {
         model.addAttribute("error", e.getMessage());
