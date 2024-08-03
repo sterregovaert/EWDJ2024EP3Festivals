@@ -138,6 +138,26 @@ public class InitDataConfig implements CommandLineRunner {
 
 
         // -------- -------- --------
+        // -------- REST --------
+        // -------- -------- --------
+        Genre hipHop = Genre.builder().name("Hip Hop").build();
+        genreRepository.save(hipHop);
+
+        String festivalNameNoArtists = "Silent Night Festival";
+        LocalDateTime startOfFestivalNoArtists = LocalDateTime.of(2024, 12, 25, 18, 0);
+
+        Festival festivalNoArtists = Festival.builder()
+                .startDateTime(startOfFestivalNoArtists)
+                .region(allRegions.get(ThreadLocalRandom.current().nextInt(allRegions.size())))
+                .genre(allGenres.get(ThreadLocalRandom.current().nextInt(allGenres.size())))
+                .availablePlaces(100)
+                .ticketPrice(50.0)
+                .name(festivalNameNoArtists)
+                .build();
+
+        festivalRepository.save(festivalNoArtists);
+
+        // -------- -------- --------
         // -------- TICKETS --------
         // -------- -------- --------
         MyUser nameUser = myUserRepository.findByUsername("nameUser");

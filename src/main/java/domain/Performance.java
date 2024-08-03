@@ -42,6 +42,7 @@ public class Performance {
     @NotNull(message = "{performance.endDateTime.notNull}")
     private LocalDateTime endDateTime;
 
+    // TODO double check how it is stored
     @ManyToMany
     @JoinTable(name = "performance_sub_genre", joinColumns = @JoinColumn(name = "performanceId"), inverseJoinColumns = @JoinColumn(name = "subGenreId"))
     @Size(max = 2, message = "{performance.subGenres.size}")
