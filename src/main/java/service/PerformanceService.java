@@ -26,8 +26,8 @@ public class PerformanceService {
     @Autowired
     SubGenreService subGenreService;
 
-    public void savePerformance(Performance performance) {
-        performanceRepository.save(performance);
+    public Performance savePerformance(Performance performance) {
+        return performanceRepository.save(performance);
     }
 
     public List<Performance> getPerformancesByFestival(Long festivalId) {
@@ -38,17 +38,19 @@ public class PerformanceService {
         performanceRepository.deleteById(performanceId);
     }
 
-    public void setupAddPerformanceFormModel(Long festivalId, Performance performance, Model model) {
+    public Festival setupAddPerformanceFormModel(Long festivalId, Performance performance, Model model) {
         Festival festival = getFestivalOrThrow(festivalId);
         setupPerformanceDefaults(performance, festival);
         addFestivalAndSubGenresToModel(festival, model);
         model.addAttribute("performance", performance);
         model.addAttribute("performances", getPerformancesByFestival(festivalId));
+        return festival;
     }
 
-    public void setupPerformanceForFestival(Long festivalId, Performance performance, BindingResult bindingResult, Model model) {
+    public Performance setupPerformanceForFestival(Long festivalId, Performance performance, BindingResult bindingResult, Model model) {
         Festival festival = getFestivalOrThrow(festivalId);
         performance.setFestival(festival);
+        return performance;
     }
 
     public void setupRemovePerformanceFormModel(Long festivalId, Model model) {
