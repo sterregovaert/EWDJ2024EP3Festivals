@@ -2,6 +2,7 @@ package com.springBoot.ewdj_2024_ep3_festivals;
 
 import domain.Ticket;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import service.TicketService;
 
 import java.security.Principal;
 
+@Slf4j
 @Controller
 @RequestMapping("/tickets")
 public class TicketController {

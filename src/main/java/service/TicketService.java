@@ -4,23 +4,22 @@ import domain.Festival;
 import domain.MyUser;
 import domain.Ticket;
 import exceptions.FestivalNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import repository.FestivalRepository;
 import repository.TicketRepository;
 import validator.TicketQuantityValidator;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class TicketService {
 
     @Autowired
     private TicketRepository ticketRepository;
-    @Autowired
-    private FestivalRepository festivalRepository;
     @Autowired
     private TicketQuantityValidator ticketQuantityValidator;
     @Autowired
@@ -38,6 +37,7 @@ public class TicketService {
         return ticketRepository.findByUserOrderByFestivalStartDateTimeAscFestivalRegionAscFestivalGenreAsc(user);
     }
 
+
     public Ticket setupBuyTicketModel(Long festivalId, String username) {
         try {
             MyUser user = myUserService.getUserByUsername(username);
@@ -48,8 +48,10 @@ public class TicketService {
             ticket.setFestival(festival);
             return ticket;
         } catch (FestivalNotFoundException e) {
+            log.error("Festival not found: " + festivalId, e);
             throw new RuntimeException("Festival not found: " + festivalId, e);
         } catch (Exception e) {
+            log.error("Error setting up ticket model for festivalId: " + festivalId, e);
             throw new RuntimeException("Error setting up ticket model for festivalId: " + festivalId, e);
         }
     }

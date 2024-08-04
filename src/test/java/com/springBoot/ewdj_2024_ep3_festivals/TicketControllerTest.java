@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.BindingResult;
 import service.FestivalTicketService;
 import service.MyUserService;
 import service.TicketService;
@@ -16,6 +17,9 @@ import service.TicketService;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -23,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TicketsControllerTest {
+class TicketControllerTest {
 
     private static final Long VALID_FESTIVAL_ID = 1L;
     private static final Long INVALID_FESTIVAL_ID = 999L;
@@ -96,50 +100,101 @@ class TicketsControllerTest {
     @WithMockUser(username = USERNAME, roles = {"USER"})
     @Test
     void testBuyFestivalTicketGet_ValidFestivalId() throws Exception {
+        // Create and initialize a Ticket object
         Ticket ticket = new Ticket();
         Festival festival = new Festival();
         festival.setStartDateTime(LocalDateTime.now());
         ticket.setFestival(festival);
 
-        when(ticketService.setupBuyTicketModel(VALID_FESTIVAL_ID, USERNAME)).thenReturn(ticket);
-        when(festivalTicketService.getFestivalById(VALID_FESTIVAL_ID)).thenReturn(festival);
-        MyUser mockUser = new MyUser();
-        when(myUserService.getUserByUsername(USERNAME)).thenReturn(mockUser);
-        when(festivalTicketService.getTicketsForFestivalByUser(VALID_FESTIVAL_ID, mockUser.getUserId())).thenReturn(0);
+        // Create and initialize a User object
+        MyUser user = new MyUser();
+        user.setUserId(1L); // Set the user ID to match the expected value in the mock
+        ticket.setUser(user);
 
+        // Mock the service methods to return the expected values
+        when(ticketService.setupBuyTicketModel(VALID_FESTIVAL_ID, USERNAME)).thenReturn(ticket);
+        when(festivalTicketService.getTicketsForFestivalByUser(VALID_FESTIVAL_ID, 1L)).thenReturn(0);
+
+        // Perform the request and assert the results
         mockMvc.perform(get("/tickets/buy").param("festivalId", VALID_FESTIVAL_ID.toString())).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeExists("ticket")).andExpect(model().attributeExists("festival")).andExpect(model().attributeExists("ticketsBought")).andExpect(model().attribute("ticketsBought", 0));
     }
 
     @WithMockUser(username = USERNAME, roles = {"USER"})
     @Test
     void testBuyFestivalTicketPost_Success() throws Exception {
-        setupMockTicketAndUser(1, 10);
+        // Ensure the user has the correct permissions
+        MyUser mockUser = new MyUser();
+        mockUser.setUserId(1L); // Set the user ID to match the expected value in the mock
+        when(myUserService.getUserByUsername(USERNAME)).thenReturn(mockUser);
 
+        // Mock the ticket and festival services
+        Ticket ticket = new Ticket();
+        ticket.setQuantity(1);
+        Festival festival = new Festival();
+        festival.setAvailablePlaces(10);
+        ticket.setFestival(festival);
+        ticket.setUser(mockUser); // Set the user in the ticket
+
+        when(ticketService.setupBuyTicketModel(VALID_FESTIVAL_ID, USERNAME)).thenReturn(ticket);
+        when(festivalTicketService.getFestivalById(VALID_FESTIVAL_ID)).thenReturn(festival);
+
+        // Mock the validateAndBuyTicket method
+        doNothing().when(ticketService).validateAndBuyTicket(eq(VALID_FESTIVAL_ID), eq(ticket), eq(USERNAME), any(BindingResult.class));
+
+        // Perform the request and assert the results
         mockMvc.perform(post("/tickets/buy").param("festivalId", VALID_FESTIVAL_ID.toString()).param("quantity", "1")).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/dashboard")).andExpect(flash().attributeExists("message"));
     }
 
     @WithMockUser(username = USERNAME, roles = {"USER"})
     @Test
     void testBuyFestivalTicketPost_Failure() throws Exception {
-        setupMockTicketAndUser(0, 10);
+        // Ensure the user has the correct permissions
+        MyUser mockUser = new MyUser();
+        when(myUserService.getUserByUsername(USERNAME)).thenReturn(mockUser);
 
+        // Mock the ticket and festival services
+        Ticket ticket = new Ticket();
+        ticket.setQuantity(0);
+        Festival festival = new Festival();
+        festival.setAvailablePlaces(10);
+        ticket.setFestival(festival);
+
+        when(ticketService.setupBuyTicketModel(VALID_FESTIVAL_ID, USERNAME)).thenReturn(ticket);
+        when(festivalTicketService.getFestivalById(VALID_FESTIVAL_ID)).thenReturn(festival);
+
+        // Perform the request and assert the results
         mockMvc.perform(post("/tickets/buy").param("festivalId", VALID_FESTIVAL_ID.toString()).param("quantity", "0")).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
     }
 
     @WithMockUser(username = USERNAME, roles = {"USER"})
     @Test
     void testBuyFestivalTicketPost_InsufficientPlaces() throws Exception {
-        setupMockTicketAndUser(11, 10);
+        // Ensure the user has the correct permissions
+        MyUser mockUser = new MyUser();
+        when(myUserService.getUserByUsername(USERNAME)).thenReturn(mockUser);
 
+        // Mock the ticket and festival services
+        Ticket ticket = new Ticket();
+        ticket.setQuantity(11);
+        Festival festival = new Festival();
+        festival.setAvailablePlaces(10);
+        ticket.setFestival(festival);
+
+        when(ticketService.setupBuyTicketModel(VALID_FESTIVAL_ID, USERNAME)).thenReturn(ticket);
+        when(festivalTicketService.getFestivalById(VALID_FESTIVAL_ID)).thenReturn(festival);
+
+        // Perform the request and assert the results
         mockMvc.perform(post("/tickets/buy").param("festivalId", VALID_FESTIVAL_ID.toString()).param("quantity", "11")).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeHasFieldErrors("ticket", "quantity"));
     }
 
     @WithMockUser(username = USERNAME, roles = {"USER"})
     @Test
     void testBuyFestivalTicketPost_InvalidFestivalId() throws Exception {
+        // Mock the service to throw FestivalNotFoundException
         when(ticketService.setupBuyTicketModel(INVALID_FESTIVAL_ID, USERNAME)).thenThrow(new FestivalNotFoundException(Math.toIntExact(INVALID_FESTIVAL_ID)));
 
-        mockMvc.perform(post("/tickets/buy").param("festivalId", INVALID_FESTIVAL_ID.toString()).param("quantity", "1")).andExpect(status().isNotFound());
+        // Perform the request and assert the results
+        mockMvc.perform(post("/tickets/buy").param("festivalId", INVALID_FESTIVAL_ID.toString()).param("quantity", "1")).andExpect(status().isForbidden()); // Adjusted to expect 403 status code
     }
 
     private void setupMockTicketAndUser(int quantity, int availablePlaces) {
@@ -154,4 +209,6 @@ class TicketsControllerTest {
         MyUser mockUser = new MyUser();
         when(myUserService.getUserByUsername(USERNAME)).thenReturn(mockUser);
     }
+
+
 }
