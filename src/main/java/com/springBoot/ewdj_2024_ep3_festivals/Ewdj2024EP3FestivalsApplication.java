@@ -66,6 +66,11 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     }
 
     @Bean
+    FestivalTicketService festivalTicketService() {
+        return new FestivalTicketService();
+    }
+
+    @Bean
     DashboardService dashboardService() {
         return new DashboardService();
     }

@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import service.FestivalTicketService;
 import service.TicketService;
 
 import java.security.Principal;
@@ -17,7 +18,9 @@ import java.security.Principal;
 public class TicketController {
 
     @Autowired
-    TicketService ticketService;
+    private TicketService ticketService;
+    @Autowired
+    private FestivalTicketService festivalTicketService;
 
     @GetMapping
     public String showTickets(Model model, Principal principal) {
@@ -28,7 +31,7 @@ public class TicketController {
     private String prepareTicketPurchaseModel(Long festivalId, Ticket ticket, Model model, Principal principal) {
         model.addAttribute("ticket", ticket);
         model.addAttribute("festival", ticket.getFestival());
-        model.addAttribute("ticketsBought", ticketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
+        model.addAttribute("ticketsBought", festivalTicketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
         return "ticket-buy";
     }
 

@@ -28,9 +28,10 @@ public class FestivalServiceImpl implements FestivalService {
     @Autowired
     private GenreRepository genreRepository;
     @Autowired
-    private TicketService ticketService;
-    @Autowired
     private MyUserService myUserService;
+    @Autowired
+    private FestivalTicketService festivalTicketService;
+
 
 //    public List<Festival> fetchFestivalsByGenreAndRegion(String genre, String region) {
 //        Optional<Genre> genreEntity = genreRepository.findByName(genre);
@@ -62,7 +63,7 @@ public class FestivalServiceImpl implements FestivalService {
 
         return festivals.stream()
                 .map(festival -> {
-                    int ticketsBought = ticketService.getTicketsForFestivalByUser(festival.getFestivalId(), user.getUserId());
+                    int ticketsBought = festivalTicketService.getTicketsForFestivalByUser(festival.getFestivalId(), user.getUserId());
                     return new FestivalDto(festival, ticketsBought);
                 })
                 .collect(Collectors.toList());

@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import service.MyUserService;
 import service.TicketService;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,8 @@ class TicketsControllerTest {
 
     @MockBean
     private TicketService ticketService;
+    @Autowired
+    private MyUserService myUserService;
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
@@ -54,17 +57,23 @@ class TicketsControllerTest {
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
     void testBuyFestivalTicketGet() throws Exception {
-        // Initialize Ticket and Festival objects
         Ticket ticket = new Ticket();
         Festival festival = new Festival();
         festival.setStartDateTime(LocalDateTime.now());
         ticket.setFestival(festival);
 
-        // Mock the ticketService.setupBuyTicketModel method
         when(ticketService.setupBuyTicketModel(1L, "user")).thenReturn(ticket);
+        // TODO fix this
+//        when(ticketService.getFestivalById(1L)).thenReturn(festival);
+//        MyUser mockUser = new MyUser();
+//        when(myUserService.getUserByUsername("user")).thenReturn(mockUser);
 
-        // Perform the GET request and verify the response
-        mockMvc.perform(get("/tickets/buy").param("festivalId", "1")).andExpect(status().isOk()).andExpect(view().name("ticket-buy")).andExpect(model().attributeExists("ticket")).andExpect(model().attributeExists("festival")).andExpect(model().attributeExists("ticketsBought"));
+        mockMvc.perform(get("/tickets/buy").param("festivalId", "1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("ticket-buy"))
+                .andExpect(model().attributeExists("ticket"))
+                .andExpect(model().attributeExists("festival"))
+                .andExpect(model().attributeExists("ticketsBought"));
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
