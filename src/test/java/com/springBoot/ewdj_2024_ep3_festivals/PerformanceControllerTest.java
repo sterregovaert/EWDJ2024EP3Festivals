@@ -24,174 +24,194 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PerformanceControllerTest {
+
+    private final Long festivalId = 1L;
+    private final Long invalidFestivalId = 999L;
+    private final Long performanceId = 1L;
+    private final Long invalidPerformanceId = 999L;
+    private final Festival festival = new Festival();
+    private final Performance performance = new Performance();
+
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private PerformanceService performanceService;
-
     @MockBean
     private FestivalRepository festivalRepository;
 
+    private void setupFestival() {
+        festival.setGenre(new Genre());
+        festival.setRegion(new Region());
+    }
+
     @Test
     public void testShowAddPerformanceForm() throws Exception {
-        Long festivalId = 1L;
-        Performance performance = new Performance();
         Mockito.doNothing().when(performanceService).setupAddPerformanceFormModel(festivalId, performance, null);
-
-        mockMvc.perform(get("/performance/add").param("festivalId", festivalId.toString())).andExpect(status().isOk()).andExpect(view().name("performance-add")).andExpect(model().attributeExists("performance"));
+        mockMvc.perform(get("/performance/add").param("festivalId", festivalId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("performance-add"))
+                .andExpect(model().attributeExists("performance"));
     }
 
     @Test
     public void testAddPerformance() throws Exception {
-        Long festivalId = 1L;
-        Performance performance = new Performance();
-        Festival festival = new Festival();
-        festival.setGenre(new Genre());
-        festival.setRegion(new Region());
+        setupFestival();
 
         Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.of(festival));
         Mockito.doNothing().when(performanceService).setupPerformanceForFestival(festivalId, performance, null, null);
         Mockito.doNothing().when(performanceService).savePerformance(performance);
 
-        mockMvc.perform(post("/performance/add").param("festivalId", festivalId.toString()).flashAttr("performance", performance)).andExpect(status().is3xxRedirection()).andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
+        mockMvc.perform(post("/performance/add")
+                        .param("festivalId", festivalId.toString())
+                        .flashAttr("performance", performance))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
     }
 
     @Test
     public void testShowRemovePerformanceForm() throws Exception {
-        Long festivalId = 1L;
         Mockito.doNothing().when(performanceService).setupRemovePerformanceFormModel(festivalId, null);
-
-        mockMvc.perform(get("/performance/remove").param("festivalId", festivalId.toString())).andExpect(status().isOk()).andExpect(view().name("performance-remove")).andExpect(model().attributeExists("performances"));
+        mockMvc.perform(get("/performance/remove").param("festivalId", festivalId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("performance-remove"))
+                .andExpect(model().attributeExists("performances"));
     }
 
     @Test
     public void testRemovePerformance() throws Exception {
-        Long festivalId = 1L;
-        Long performanceId = 1L;
-        Festival festival = new Festival();
-        festival.setGenre(new Genre());
-        festival.setRegion(new Region());
+        setupFestival();
 
         Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.of(festival));
         Mockito.doNothing().when(performanceService).deletePerformanceById(performanceId);
 
-        mockMvc.perform(post("/performance/remove").param("festivalId", festivalId.toString()).param("performanceId", performanceId.toString())).andExpect(status().is3xxRedirection()).andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
+        mockMvc.perform(post("/performance/remove")
+                        .param("festivalId", festivalId.toString())
+                        .param("performanceId", performanceId.toString()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
     }
 
     @Test
     public void testAddPerformanceWithValidationErrors() throws Exception {
-        Long festivalId = 1L;
-        Performance performance = new Performance();
-        Festival festival = new Festival();
-        festival.setGenre(new Genre());
-        festival.setRegion(new Region());
+        setupFestival();
 
         Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.of(festival));
         Mockito.doNothing().when(performanceService).setupPerformanceForFestival(festivalId, performance, null, null);
         Mockito.doNothing().when(performanceService).setupAddPerformanceFormModel(festivalId, performance, null);
 
-        mockMvc.perform(post("/performance/add").param("festivalId", festivalId.toString()).flashAttr("performance", performance)).andExpect(status().isOk()).andExpect(view().name("performance-add")).andExpect(model().attributeExists("performance")).andExpect(model().attributeHasFieldErrors("performance", "artistName", "startDateTime", "endDateTime"));
+        mockMvc.perform(post("/performance/add")
+                        .param("festivalId", festivalId.toString())
+                        .flashAttr("performance", performance))
+                .andExpect(status().isOk())
+                .andExpect(view().name("performance-add"))
+                .andExpect(model().attributeExists("performance"))
+                .andExpect(model().attributeHasFieldErrors("performance", "artistName", "startDateTime", "endDateTime"));
     }
 
     @Test
     public void testRemovePerformanceWithInvalidPerformanceId() throws Exception {
-        Long festivalId = 1L;
-        Long performanceId = 999L;
-        Festival festival = new Festival();
-        festival.setGenre(new Genre());
-        festival.setRegion(new Region());
+        setupFestival();
 
         Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.of(festival));
-        Mockito.doThrow(new IllegalArgumentException("Performance not found")).when(performanceService).deletePerformanceById(performanceId);
+        Mockito.doThrow(new IllegalArgumentException("Performance not found")).when(performanceService).deletePerformanceById(invalidPerformanceId);
 
-        mockMvc.perform(post("/performance/remove").param("festivalId", festivalId.toString()).param("performanceId", performanceId.toString())).andExpect(status().is3xxRedirection()).andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
+        mockMvc.perform(post("/performance/remove")
+                        .param("festivalId", festivalId.toString())
+                        .param("performanceId", invalidPerformanceId.toString()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
     }
 
     @Test
     public void testAddPerformanceWithMissingRequiredFields() throws Exception {
-        Long festivalId = 1L;
-        Performance performance = new Performance();
-        Festival festival = new Festival();
-        festival.setGenre(new Genre());
-        festival.setRegion(new Region());
+        setupFestival();
 
         Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.of(festival));
         Mockito.doNothing().when(performanceService).setupPerformanceForFestival(festivalId, performance, null, null);
         Mockito.doNothing().when(performanceService).setupAddPerformanceFormModel(festivalId, performance, null);
 
-        mockMvc.perform(post("/performance/add").param("festivalId", festivalId.toString()).flashAttr("performance", performance)).andExpect(status().isOk()).andExpect(view().name("performance-add")).andExpect(model().attributeExists("performance")).andExpect(model().attributeHasFieldErrors("performance", "artistName", "startDateTime", "endDateTime"));
+        mockMvc.perform(post("/performance/add")
+                        .param("festivalId", festivalId.toString())
+                        .flashAttr("performance", performance))
+                .andExpect(status().isOk())
+                .andExpect(view().name("performance-add"))
+                .andExpect(model().attributeExists("performance"))
+                .andExpect(model().attributeHasFieldErrors("performance", "artistName", "startDateTime", "endDateTime"));
     }
 
     @Test
     public void testRemovePerformanceWithNonExistentFestivalId() throws Exception {
-        Long festivalId = 999L;
-        Long performanceId = 1L;
-
-        Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.empty());
+        Mockito.when(festivalRepository.findById(invalidFestivalId)).thenReturn(Optional.empty());
         Mockito.doNothing().when(performanceService).deletePerformanceById(performanceId);
 
-        mockMvc.perform(post("/performance/remove").param("festivalId", festivalId.toString()).param("performanceId", performanceId.toString())).andExpect(status().is3xxRedirection()).andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
+        mockMvc.perform(post("/performance/remove")
+                        .param("festivalId", invalidFestivalId.toString())
+                        .param("performanceId", performanceId.toString()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
     }
 
     @Test
     public void testAddPerformanceWithInvalidDateRange() throws Exception {
-        Long festivalId = 1L;
-        Performance performance = new Performance();
         performance.setStartDateTime(LocalDateTime.now().plusDays(1));
         performance.setEndDateTime(LocalDateTime.now());
-
-        Festival festival = new Festival();
-        festival.setGenre(new Genre());
-        festival.setRegion(new Region());
+        setupFestival();
 
         Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.of(festival));
         Mockito.doNothing().when(performanceService).setupPerformanceForFestival(festivalId, performance, null, null);
         Mockito.doNothing().when(performanceService).setupAddPerformanceFormModel(festivalId, performance, null);
 
-        mockMvc.perform(post("/performance/add").param("festivalId", festivalId.toString()).flashAttr("performance", performance)).andExpect(status().isOk()).andExpect(view().name("performance-add")).andExpect(model().attributeExists("performance")).andExpect(model().attributeHasFieldErrors("performance", "endDateTime"));
+        mockMvc.perform(post("/performance/add")
+                        .param("festivalId", festivalId.toString())
+                        .flashAttr("performance", performance))
+                .andExpect(status().isOk())
+                .andExpect(view().name("performance-add"))
+                .andExpect(model().attributeExists("performance"))
+                .andExpect(model().attributeHasFieldErrors("performance", "endDateTime"));
     }
 
     @Test
     public void testRemovePerformanceWithValidPerformanceIdButInvalidFestivalId() throws Exception {
-        Long festivalId = 999L;
-        Long performanceId = 1L;
-
-        Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.empty());
+        Mockito.when(festivalRepository.findById(invalidFestivalId)).thenReturn(Optional.empty());
         Mockito.doNothing().when(performanceService).deletePerformanceById(performanceId);
 
-        mockMvc.perform(post("/performance/remove").param("festivalId", festivalId.toString()).param("performanceId", performanceId.toString())).andExpect(status().is3xxRedirection()).andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
+        mockMvc.perform(post("/performance/remove")
+                        .param("festivalId", invalidFestivalId.toString())
+                        .param("performanceId", performanceId.toString()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
     }
 
     @Test
     public void testAddPerformanceWithDuplicatePerformance() throws Exception {
-        Long festivalId = 1L;
-        Performance performance = new Performance();
         performance.setArtistName("Duplicate Artist");
-        Festival festival = new Festival();
-        festival.setGenre(new Genre());
-        festival.setRegion(new Region());
+        setupFestival();
 
         Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.of(festival));
         Mockito.doNothing().when(performanceService).setupPerformanceForFestival(festivalId, performance, null, null);
         Mockito.doNothing().when(performanceService).setupAddPerformanceFormModel(festivalId, performance, null);
         Mockito.doThrow(new IllegalArgumentException("Performance already exists")).when(performanceService).savePerformance(performance);
 
-        mockMvc.perform(post("/performance/add").param("festivalId", festivalId.toString()).flashAttr("performance", performance)).andExpect(status().isOk()).andExpect(view().name("performance-add")).andExpect(model().attributeExists("performance")).andExpect(model().attributeHasFieldErrors("performance", "artistName"));
+        mockMvc.perform(post("/performance/add")
+                        .param("festivalId", festivalId.toString())
+                        .flashAttr("performance", performance))
+                .andExpect(status().isOk())
+                .andExpect(view().name("performance-add"))
+                .andExpect(model().attributeExists("performance"))
+                .andExpect(model().attributeHasFieldErrors("performance", "artistName"));
     }
 
     @Test
     public void testRemovePerformanceWithValidPerformanceIdAndValidFestivalId() throws Exception {
-        Long festivalId = 1L;
-        Long performanceId = 1L;
-        Festival festival = new Festival();
-        festival.setGenre(new Genre());
-        festival.setRegion(new Region());
+        setupFestival();
 
         Mockito.when(festivalRepository.findById(festivalId)).thenReturn(Optional.of(festival));
         Mockito.doNothing().when(performanceService).deletePerformanceById(performanceId);
 
-        mockMvc.perform(post("/performance/remove").param("festivalId", festivalId.toString()).param("performanceId", performanceId.toString())).andExpect(status().is3xxRedirection()).andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
+        mockMvc.perform(post("/performance/remove")
+                        .param("festivalId", festivalId.toString())
+                        .param("performanceId", performanceId.toString()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/festivals?genre=*&region=*"));
     }
-
 }

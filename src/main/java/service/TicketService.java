@@ -3,6 +3,7 @@ package service;
 import domain.Festival;
 import domain.MyUser;
 import domain.Ticket;
+import exceptions.FestivalNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,13 +39,19 @@ public class TicketService {
     }
 
     public Ticket setupBuyTicketModel(Long festivalId, String username) {
-        MyUser user = myUserService.getUserByUsername(username);
-        Festival festival = festivalTicketService.getFestivalById(festivalId);
+        try {
+            MyUser user = myUserService.getUserByUsername(username);
+            Festival festival = festivalTicketService.getFestivalById(festivalId);
 
-        Ticket ticket = new Ticket();
-        ticket.setUser(user);
-        ticket.setFestival(festival);
-        return ticket;
+            Ticket ticket = new Ticket();
+            ticket.setUser(user);
+            ticket.setFestival(festival);
+            return ticket;
+        } catch (FestivalNotFoundException e) {
+            throw new RuntimeException("Festival not found: " + festivalId, e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error setting up ticket model for festivalId: " + festivalId, e);
+        }
     }
 
     @Transactional
@@ -62,6 +69,4 @@ public class TicketService {
             saveTicket(ticket);
         }
     }
-
-
 }
