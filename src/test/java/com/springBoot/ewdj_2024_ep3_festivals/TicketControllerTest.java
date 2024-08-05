@@ -41,13 +41,13 @@ class TicketControllerTest {
     private MyUserService myUserService;
     @MockBean
     private FestivalTicketService festivalTicketService;
-    @Autowired
+    @MockBean
     private FestivalRepository festivalRepository;
-    @Autowired
+    @MockBean
     private MyUserRepository userRepository;
-    @Autowired
+    @MockBean
     private GenreRepository genreRepository;
-    @Autowired
+    @MockBean
     private RegionRepository regionRepository;
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
