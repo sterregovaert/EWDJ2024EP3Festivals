@@ -9,10 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import repository.FestivalRepository;
-import repository.GenreRepository;
-import repository.MyUserRepository;
-import repository.RegionRepository;
 import service.FestivalTicketService;
 import service.MyUserService;
 import service.TicketService;
@@ -33,6 +29,7 @@ class TicketControllerTest {
     private static final Long VALID_FESTIVAL_ID = 1L;
     private static final Long INVALID_FESTIVAL_ID = 999L;
     private static final String USERNAME = "user";
+
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -41,14 +38,6 @@ class TicketControllerTest {
     private MyUserService myUserService;
     @MockBean
     private FestivalTicketService festivalTicketService;
-    @MockBean
-    private FestivalRepository festivalRepository;
-    @MockBean
-    private MyUserRepository userRepository;
-    @MockBean
-    private GenreRepository genreRepository;
-    @MockBean
-    private RegionRepository regionRepository;
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
@@ -161,12 +150,12 @@ class TicketControllerTest {
         mockUser.setUsername(USERNAME);
         mockUser.setPassword("s5q1f65s1f5q61f6");
 
-        userRepository.save(mockUser);
+//        userRepository.save(mockUser);
 
         Genre genre = Genre.builder().name("Rock").build();
-        genreRepository.save(genre);
+//        genreRepository.save(genre);
         Region region = Region.builder().name("North").build();
-        regionRepository.save(region);
+//        regionRepository.save(region);
 
         Festival festival = new Festival();
         festival.setFestivalId(1L);
@@ -186,7 +175,7 @@ class TicketControllerTest {
 //        performance.setEndDateTime(LocalDateTime.now().plusDays(1).plusHours(2));
 //        festival.setPerformances(Collections.singletonList(performance));
 
-        festivalRepository.save(festival);
+//        festivalRepository.save(festival);
 
         Ticket ticket = new Ticket();
         ticket.setTicketId(1L);
