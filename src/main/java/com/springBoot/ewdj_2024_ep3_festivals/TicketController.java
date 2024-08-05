@@ -1,5 +1,7 @@
 package com.springBoot.ewdj_2024_ep3_festivals;
 
+import domain.Festival;
+import domain.MyUser;
 import domain.Ticket;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import service.FestivalTicketService;
+import service.MyUserService;
 import service.TicketService;
+import validator.TicketQuantityValidator;
 
 import java.security.Principal;
 
@@ -23,6 +27,11 @@ public class TicketController {
     private TicketService ticketService;
     @Autowired
     private FestivalTicketService festivalTicketService;
+    @Autowired
+    private MyUserService myUserService;
+    @Autowired
+    private TicketQuantityValidator ticketQuantityValidator;
+
 
     @GetMapping
     public String showTickets(Model model, Principal principal) {
@@ -30,25 +39,41 @@ public class TicketController {
         return "tickets";
     }
 
-    private String prepareTicketPurchaseModel(Long festivalId, Ticket ticket, Model model, Principal principal) {
+    private String prepareTicketPurchaseModel(Long festivalId, Ticket ticket, Model model) {
         model.addAttribute("ticket", ticket);
         model.addAttribute("festival", ticket.getFestival());
         model.addAttribute("ticketsBought", festivalTicketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
+
         return "ticket-buy";
     }
 
     @GetMapping("/buy")
     public String buyFestivalTicketGet(@RequestParam("festivalId") Long festivalId, Model model, Principal principal) {
         Ticket ticket = ticketService.setupBuyTicketModel(festivalId, principal.getName());
-        return prepareTicketPurchaseModel(festivalId, ticket, model, principal);
+
+        return prepareTicketPurchaseModel(festivalId, ticket, model);
     }
 
     @PostMapping("/buy")
     public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, BindingResult result, Model model, Principal principal, RedirectAttributes redirectAttributes) {
-        ticketService.validateAndBuyTicket(festivalId, ticket, principal.getName(), result);
+        MyUser user = myUserService.getUserByUsername(principal.getName());
+        Festival festival = festivalTicketService.getFestivalById(festivalId);
+        System.out.println(festival);
+        ticket.setUser(user);
+        ticket.setFestival(festival);
+
+        System.out.println(result);
+        ticketQuantityValidator.validate(ticket, result);
+        System.out.println(result);
+
         if (result.hasErrors()) {
-            return prepareTicketPurchaseModel(festivalId, ticket, model, principal);
+            return prepareTicketPurchaseModel(festivalId, ticket, model);
         }
+        System.out.println(festival);
+        System.out.println(ticket.getQuantity());
+        System.out.println(ticket.getUser());
+        festivalTicketService.updateAvailablePlaces(festival, ticket.getQuantity());
+        ticketService.saveTicket(ticket);
 
         redirectAttributes.addFlashAttribute("message", ticket.getQuantity() + " tickets were purchased");
         return "redirect:/dashboard";
