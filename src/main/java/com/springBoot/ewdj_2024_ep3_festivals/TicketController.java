@@ -58,20 +58,15 @@ public class TicketController {
     public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, BindingResult result, Model model, Principal principal, RedirectAttributes redirectAttributes) {
         MyUser user = myUserService.getUserByUsername(principal.getName());
         Festival festival = festivalTicketService.getFestivalById(festivalId);
-        System.out.println(festival);
         ticket.setUser(user);
         ticket.setFestival(festival);
 
-        System.out.println(result);
         ticketQuantityValidator.validate(ticket, result);
-        System.out.println(result);
 
         if (result.hasErrors()) {
             return prepareTicketPurchaseModel(festivalId, ticket, model);
         }
-        System.out.println(festival);
-        System.out.println(ticket.getQuantity());
-        System.out.println(ticket.getUser());
+
         festivalTicketService.updateAvailablePlaces(festival, ticket.getQuantity());
         ticketService.saveTicket(ticket);
 
