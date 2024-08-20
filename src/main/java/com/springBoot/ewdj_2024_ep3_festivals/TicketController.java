@@ -32,7 +32,6 @@ public class TicketController {
     @Autowired
     private TicketQuantityValidator ticketQuantityValidator;
 
-
     @GetMapping
     public String showTickets(Model model, Principal principal) {
         model.addAttribute("tickets", ticketService.findTicketsByUsername(principal.getName()));
@@ -42,7 +41,8 @@ public class TicketController {
     private String prepareTicketPurchaseModel(Long festivalId, Ticket ticket, Model model) {
         model.addAttribute("ticket", ticket);
         model.addAttribute("festival", ticket.getFestival());
-        model.addAttribute("ticketsBought", festivalTicketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
+        model.addAttribute("ticketsBought",
+                festivalTicketService.getTicketsForFestivalByUser(festivalId, ticket.getUser().getUserId()));
 
         return "ticket-buy";
     }
@@ -55,7 +55,14 @@ public class TicketController {
     }
 
     @PostMapping("/buy")
-    public String buyFestivalTicketPost(@RequestParam("festivalId") Long festivalId, @Valid @ModelAttribute Ticket ticket, BindingResult result, Model model, Principal principal, RedirectAttributes redirectAttributes) {
+    public String buyFestivalTicketPost(
+            @RequestParam Long festivalId,
+            @Valid @ModelAttribute Ticket ticket,
+            BindingResult result,
+            Model model,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+
         MyUser user = myUserService.getUserByUsername(principal.getName());
         Festival festival = festivalTicketService.getFestivalById(festivalId);
         ticket.setUser(user);

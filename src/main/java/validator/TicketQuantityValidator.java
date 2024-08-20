@@ -27,19 +27,26 @@ public class TicketQuantityValidator implements Validator {
     public void validate(Object target, Errors errors) {
         Ticket ticket = (Ticket) target;
 
-        // Check if the quantity of all tickets for a single festival is not above the limit
-        Integer totalTicketsForFestival = ticketRepository.sumTicketQuantitiesByUserIdAndFestivalId(ticket.getUser().getUserId(), ticket.getFestival().getFestivalId());
+        // Check if the quantity of all tickets for a single festival is not above the
+        // limit
+        Integer totalTicketsForFestival = ticketRepository.sumTicketQuantitiesByUserIdAndFestivalId(
+                ticket.getUser().getUserId(), ticket.getFestival().getFestivalId());
         if (totalTicketsForFestival != null && totalTicketsForFestival + ticket.getQuantity() > FESTIVAL_TICKET_LIMIT) {
-            errors.rejectValue(QUANTITY_FIELD, "quantity.exceedsFestivalLimit", new Object[]{FESTIVAL_TICKET_LIMIT}, "You can buy no more than {0} tickets for a single festival.");
+            errors.rejectValue(QUANTITY_FIELD, "quantity.exceedsFestivalLimit", new Object[] { FESTIVAL_TICKET_LIMIT },
+                    "You can buy no more than {0} tickets for a single festival.");
         }
 
-        // Check if the total number of tickets bought across all festivals is more than the limit
-        int totalTicketsBought = ticketRepository.sumTicketQuantitiesByUsername(ticket.getUser().getUsername());
+        // Check if the total number of tickets bought across all festivals is more than
+        // the limit
+        String ticketUserUsername = ticket.getUser().getUsername();
+        int totalTicketsBought = ticketRepository.sumTicketQuantitiesByUsername(ticketUserUsername);
         if (totalTicketsBought + ticket.getQuantity() > TOTAL_TICKET_LIMIT) {
-            errors.rejectValue(QUANTITY_FIELD, "quantity.totalExceedsLimit", new Object[]{TOTAL_TICKET_LIMIT}, "You can buy no more than {0} tickets in total for all festivals.");
+            errors.rejectValue(QUANTITY_FIELD, "quantity.totalExceedsLimit", new Object[] { TOTAL_TICKET_LIMIT },
+                    "You can buy no more than {0} tickets in total for all festivals.");
         }
 
-        // Check if the quantity of tickets being bought is more than the available places
+        // Check if the quantity of tickets being bought is more than the available
+        // places
         int availablePlaces = festivalRepository.findAvailablePlacesByFestivalId(ticket.getFestival().getFestivalId());
         if (ticket.getQuantity() > availablePlaces) {
             errors.rejectValue(QUANTITY_FIELD, "quantity.exceedsAvailablePlaces");

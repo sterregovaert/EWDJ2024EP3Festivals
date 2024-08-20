@@ -14,6 +14,7 @@ import validator.ValidFestivalNumber2RangeConstraint;
 @Setter
 @Table(name = "artist")
 @ValidFestivalNumber2RangeConstraint
+@ToString
 public class Artist {
     private static final long serialVersionUID = 1L;
     @Id

@@ -18,11 +18,10 @@ import validator.TicketQuantityValidator;
 
 import java.util.Locale;
 
-
 @SpringBootApplication
 @EnableJpaRepositories("repository")
 @EntityScan("domain")
-//@ComponentScan({"controllers", "config", "service"})
+// @ComponentScan({"controllers", "config", "service"})
 public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
     public static void main(String[] args) {
         SpringApplication.run(Ewdj2024EP3FestivalsApplication.class, args);
@@ -40,11 +39,11 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
         registry.addViewController("/error").setViewName("error");
     }
 
-    /*LOCALE*/
+    /* LOCALE */
     @Bean
     LocaleResolver localeResolver() {
         CookieLocaleResolver slr = new CookieLocaleResolver();
-//        slr.setDefaultLocale(Locale.ENGLISH);
+        // slr.setDefaultLocale(Locale.ENGLISH);
         slr.setDefaultLocale(new Locale("nl"));
         return slr;
     }
@@ -54,7 +53,7 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
         return new DateFormatter();
     }
 
-    /*SERVICE*/
+    /* SERVICE */
     @Bean
     MyUserService myUserService() {
         return new MyUserService();
@@ -95,7 +94,7 @@ public class Ewdj2024EP3FestivalsApplication implements WebMvcConfigurer {
         return new TicketService();
     }
 
-    /*VALIDATOR*/
+    /* VALIDATOR */
     @Bean
     PerformanceDateTimeValidation performanceValidation() {
         return new PerformanceDateTimeValidation();

@@ -20,6 +20,7 @@ public class PerformanceDateTimeValidation implements Validator {
         // check if performance.startDateTime is after festival.startDateTime
         if (performance.getStartDateTime() != null && performance.getFestival() != null) {
             LocalDateTime festivalStartDateTime = performance.getFestival().getStartDateTime();
+
             if (performance.getStartDateTime().isBefore(festivalStartDateTime)) {
                 errors.rejectValue("startDateTime", "performance.startDateTime.beforeFestivalStartDateTime");
             }

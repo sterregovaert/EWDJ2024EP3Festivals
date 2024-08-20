@@ -14,6 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "genre")
+@ToString(exclude = { "performances", "region", "festivals", "tickets" })
 public class Genre {
     private static final long serialVersionUID = 1L;
     @Id
