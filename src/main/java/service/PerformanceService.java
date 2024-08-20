@@ -1,6 +1,7 @@
 package service;
 
 import domain.Festival;
+import domain.Genre;
 import domain.Performance;
 import domain.SubGenre;
 import lombok.extern.slf4j.Slf4j;
@@ -38,26 +39,38 @@ public class PerformanceService {
         performanceRepository.deleteById(performanceId);
     }
 
-    public Festival setupAddPerformanceFormModel(Long festivalId, Performance performance, Model model) {
+    public Festival setupAddPerformanceWithDefaults(Long festivalId, Performance performance) {
         Festival festival = getFestivalOrThrow(festivalId);
+
         setupPerformanceDefaults(performance, festival);
-        addFestivalAndSubGenresToModel(festival, model);
-        model.addAttribute("performance", performance);
-        model.addAttribute("performances", getPerformancesByFestival(festivalId));
+
         return festival;
     }
 
-    public Performance setupPerformanceForFestival(Long festivalId, Performance performance, BindingResult bindingResult, Model model) {
+    public List<SubGenre> setupSubGenresForFestivalGenre(Genre festivalGenre) {
+        List<SubGenre> subGenres = subGenreService.getSubGenresByGenre(festivalGenre);
+
+        return subGenres;
+    }
+
+    public List<Performance> setupPerformances(Long festivalId) {
+        List<Performance> performances = getPerformancesByFestival(festivalId);
+
+        return performances;
+    }
+
+    public Performance setupPerformanceForFestival(Long festivalId, Performance performance) {
+
         Festival festival = getFestivalOrThrow(festivalId);
         performance.setFestival(festival);
+
         return performance;
     }
 
-    public void setupRemovePerformanceFormModel(Long festivalId, Model model) {
+    public Festival setupFestival(Long festivalId) {
         Festival festival = getFestivalOrThrow(festivalId);
-        List<Performance> performances = getPerformancesByFestival(festivalId);
-        model.addAttribute("performances", performances);
-        model.addAttribute("festival", festival);
+
+        return festival;
     }
 
     private Festival getFestivalOrThrow(Long festivalId) {
@@ -67,19 +80,13 @@ public class PerformanceService {
 
     private void setupPerformanceDefaults(Performance performance, Festival festival) {
         performance.setFestival(festival);
+
         if (performance.getStartDateTime() == null) {
             performance.setStartDateTime(festival.getStartDateTime());
         }
+
         if (performance.getEndDateTime() == null) {
             performance.setEndDateTime(festival.getStartDateTime().plusHours(1));
         }
     }
-
-    private void addFestivalAndSubGenresToModel(Festival festival, Model model) {
-        List<SubGenre> subGenres = subGenreService.getSubGenresByGenre(festival.getGenre());
-        model.addAttribute("subGenres", subGenres);
-        model.addAttribute("festival", festival);
-    }
-
-
 }

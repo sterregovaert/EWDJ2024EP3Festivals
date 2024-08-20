@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(of = "username")
 @Table(name = "users")
+@ToString
 public class MyUser implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Range;
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = "ticketId")
 @Table(name = "ticket")
+@ToString
 public class Ticket {
     private static final long serialVersionUID = 1L;
     @Id

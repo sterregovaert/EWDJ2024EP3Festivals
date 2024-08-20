@@ -9,7 +9,6 @@ import repository.PerformanceRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 public class PerformanceTimeSlotValidation implements Validator {
 
     @Autowired
@@ -24,16 +23,22 @@ public class PerformanceTimeSlotValidation implements Validator {
     public void validate(Object target, Errors errors) {
         Performance performance = (Performance) target;
 
-        // Check if the time slot (startDateTime - endDateTime) is not already taken by another performance from the same festival
+        // Check if the time slot (startDateTime - endDateTime) is not already taken by
+        // another performance from the same festival
         if (performance.getStartDateTime() != null && performance.getEndDateTime() != null) {
-            List<Performance> performances = performanceRepository.findByFestivalFestivalId(performance.getFestival().getFestivalId());
+            List<Performance> performances = performanceRepository
+                    .findByFestivalFestivalId(performance.getFestival().getFestivalId());
+
             for (Performance otherPerformance : performances) {
                 if (otherPerformance.getPerformanceId().equals(performance.getPerformanceId())) {
                     continue; // Skip the current performance
                 }
+
                 LocalDateTime otherStart = otherPerformance.getStartDateTime();
                 LocalDateTime otherEnd = otherPerformance.getEndDateTime();
-                if ((performance.getStartDateTime().isBefore(otherEnd) && performance.getEndDateTime().isAfter(otherStart))) {
+
+                if ((performance.getStartDateTime().isBefore(otherEnd)
+                        && performance.getEndDateTime().isAfter(otherStart))) {
                     errors.rejectValue("startDateTime", "performance.startDateTime.timeSlotTaken");
                     break;
                 }

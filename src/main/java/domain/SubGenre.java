@@ -14,6 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "sub_genre")
+@ToString
 public class SubGenre {
     private static final long serialVersionUID = 1L;
     @Id

@@ -23,8 +23,10 @@ import java.util.List;
 @EqualsAndHashCode(exclude = "festivalId")
 @Getter
 @Setter
-@JsonPropertyOrder({"festivalId", "name", "startDateTime", "region", "genre", "availablePlaces", "performances", "ticketPrice", "tickets"})
+@JsonPropertyOrder({ "festivalId", "name", "startDateTime", "region", "genre", "availablePlaces", "performances",
+        "ticketPrice", "tickets" })
 @Table(name = "festival")
+@ToString(exclude = { "performances", "region", "genre", "tickets" })
 public class Festival {
     private static final long serialVersionUID = 1L;
     @Id

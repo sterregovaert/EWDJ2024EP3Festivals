@@ -31,7 +31,6 @@ public class TicketService {
         return ticketRepository.findByUserOrderByFestivalStartDateTimeAscFestivalRegionAscFestivalGenreAsc(user);
     }
 
-
     public Ticket setupBuyTicketModel(Long festivalId, String username) {
         try {
             MyUser user = myUserService.getUserByUsername(username);

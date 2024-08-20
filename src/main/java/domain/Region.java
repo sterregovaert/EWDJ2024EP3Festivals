@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "region")
+@ToString
 public class Region {
     private static final long serialVersionUID = 1L;
     @Id
